@@ -20,7 +20,7 @@
         </button>
     </h1>
 
-    {% if display_share and share %}
+    {% if share %}
         <div class="alert alert-info" role="alert">
             Your share link is:
             <span id="share_link_1">{{ host }}{% url 'aristotle_mdr:sharedSandbox' share.uuid %}</span>

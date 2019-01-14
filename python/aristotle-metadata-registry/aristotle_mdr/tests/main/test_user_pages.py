@@ -197,8 +197,6 @@ class UserHomePages(utils.AristotleTestUtils, TestCase):
         emails = json.loads(share.emails)
 
         self.assertEqual(emails, ['firstone@example.com', 'nextone@example.com'])
-
-        self.assertContext(response, 'display_share', True)
         self.assertContains(response, share.uuid)
 
     @tag('share_link')

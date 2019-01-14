@@ -457,12 +457,7 @@ class CreatedItemsListView(LoginRequiredMixin, AjaxFormMixin, FormMixin, ListVie
 
         context['form'] = form
         context['host'] = self.request.get_host()
-
-        if 'display_share' in self.request.GET:
-            context['display_share'] = True
-            context['number_of_accounts_user_is_sharing_with'] = len(self.get_initial().get('emails'))
-        else:
-            context['display_share'] = False
+        context['number_of_accounts_user_is_sharing_with'] = len(self.get_initial().get('emails'))
 
         return context
 
@@ -501,7 +496,7 @@ class CreatedItemsListView(LoginRequiredMixin, AjaxFormMixin, FormMixin, ListVie
         return paginate_sort_opts.get(self.order)
 
     def get_success_url(self):
-        return reverse('aristotle_mdr:userSandbox') + '?display_share=1'
+        return reverse('aristotle_mdr:userSandbox')
 
 
 class GetShareMixin:
