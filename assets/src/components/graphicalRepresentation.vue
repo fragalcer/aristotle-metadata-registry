@@ -148,59 +148,54 @@
                             }
                         })
 
-                        // UNCOMMENT THIS:
-                        // if (this.typeOfGraph === "general") {
-                        //     network.on('click', (net) => {
-                        //         if (net.nodes.length > 0) {
-                        //             let nodesArray = nodes.get(net.nodes)
-                        //             let myNode = nodesArray[0]
-                        //
-                        //             this.get(myNode.expand_node_get_url).then((response) => {
-                        //
-                        //                 this.nodesProcessor(response.data.nodes)
-                        //
-                        //                 this.edgesProcessor(response.data.edges)
-                        //                 // nodes = new vis.DataSet(nodes.getDataSet());
-                        //                 // edges = new vis.DataSet(edges);
-                        //
-                        //                 network.destroy()
-                        //                 network = null
-                        //
-                        //                 console.log("THIS IS THE NODES DATASET:")
-                        //                 console.log(nodes)
-                        //                 console.log("THIS IS THE EDGES DATASET")
-                        //                 console.log(edges)
-                        //
-                        //                 console.log("THESE ARE OUR CURRENT NODES:")
-                        //                 console.log(this.nodes)
-                        //
-                        //                 console.log("THESE ARE OUR CURRENT EDGES:")
-                        //                 console.log(this.edges)
-                        //
-                        //
-                        //
-                        //                 try {
-                        //                     edges.add(response.data.edges)
-                        //                 } catch (e) {
-                        //                     // alert(e)
-                        //                 }
-                        //                 try {
-                        //                     nodes.add(response.data.nodes)
-                        //                 } catch (e) {
-                        //                     // alert(e)
-                        //                 }
-                        //
-                        //                 console.log("THIS IS THE NODES DATASET:")
-                        //                 console.log(nodes)
-                        //                 console.log("THIS IS THE EDGES DATASET")
-                        //                 console.log(edges)
-                        //
-                        //
-                        //
-                        //             })
-                        //         }
-                        //     })
-                        // }
+                        if (this.typeOfGraph === "general") {
+                            network.on('click', (net) => {
+                                if (net.nodes.length > 0) {
+                                    let nodesArray = nodes.get(net.nodes)
+                                    let myNode = nodesArray[0]
+
+                                    this.get(myNode.expand_node_get_url).then((response) => {
+
+                                        this.nodesProcessor(response.data.nodes)
+
+                                        for (let element of response.data.nodes) {
+                                            let weAlreadyHaveNode = false
+                                            for (let innerElement of this.nodes) {
+                                                if (innerElement.id === element.id) {
+                                                    weAlreadyHaveNode = true
+                                                }
+                                            }
+                                            if (!weAlreadyHaveNode) {
+                                                this.nodes.push(element)
+                                            }
+                                        }
+
+                                        this.edgesProcessor(response.data.edges)
+
+                                        console.log("THESE ARE THE EDGES:")
+                                        console.log(response.data.edges)
+                                        console.log("THESE ARE THE CURRENT EDGES:")
+                                        console.log(this.edges)
+
+                                        for (let element of response.data.edges) {
+                                            let weAlreadyHaveEdge = false
+                                            for (let innerElement of this.edges) {
+                                                if (innerElement.from === element.from && innerElement.to === element.to) {
+                                                    weAlreadyHaveEdge = true
+                                                }
+                                            }
+                                            if (!weAlreadyHaveEdge) {
+                                                this.edges.push(element)
+                                            }
+                                        }
+
+                                        network.setData({nodes: new vis.DataSet(this.nodes), edges: new vis.DataSet(this.edges)})
+                                        network.fit()
+                                        network.stabiliz
+                                    })
+                                }
+                            })
+                        }
 
                         network.on('showPopup', function () {
                             document.body.style.cursor = 'pointer'
