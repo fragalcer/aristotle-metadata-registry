@@ -122,11 +122,9 @@
                                     <ul>
                                         {% for rel in suprel.rels %}
                                             <li>
-                              <span title="{% trans 'The registration authority that applied this relationship' %}">
-                                {{ rel.registration_authority.name }}
-                              </span>,
-                                                <time datetime="{{ rel.date_effective|isotime }}">{{ rel.date_effective }}</time>
-                                                {% if rel.message %} - {{ rel.message }} {% endif %}
+                                                <span title="{% trans 'The registration authority that applied this relationship' %}">
+                                                    <a href="{% url 'aristotle:registrationAuthority' iid=rel.registration_authority.id %}">{{ rel.registration_authority.name }}</a>
+                                                </span>{% if rel.date_effective %} - (<time datetime="{{ rel.date_effective|isotime }}">{{ rel.date_effective }}</time>)</sup>{% endif %}
                                             </li>
                                         {% endfor %}
                                     </ul>
