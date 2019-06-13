@@ -91,7 +91,7 @@ class AristotleConceptObjectType(DjangoObjectType):
 
     def resolve_metadata_type(self, info, **kwargs):
         item = self.item
-        out = "{}:{}".format(item._meta.app_label,item._meta.model_name)
+        out = "{}:{}".format(item._meta.app_label, item._meta.model_name)
         return out
 
     def resolve_custom_values_as_object(self, info, **kwargs):

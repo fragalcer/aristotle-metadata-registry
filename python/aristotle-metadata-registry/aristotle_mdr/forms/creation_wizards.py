@@ -16,6 +16,10 @@ from aristotle_mdr.utils.utils import fetch_aristotle_settings
 from aristotle_mdr.contrib.custom_fields.forms import CustomValueFormMixin
 
 
+# Fields to not show in editors
+EXCLUDED_FIELD_NAMES = ['_concept_ptr', 'superseded_by_items', '_is_public', '_is_locked', '_type', 'origin_URI', 'submitter', 'stewardship_organisation']
+
+
 class UserAwareFormMixin:
     def __init__(self, *args, **kwargs):
         if 'user' in kwargs.keys():
@@ -36,7 +40,7 @@ class UserAwareForm(UserAwareFormMixin, forms.Form):
 class UserAwareModelForm(UserAwareFormMixin, forms.ModelForm):
     class Meta:
         model = MDR._concept
-        exclude = ['superseded_by_items', '_is_public', '_is_locked', '_type', 'originURI', 'submitter', 'stewardship_organisation']
+        exclude = EXCLUDED_FIELD_NAMES
 
 
 class WorkgroupVerificationMixin:

@@ -12,37 +12,42 @@
 {% endblock %}
 
 {% block content %}
-{% if not request.is_ajax %}
-
-    <ul class="breadcrumb">
-    {% block breadcumbs %}
-        <li class="active">Help</li>
-    {% endblock %}
-    </ul>
-
-    <div class="col-sm-12 col-md-3">
-    {% block sidebar %}
-    <form id="helpSearch" action="{% url 'aristotle:search' %}" method="get"
-    role="search">
-        <label style="display:none" for="searchHelp">{% trans 'Search help' %}</label>
-        <input type="hidden" name="models" value="aristotle_mdr_help.concepthelp"></input>
-        <input type="hidden" name="models" value="aristotle_mdr_help.helppage"></input>
-        <input type="text" class="form-control" id="searchHelp" name="q" accesskey="h"></input>
-        <button style="margin:2px auto" class="center-block btn btn-sm btn-primary" type="submit" title="{% trans 'Search' %}">
-            Search Help <i class="fa fa-search"></i>
-        </button>
-    </form>
-    {% endblock %}
-    </div>
-    <div class="col-sm-12 col-md-9">
-    <h1>{% block title %}Help{% endblock %}</h1>
-{% else %}
-    <div class="modal-body">
-{% endif %}
+    {% if not request.is_ajax %}
+    
+        <ul class="breadcrumb">
+        {% block breadcumbs %}
+            <li class="active">Help</li>
+        {% endblock %}
+        </ul>
+    
+        <div class="col-sm-12 col-md-3">
+        {% block sidebar %}
+        <form id="helpSearch" action="{% url 'aristotle:search' %}" method="get"
+        role="search">
+            <label style="display:none" for="searchHelp">{% trans 'Search help' %}</label>
+            <input type="hidden" name="models" value="aristotle_mdr_help.concepthelp"></input>
+            <input type="hidden" name="models" value="aristotle_mdr_help.helppage"></input>
+            <input type="text" class="form-control" id="searchHelp" name="q" accesskey="h"></input>
+            <button style="margin:2px auto" class="center-block btn btn-sm btn-primary" type="submit" title="{% trans 'Search' %}">
+                Search Help <i class="fa fa-search"></i>
+            </button>
+        </form>
+        {% endblock %}
+        </div>
+        <div class="col-sm-12 col-md-9">
+        <h1>{% block title %}Help{% endblock %}</h1>
+    {% else %}
+        <div class="modal-body" style="max-height: 500px;overflow-y: auto;">
+    {% endif %}
 
     {% block help_content %}
     {% endblock %}
 
     </div>
 
+    {% if request.is_ajax %}
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Close</button>
+    </div>
+    {% endif %}
 {% endblock %}

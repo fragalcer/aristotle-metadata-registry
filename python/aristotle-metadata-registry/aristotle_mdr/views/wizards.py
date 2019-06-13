@@ -18,6 +18,7 @@ from aristotle_mdr.contrib.custom_fields.models import CustomField
 from aristotle_mdr.contrib.help.models import ConceptHelp
 from aristotle_mdr.contrib.slots.models import Slot
 from aristotle_mdr.utils import (
+    cloud_enabled,
     fetch_aristotle_settings,
     fetch_metadata_apps,
     is_active_module
@@ -179,15 +180,26 @@ class ConceptWizard(ExtraFormsetMixin, PermissionWizard):
             context.update(fscontext)
 
         context.update({'model_name': self.model._meta.verbose_name,
-                        'model_name_plural': self.model._meta.verbose_name_plural,
+                        'model_name_plural': self.model._meta.verbose_name_plural.title,
                         'help': ConceptHelp.objects.filter(
                             app_label=self.model._meta.app_label,
                             concept_type=self.model._meta.model_name
                         ).first(),
+                        'model_class': self.model,
                         'template_name': self.template_name,
                         'help_guide': self.help_guide(),
                         'current_step': self.steps.current,
                         })
+
+        if cloud_enabled():
+            from aristotle_cloud.contrib.custom_help.models import CustomHelp
+            context.update({
+                "custom_help": CustomHelp.objects.filter(
+                    content_type__app_label=self.model._meta.app_label,
+                    content_type__model=self.model._meta.model_name,
+                ).first()
+            })
+
         return context
 
     def get(self, *args, **kwargs):
@@ -510,17 +522,20 @@ class DataElementConceptWizard(MultiStepAristotleWizard):
         if self.steps.current == 'make_oc':
             context.update({
                 'model_name': MDR.ObjectClass._meta.verbose_name,
+                'model_class': MDR.ObjectClass,
                 'help_guide': self.help_guide(MDR.ObjectClass),
                 })
         if self.steps.current == 'make_p':
             context.update({
                 'model_name': MDR.Property._meta.verbose_name,
+                'model_class': MDR.Property,
                 'help_guide': self.help_guide(MDR.Property),
                 })
         if self.steps.current == 'find_dec_results':
             context.update({
                 'oc_match': self.get_object_class(),
                 'pr_match': self.get_property(),
+                'model_class': MDR.DataElementConcept,
                 'dec_matches': self.get_data_element_concept(),
                 'hide_components_tab': True
                 })
@@ -804,12 +819,18 @@ class DataElementWizard(MultiStepAristotleWizard):
         if self.steps.current == 'make_vd':
             context.update({
                 'model_name': MDR.ValueDomain._meta.verbose_name,
+                'model_class': MDR.ValueDomain,
                 'help_guide': self.help_guide(MDR.Property),
                 })
+        if self.steps.current == 'make_dec':
+            context.update({
+                'model_class': MDR.DataElementConcept,
+            })
         if self.steps.current == 'find_dec_results':
             context.update({
                 'oc_match': self.get_object_class(),
                 'pr_match': self.get_property(),
+                'model_class': MDR.DataElementConcept,
                 'dec_matches': self.get_data_element_concepts(),
                 'hide_components_tab': True
                 })
@@ -818,6 +839,7 @@ class DataElementWizard(MultiStepAristotleWizard):
                 'oc_match': self.get_object_class(),
                 'pr_match': self.get_property(),
                 'vd_match': self.get_value_domain(),
+                'model_class': MDR.DataElement,
                 'de_matches': self.get_data_elements_from_components()
                 })
         if self.steps.current == 'find_de_results':
@@ -825,6 +847,7 @@ class DataElementWizard(MultiStepAristotleWizard):
                 'dec_match': self.get_data_element_concept(),
                 'vd_match': self.get_value_domain(),
                 'de_matches': self.get_data_elements(),
+                'model_class': MDR.DataElement,
                 'hide_components_tab': True
                 })
         if self.steps.current == 'completed':

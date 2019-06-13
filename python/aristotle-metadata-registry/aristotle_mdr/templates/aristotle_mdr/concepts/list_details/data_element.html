@@ -5,19 +5,19 @@
     {{ item.definition|striptags|bleach|truncatewords:50 }}
 </div>
 <hr>
-    {% if item.item.dataElementConcept|can_view:request.user %}
+{% if item.item.dataElementConcept|can_view:request.user %}
     <div>
         <small>Data Element Concept:</small>
         <span>
         {{item.item.dataElementConcept}}
         </span>
     </div>
-    {% endif %}
-    {% if item.item.valueDomain|can_view:request.user %}
+{% endif %}
+{% if item.item.valueDomain|can_view:request.user %}
     <div>
         <small>Value Domain:</small>
         <span>
         {{item.item.valueDomain}}
         </span>
     </div>
-    {% endif %}
+{% endif %}

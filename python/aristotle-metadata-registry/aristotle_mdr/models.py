@@ -777,6 +777,14 @@ class _concept(baseAristotleObject):
     def model_to_publish(self):
         return _concept
 
+    @classmethod
+    def custom_help(cls):
+        from aristotle_mdr.utils import cloud_enabled
+        if not cloud_enabled():
+            return None
+        ct = ContentType.objects.get_for_model(cls)
+        return ct.custom_help
+
     @property
     def non_cached_fields_changed(self):
         changed = self.tracker.changed()

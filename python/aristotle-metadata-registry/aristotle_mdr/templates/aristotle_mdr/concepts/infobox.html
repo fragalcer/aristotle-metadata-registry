@@ -104,6 +104,7 @@
                               </span>,
                                                     <time datetime="{{ rel.date_effective|isotime }}">{{ rel.date_effective }}</time> -
                                                     {{ rel.message }}
+                                                    {% if rel.proposed %}<em>[Proposed]</em>{% endif %}
                                                 </li>
                                             {% endfor %}
                                         </ul>
@@ -125,9 +126,9 @@
                                         <ul>
                                             {% for rel in suprel.rels %}
                                                 <li>
-                              <span title="{% trans 'The registration authority that applied this relationship' %}">
-                                {{ rel.registration_authority.name }},
-                              </span> <time datetime="{{ rel.date_effective|isotime }}">{{ rel.date_effective }}</time>
+                                                    <span title="{% trans 'The registration authority that applied this relationship' %}">
+                                                        {{ rel.registration_authority.name }},
+                                                    </span> <time datetime="{{ rel.date_effective|isotime }}">{{ rel.date_effective }}</time>
                                                     {% if rel.message %} - {{ rel.message }} {% endif %}
                                                     {% if rel.proposed %}<em>[Proposed]</em>{% endif %}
                                                 </li>

@@ -1,12 +1,13 @@
 from django.apps import apps
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import FieldDoesNotExist
+from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, TemplateView
 
 from aristotle_mdr.contrib.help.models import ConceptHelp, HelpPage
-from aristotle_mdr.utils import fetch_metadata_apps
-from django.db.models import Q
+from aristotle_mdr.utils import fetch_metadata_apps, cloud_enabled
 
 
 class AppHelpViewer(DetailView):
@@ -79,4 +80,48 @@ class ConceptHelpView(AppHelpViewer):
 
         ct = ContentType.objects.get(app_label=self.app, model=model)
         context['model'] = ct.model_class()
+        custom_help = None
+
+        if cloud_enabled():
+            from aristotle_cloud.contrib.custom_help.models import CustomHelp
+            custom_help = CustomHelp.objects.filter(content_type=ct).first()
+
+        context['custom_help'] = custom_help
         return context
+
+
+class ConceptFieldHelpView(TemplateView):
+    template_name = "aristotle_mdr_help/field_help.html"
+
+    def get_context_data(self, **kwargs):
+        if self.kwargs['app'] not in fetch_metadata_apps():
+            raise Http404
+
+        app = self.kwargs['app']
+        model = self.kwargs['model']
+        field_name = self.kwargs['field_name']
+        ct = get_object_or_404(ContentType, app_label=app, model=model)
+
+        try:
+            field = ct.model_class()._meta.get_field(field_name)
+        except FieldDoesNotExist:
+            raise Http404
+
+        custom_help = None
+        if cloud_enabled():
+            from aristotle_cloud.contrib.custom_help.models import CustomHelp
+            try:
+                custom_help = ct.custom_help
+                custom_help = custom_help.field_help.get(field_name, None)
+            except CustomHelp.DoesNotExist:
+                pass
+
+        kwargs.update({
+            'app': apps.get_app_config(app),
+            'model_name': model,
+            'model': ct.model_class(),
+            'field': field,
+            'content_type': ct,
+            'custom_help': custom_help,
+        })
+        return super().get_context_data(**kwargs)

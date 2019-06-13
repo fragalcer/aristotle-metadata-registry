@@ -363,7 +363,7 @@ def adminEdit(item):
     return reverse("admin:%s_%s_change" % (app_name, item._meta.model_name), args=[item.id])
 
 
-@register.simple_tag
+@register.inclusion_tag('aristotle_mdr/helpers/downloadMenu.html')
 def downloadMenu(item):
     """
     Returns the complete download menu for a partcular item. It accepts the id of
@@ -374,7 +374,6 @@ def downloadMenu(item):
 
         {% downloadMenu item %}
     """
-    from django.template.loader import get_template
     downloadOpts = fetch_aristotle_downloaders()
 
     from aristotle_mdr.utils import get_download_template_path_for_item
@@ -407,10 +406,7 @@ def downloadMenu(item):
     dlOptionsForItem = []
     for dl_class in downloadsForItem:
         dlOptionsForItem.append(dl_class.get_class_info())
-    return get_template(
-        "aristotle_mdr/helpers/downloadMenu.html").render(
-        {'item': item, 'download_options': dlOptionsForItem, }
-    )
+    return {'item': item, 'download_options': dlOptionsForItem, }
 
 
 @register.simple_tag(takes_context=True)
@@ -557,3 +553,19 @@ def publish_registry_item_url(item):
 @register.filter
 def can_edit_label(label, user):
     return perms.user_can_edit_issue_label(user, label)
+
+
+@register.inclusion_tag('aristotle_mdr_help/helpers/field_icon.html', takes_context=True)
+def field_help_icon(context, item_or_model, field_name):
+    kls = item_or_model.__class__
+    return {
+        'app': kls._meta.app_label,
+        'model_name': kls._meta.model_name,
+        'field_name': field_name,
+        'model_class': kls,
+    }
+
+
+@register.filter()
+def get_field(content_type, field_name):
+    return content_type.model_class()._meta.get_field(field_name)

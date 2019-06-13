@@ -1,0 +1,45 @@
+{% load aristotle_tags util_tags i18n static %}
+
+{% if deinc.data_element.id in viewable_ids %}
+    <tr>
+        <td>{{ deinc.reference|default_if_none:"-" }}</td>
+        <td>
+            {% include "aristotle_mdr/helpers/itemLink.html" with item=deinc.data_element skip_can_view=True %}
+            {% if deinc.specific_information %}
+                <div>
+                    <strong>Specific Information:</strong>
+                    {{ deinc.specific_information|bleach }}
+                </div>
+            {% endif %}
+            {% if deinc.conditional_obligation %}
+                <div>
+                    <strong>Conditional Obligation:</strong>{{ deinc.conditional_obligation|bleach }}
+                </div>
+            {% endif %}
+        </td>
+        <td>
+            {% firstof deinc.data_element.valueDomain.data_type.name "-" %}
+        </td>
+        <td>
+            {% firstof deinc.data_element.valueDomain.maximum_length "-" %}
+        </td>
+        <td class="hidden-xs hidden-sm">
+            {% firstof deinc.data_element.valueDomain.format "-" %}
+        </td>
+        {% comment %}
+        <td>
+            <ul>
+                {% for s in deinc.data_element.valid_statuses|distinct:"registrationAuthority_id" %}
+                    <li>[{{ s.registrationAuthority }}: {{ s.state_name }}]</li>
+                {% empty %}
+                    <li><em>Unregistered</em></li>
+                {% endfor %}
+            </ul>
+        </td>
+        {% endcomment %}
+        <td>{{ deinc.cardinality }}</td>
+        <td>{{ deinc.maximum_occurrences }}</td>
+    </tr>
+{% else %}
+    <tr><td colspan="7">You don't have permission to view this item</td></tr>
+{% endif %}

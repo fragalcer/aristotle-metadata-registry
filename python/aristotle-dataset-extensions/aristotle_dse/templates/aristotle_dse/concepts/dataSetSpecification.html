@@ -4,29 +4,29 @@
 {% load render_bundle from webpack_loader %}
 
 {% block webpack_css_bundle %}
-    {% render_bundle 'datasetSpecification' 'js' %}
+    {% render_bundle 'datasetSpecification' 'css' %}
 {% endblock %}
 
 {% block webpack_bundle %}
-    {% render_bundle 'datasetSpecification' 'css' %}
+    {% render_bundle 'datasetSpecification' 'js' %}
 {% endblock %}
 
 {% block objSpecific %}
     {% if item.collection_method or item.statistical_unit %}
-    <h2>Collection and usage information</h2>
-    <div>
-        {% if item.statistical_unit %}
-        <h3>Statistical Unit</h3>
+        <h2>Collection and usage information</h2>
         <div>
-            {% include "aristotle_mdr/helpers/itemLink.html" with item=item.statistical_unit showType=False %}
-        </div>
-        {% endif %}
+            {% if item.statistical_unit %}
+                <h3>Statistical Unit</h3>
+                <div>
+                    {% include "aristotle_mdr/helpers/itemLink.html" with item=item.statistical_unit showType=False %}
+                </div>
+            {% endif %}
 
-        {% if item.collection_method %}
-        <h3>Collection Method</h3>
-        <div>{{ item.collection_method | bleach }}</div>
-        {% endif %}
-    </div>
+            {% if item.collection_method %}
+                <h3>Collection Method</h3>
+                <div>{{ item.collection_method | bleach }}</div>
+            {% endif %}
+        </div>
     {% endif %}
 
     <h2>Metadata items in this Data Set Specification</h2>
@@ -62,14 +62,11 @@
                 </th>
             </tr>
             </thead>
-
             <tbody>
             {% for deinc in item.dssclusterinclusion_set.all %}
                 {% if deinc.child.id in viewable_ids %}
                     <tr>
-
                         <td>{{ deinc.reference|default_if_none:"-"}}</td>
-
                         <td>
                             <i class="fa fa-fw fa-folder-o"></i>
                             {% include "aristotle_mdr/helpers/itemLink.html" with item=deinc.child skip_can_view=True %}
@@ -87,7 +84,6 @@
                                 </div>
                             {% endif %}
                         </td>
-
                         <td>
                             <ul>
                                 {% for s in deinc.child.valid_statuses|distinct:"registrationAuthority_id" %}
@@ -113,15 +109,18 @@
                                         Data Elements <i class="fa fa-caret-down"></i>
                                     </button>
                                     <div class="content">
-                                        <ul>
-                                            {% for data_element in deinc.child.data_elements %}
-                                                <li>
-                                                    <a href="{{ data_element.get_absolute_url }}">
-                                                        {{ data_element }}
-                                                    </a>
-                                                </li>
+                                        <table class="dssInclusions table table-striped table-condensed">
+                                            {% include "aristotle_dse/helpers/dataelementinclusion_table_head.html" %}
+                                            <tbody>
+                                            {% for deinc in deinc.child.dssdeinclusion_set.all %}
+                                                <tr>
+                                                    {% include "aristotle_dse/helpers/dataelementinclusion_table_row.html" with item=deinc skip_can_view=True %}
+                                                </tr>
+                                            {% empty %}
+                                                <tr><td colspan="7">No data elements have been assigned.</td></tr>
                                             {% endfor %}
-                                        </ul>
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </td>
@@ -151,115 +150,19 @@
 
                 <ul>
                     {% for group in data_element_set.linked_group.all %}
-                    <li>{{group.name}}</li>
+                        <li>{{group.name}}</li>
                     {% endfor %}
                 </ul>
             </div>
-
             <table class="dssInclusions table table-striped table-condensed">
-                <thead>
-                <tr>
-                    <th>
-                        <a tabindex="0" role="button" data-toggle="popover" data-trigger="focus" data-placement="right" data-html="true"
-                       title="Reference" data-content="Optional field for referring to this item within the DSS">
-                        Reference
-                    </a>
-
-                    </th>
-                    <th>
-                        Data Element
-                    </th>
-                    <th>
-                        Data&nbsp;Type
-                    </th>
-                    <th title="Maximum Character Length">
-                        <a tabindex="0" role="button" data-toggle="popover" data-trigger="focus" data-placement="left" data-html="true"
-                           title="Length" data-content="The maximum character length">
-                            Length
-                        </a>
-                    </th>
-                    <th class="hidden-xs hidden-sm">
-                        Format
-                    </th>
-                    <th>
-                        <a tabindex="0" role="button" data-toggle="popover" data-trigger="focus" data-placement="left" data-html="true"
-                           title="Cardinality" data-content="The rules for inclusion for a data element within a data set.<br>May be optional, mandatory or conditional">
-                            Cardinality
-                        </a>
-                    </th>
-                    <th class="maxOccurs">
-                        <a tabindex="0" role="button" data-toggle="popover" data-trigger="focus" data-placement="left"
-                           title="Maximum Occurrences" data-content="The maximum number of times a data element may be repeated in a data set.">
-                            #
-                        </a>
-                    </th>
-                </tr>
-                </thead>
+                {% include "aristotle_dse/helpers/dataelementinclusion_table_head.html" %}
                 <tbody>
                 {% for deinc in data_element_set.dssdeinclusion_set.all %}
-                    {% if deinc.data_element.id in viewable_ids %}
-                        <tr>
-                            <td>{{ deinc.reference|default_if_none:"-" }}</td>
-                            <td>
-                                {% include "aristotle_mdr/helpers/itemLink.html" with item=deinc.data_element skip_can_view=True %}
-                                {% if deinc.specific_information %}
-                                    <div>
-                                        <strong>Specific Information:</strong>
-                                        {{ deinc.specific_information|bleach }}
-                                    </div>
-                                {% endif %}
-                                {% if deinc.conditional_obligation %}
-                                    <div>
-                                        <strong>Conditional Obligation:</strong>{{ deinc.conditional_obligation|bleach }}
-                                    </div>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% firstof deinc.data_element.valueDomain.data_type.name "-" %}
-                            </td>
-                            <td>
-                                {% firstof deinc.data_element.valueDomain.maximum_length "-" %}
-                            </td>
-                            <td class="hidden-xs hidden-sm">
-                                {% firstof deinc.data_element.valueDomain.format "-" %}
-                            </td>
-                            {% comment %}
-                            <td>
-                                <ul>
-                                    {% for s in deinc.data_element.valid_statuses|distinct:"registrationAuthority_id" %}
-                                        <li>[{{ s.registrationAuthority }}: {{ s.state_name }}]</li>
-                                    {% empty %}
-                                        <li><em>Unregistered</em></li>
-                                    {% endfor %}
-                                </ul>
-                            </td>
-                            {% endcomment %}
-                            <td>{{ deinc.cardinality }}</td>
-                            <td>{{ deinc.maximum_occurrences }}</td>
-                        </tr>
-                    {% else %}
-                        <tr><td colspan="7">You don't have permission to view this item</td></tr>
-                    {% endif %}
+                    {% include "aristotle_dse/helpers/dataelementinclusion_table_row.html" with item=deinc skip_can_view=True %}
                 {% empty %}
-                    <tr><td colspan="7">No data elements have been assigned to this grouping</td></tr>
+                    <tr><td colspan="7">No data elements have been assigned to this grouping.</td></tr>
                 {% endfor %}
                 </tbody>
-                {% comment %}
-                <tfoot>
-                <tr>
-                    <th></th>
-                    <th>Data Element</th>
-                    <th>
-                        Data&nbsp;Type
-                    </th>
-                    <th>
-                        Format
-                    </th>
-                    <th>Cardinality</th>
-                    <th title="Maximum Occurrences">#</th>
-                </tr>
-                </tfoot>
-                {% endcomment %}
             </table>
         </div>
     {% endfor %}

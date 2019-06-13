@@ -53,7 +53,7 @@ def type_from_concept_model(meta_model, filter_fields=None, extra_filter_fields=
     description = dedent(meta_model.__doc__)
     _filter_fields = {
         'name': ['exact', 'icontains', 'iexact'],
-        'uuid': ['exact']
+        'uuid': ['exact'],
     }
     
     if type(extra_filter_fields) is list:

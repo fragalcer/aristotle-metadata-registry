@@ -11,7 +11,9 @@
 
         {% include "aristotle_mdr/concepts/visibilityInfoBar.html" %}
 
-        <h2 title="{% doc item 'definition' %}">{% trans 'Definition'%}</h2>
+        <h2 title="{% doc item 'definition' %}">{% trans 'Definition'%}
+        {% field_help_icon item 'definition' %}
+        </h2>
         <div id="definition" class="definition">
             {{ item.definition|bleach }}
         </div>
@@ -21,6 +23,7 @@
         {% if item.comments %}
             <h2>Comments</h2>
             {{ item.comments|bleach }}
+            {% field_help_icon item 'comments' %}
         {% endif %}
 
         {% if item.origin %}

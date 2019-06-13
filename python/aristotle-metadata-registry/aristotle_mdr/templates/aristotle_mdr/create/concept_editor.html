@@ -1,4 +1,5 @@
 {% load i18n aristotle_help static %}
+{% load aristotle_tags util_tags %}
 
 
 {% if form.errors or slots_FormSet.errors or slots_FormSet.non_form_errors %}
@@ -56,7 +57,10 @@
             </div>
             <div class="fancy_name_version">
                 <div class="wizard_field name">
-                    <span>{{ form.name.label_tag }} {{ form.name.help_text }}</span>
+                    <span>
+                        {{ form.name.label_tag }} {{ form.name.help_text }}
+                        {% field_help_icon model_class 'name' %}
+                    </span>
                     {% if form.name.errors %}
                         <span class="alert alert-danger">
                         {{ form.name.errors }}
@@ -67,7 +71,10 @@
                     {% endif %}
                 </div>
                 <div class="wizard_field version">
-                    <span>{{ form.version.label_tag }}</span>
+                    <span>
+                        {{ form.version.label_tag }} {{ form.version.help_text }}
+                        {% field_help_icon model_class 'version' %}
+                    </span>
                     {% if form.version.errors %}
                         <span class="alert alert-danger">
                         {{ form.version.errors }}
@@ -97,7 +104,10 @@
                 {% endif %}
             </div>
             <div class="wizard_field">
-                <span>{{ form.definition.label_tag }} {{ form.definition.help_text }}</span>
+                <span>
+                    {{ form.definition.label_tag }} {{ form.definition.help_text }}
+                    {% field_help_icon model_class 'definition' %}
+                </span>
                 {% if form.definition.errors %}
                     <span class="alert alert-danger">
                     {{ form.definition.errors }}
@@ -115,7 +125,10 @@
             </div>
             {% for field in form.concept_fields %}
                 <div class="wizard_field">
-                    <span>{{ field.label_tag }} {{ field.help_text }}</span>
+                    <span>
+                        {{ field.label_tag }} {{ field.help_text }}
+                        {% field_help_icon model_class field.name %}
+                    </span>
                     {% if field.errors %}
                         <span class="alert alert-danger">
                         {{ field.errors }}
@@ -218,7 +231,10 @@
                         </div>
                     {% endif %}
                     <div class="wizard_field">
-                        <span>{{ field.label_tag }} {{ field.help_text }}</span>
+                        <span>
+                            {{ field.label_tag }} {{ field.help_text }}
+                            {% field_help_icon model_class field.name %}
+                        </span>
                         {% if field.errors %}
                             <span class="alert alert-danger">
                             {{ field.errors }}
@@ -300,50 +316,55 @@
         {% endif %}
         <div role="tabpanel" class="tab-pane" id="tab_tips">
 
-            <header class='editor'>How to use this creation wizard</header>
+            <header class='editor'>How to use this editor</header>
             <p>
-                This wizard is designed to help you create well-defined,
-                reusable metadata.
-
-                Each tab in this wizard covers metadata for different purposes:
+                This editor is designed to help you create well-defined,
+                reusable metadata. Each tab in this editor covers metadata for different purposes:
             </p>
             <dl>
                 <dt>Definition</dt>
                 <dd>The fields in this tab cover the basic definition
-                    of an object fields. <em>Name</em> and <em>Definition</em>
-                    are always required, while <em>Version</em> may be
-                    optional depending on your agency.
+                    of an object fields. A <em>Name</em> is always required, 
+                    while and <em>Definition</em> and <em>Version</em> may be
+                    optional depending on business rules defined by the registry.
                 </dd>
                 <dt>Names & References</dt>
                 <dd>
                     The fields in this tab are common to all concepts in this registry
-                    and are all optional. Where possible completing fields adds
+                    and are all optional when saving. Where possible completing fields adds
                     additional context to metadata to make it more discoverable,
                     complete and reusable.
+                    <br>
+                    The registry may have additional business rules configured requiring
+                    these fields to be completed before metadata can be endorsed or published.
                 </dd>
+                {% if form.object_specific_fields or weak_formsets or through_formsets %}
                 <dt>{{ model_name|title }} Components</dt>
                 <dd>
-                    The fields in the tab are specific to {{model_name_plural}}
+                    The fields in the tab are specific to <em>{{model_name_plural}}</em>
                     and allow for item specific metadata and relations to be
                     recorded.
 
-                    For more information on {{model_name_plural}}, read the
+                    For more information on <em>{{model_name_plural}}</em>, read the
                     <a href="{% url 'aristotle_help:concept_help' app_label model %}">
                         help page.</a>
                 </dd>
+                {% endif %}
+                {% if show_slots_tab %}
+                <dt>Slots</dt>
+                <dd>
+                    This tab allows for the storage of additional attributes not captured
+                    If enabled, this can be used to record additional registry-specified
+                    custom fields.<br>
+                    Users may also have the opportunity to store user-defined content with
+                    a name and value.
+                </dd>
+                {% endif %}
             </dl>
 
-            {% if help %}
-                <header>Help on {{ model_name_plural }}</header>
-                <strong>For more information on {{model_name_plural}}, read the
-                    <a href="{% url 'aristotle_help:concept_help' app_label model %}">
-                        help page.
-                    </a>
-                </strong>
-                <p>
-                    {% relink help 'creation_tip' %}
-                </p>
-            {% endif %}
+            {% include 'aristotle_mdr_help/helpers/tips_section.html' %}
         </div>
     </div>
 </div>
+
+<div v-pre>{% bootstrap_modal "context_help" size='lg' %}</div>

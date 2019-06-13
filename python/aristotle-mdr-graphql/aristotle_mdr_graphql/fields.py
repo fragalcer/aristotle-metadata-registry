@@ -50,7 +50,7 @@ class AristotleFilterConnectionField(DjangoFilterConnectionField):
             request=info.context
         ).qs
 
-        qs = qs.visible(info.context.user) # Top level filtering to only visible objects
+        qs = qs.visible(info.context.user)  # Top level filtering to only visible objects
 
         return super(DjangoFilterConnectionField, cls).connection_resolver(
             resolver,

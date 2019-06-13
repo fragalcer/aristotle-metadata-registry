@@ -63,10 +63,6 @@
         </div>
     </div>
     <aside class="creationTips col-sm-4">
-        {% if help %}
-            <p>
-                {% relink help 'creation_tip' %}
-            </p>
-        {% endif %}
+        {% include 'aristotle_mdr_help/helpers/tips_section.html' %}
     </aside>
 {% endblock %}

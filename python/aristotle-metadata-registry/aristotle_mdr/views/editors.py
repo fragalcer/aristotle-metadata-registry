@@ -15,6 +15,7 @@ from aristotle_mdr import models as MDR
 from aristotle_mdr.contrib.publishing.models import VersionPermissions
 
 from aristotle_mdr.views.utils import ObjectLevelPermissionRequiredMixin
+from aristotle_mdr.contrib.help.models import ConceptHelp
 from aristotle_mdr.contrib.identifiers.models import ScopedIdentifier
 from aristotle_mdr.contrib.slots.models import Slot
 from aristotle_mdr.contrib.custom_fields.forms import CustomValueFormMixin
@@ -56,9 +57,27 @@ class ConceptEditFormView(ObjectLevelPermissionRequiredMixin):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context.update({'model': self.model._meta.model_name,
-                        'app_label': self.model._meta.app_label,
-                        'item': self.item})
+        context.update({
+            'model_name_plural': self.model._meta.verbose_name_plural.title,
+            'model': self.model._meta.model_name,
+            'app_label': self.model._meta.app_label,
+            'item': self.item,
+            'model_class': self.model,
+            'help': ConceptHelp.objects.filter(
+                app_label=self.model._meta.app_label,
+                concept_type=self.model._meta.model_name
+            ).first(),
+        })
+
+        if cloud_enabled():
+            from aristotle_cloud.contrib.custom_help.models import CustomHelp
+            context.update({
+                "custom_help": CustomHelp.objects.filter(
+                    content_type__app_label=self.model._meta.app_label,
+                    content_type__model=self.model._meta.model_name,
+                ).first()
+            })
+
         return context
 
     def get_form_kwargs(self):

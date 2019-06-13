@@ -14,7 +14,7 @@
             <ul class="dropdown-menu dropdown-menu-right" role="menu">
                 {% if can_edit %}
                     <li><a class="" href="{% url 'aristotle:edit_item' item.id %}"
-                           data-toggle="modal" data-target="#infobox_adv_edit">
+                           >
                         <i class="fa fa-fw fa-pencil-square-o"></i> {% trans 'Open item editor'%}
                     </a></li>
                 {% endif %}
