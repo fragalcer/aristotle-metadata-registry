@@ -297,7 +297,7 @@ class DataSetSpecification(aristotle.models.concept):
 
 class DSSInclusion(aristotle.models.aristotleComponent):
     class Meta:
-        abstract=True
+        abstract = True
         ordering = ['order']
 
     inline_field_layout = 'list'

@@ -6,7 +6,7 @@ from django.db import models
 from django.contrib.contenttypes.models import ContentType
 from model_utils.models import TimeStampedModel
 
-from aristotle_mdr.models import _concept
+from aristotle_mdr.models import _concept, RichTextField
 from aristotle_mdr.fields import ConceptForeignKey
 from aristotle_mdr.contrib.custom_fields.managers import CustomValueManager, CustomFieldManager
 from aristotle_mdr.contrib.custom_fields.types import type_choices
@@ -21,6 +21,10 @@ class CustomField(TimeStampedModel):
     type = models.CharField(max_length=10, choices=type_choices)
     # Optional
     help_text = models.CharField(max_length=1000, blank=True)
+    help_text_long = RichTextField(
+        blank=True,
+        help_text="Longer contextual help and business rules describing a field.",
+    )
     allowed_model = models.ForeignKey(ContentType, blank=True, null=True)
 
     visibility = models.IntegerField(
