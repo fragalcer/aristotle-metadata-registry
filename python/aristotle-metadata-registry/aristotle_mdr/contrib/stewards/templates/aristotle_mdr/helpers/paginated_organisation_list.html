@@ -1,50 +1,50 @@
 {% load i18n aristotle_tags %}
 <form class="form-inline" action="#" method="get">
-  <div class="form-group">
-    <label for="id_filter">{% trans 'Filter by name and description' %}</label>
-    <input id="id_filter" name="filter" class="form-control" value="{{filter}}">
-    <input name="sort" type="hidden" value="{{sort}}">
-  </div>
-  <button type="submit" class="btn btn-default">Filter</button>
+    <div class="form-group">
+        <label for="id_filter">{% trans 'Filter by name and description' %}</label>
+        <input id="id_filter" name="filter" class="form-control" value="{{filter}}">
+        <input name="sort" type="hidden" value="{{sort}}">
+    </div>
+    <button type="submit" class="btn btn-default">Filter</button>
 </form>
 
 {% if page.has_other_pages %}
-Showing {{ page.start_index }} - {{ page.end_index }} of {{ page.paginator.count }} results.
+    Showing {{ page.start_index }} - {{ page.end_index }} of {{ page.paginator.count }} results.
 {% else %}
-Showing {{ page.paginator.count }} results.
+    Showing {{ page.paginator.count }} results.
 {% endif %}
 <table class="table">
-<thead>
+    <thead>
     <tr>
         <th>{% trans 'Organisation' %}
             {% if sort == "name_asc" %}
-            <a href="?{% paginator_get request page.number pop='sort' %}&sort=name_desc"><i class="fa fa-sort-asc"></i></a>
+                <a href="?{% paginator_get request page.number pop='sort' %}&sort=name_desc"><i class="fa fa-sort-asc"></i></a>
             {% elif sort == "name_desc" %}
-            <a href="?{% paginator_get request page.number pop='sort' %}&sort=name_asc"><i class="fa fa-sort-desc"></i></a>
+                <a href="?{% paginator_get request page.number pop='sort' %}&sort=name_asc"><i class="fa fa-sort-desc"></i></a>
             {% else %}
-            <a href="?{% paginator_get request page.number pop='sort' %}&sort=name_asc"><i class="fa fa-sort"></i></a>
+                <a href="?{% paginator_get request page.number pop='sort' %}&sort=name_asc"><i class="fa fa-sort"></i></a>
             {% endif %}
         </th>
         <th>{% trans 'Definition' %}
         </th>
         <th>
-        {% if sort == "users_asc" %}
-        <a href="?{% paginator_get request page.number pop='sort' %}&sort=users_desc"><i class="fa fa-sort-asc"></i></a>
-        {% elif sort == "users_desc" %}
-        <a href="?{% paginator_get request page.number pop='sort' %}&sort=users_asc"><i class="fa fa-sort-desc"></i></a>
-        {% else %}
-        <a href="?{% paginator_get request page.number pop='sort' %}&sort=users_desc"><i class="fa fa-sort"></i></a>
-        {% endif %}
+            {% if sort == "users_asc" %}
+                <a href="?{% paginator_get request page.number pop='sort' %}&sort=users_desc"><i class="fa fa-sort-asc"></i></a>
+            {% elif sort == "users_desc" %}
+                <a href="?{% paginator_get request page.number pop='sort' %}&sort=users_asc"><i class="fa fa-sort-desc"></i></a>
+            {% else %}
+                <a href="?{% paginator_get request page.number pop='sort' %}&sort=users_desc"><i class="fa fa-sort"></i></a>
+            {% endif %}
             <i class="fa fa-user" title="{% trans 'Number of members' %}"></i>
         </th>
         <th>
-        {% if sort == "items_asc" %}
-        <a href="?{% paginator_get request page.number pop='sort' %}&sort=items_desc"><i class="fa fa-sort-asc"></i></a>
-        {% elif sort == "items_desc" %}
-        <a href="?{% paginator_get request page.number pop='sort' %}&sort=items_asc"><i class="fa fa-sort-desc"></i></a>
-        {% else %}
-        <a href="?{% paginator_get request page.number pop='sort' %}&sort=items_desc"><i class="fa fa-sort"></i></a>
-        {% endif %}
+            {% if sort == "items_asc" %}
+                <a href="?{% paginator_get request page.number pop='sort' %}&sort=items_desc"><i class="fa fa-sort-asc"></i></a>
+            {% elif sort == "items_desc" %}
+                <a href="?{% paginator_get request page.number pop='sort' %}&sort=items_asc"><i class="fa fa-sort-desc"></i></a>
+            {% else %}
+                <a href="?{% paginator_get request page.number pop='sort' %}&sort=items_desc"><i class="fa fa-sort"></i></a>
+            {% endif %}
             <i class="fa fa-file" title="{% trans 'Number of items' %}"></i>
         </th>
         <th>
@@ -54,32 +54,32 @@ Showing {{ page.paginator.count }} results.
             <i class="fa fa-university" title="{% trans 'Number of registration authorities' %}"></i>
         </th>
         {% if show_all %}
-        <th>{% trans "Status" %}</th>
+            <th>{% trans "Status" %}</th>
         {% endif %}
         <th></th>
     </tr>
-</thead>
-<tbody>
+    </thead>
+    <tbody>
     {% for item in page %}
-    <tr>
-        <td>
-            <a href="{{ item.get_absolute_url }}">{{ item.name }}</a>
-        </td>
-        <td>{{ item.definition|striptags|truncatewords:50 }}</td>
-        <td>{{ item.num_members }}</td>
-        <td>{{ item.num_items }}</td>
-        <td>{{ item.num_workgroups }}</td>
-        <td>{{ item.num_ras }}</td>
-        {% if show_all %}
-        <td>
-            {{ item.state }}
-        </td>
-        {% endif %}
-        <td><a class="btn btn-primary btn-small" href="{% url 'aristotle:stewards:group:settings' item.slug %}">Edit</a></td>
-    </tr>
+        <tr>
+            <td>
+                <a href="{{ item.get_absolute_url }}">{{ item.name }}</a>
+            </td>
+            <td>{{ item.definition|striptags|truncatewords:50 }}</td>
+            <td>{{ item.num_members }}</td>
+            <td>{{ item.num_items }}</td>
+            <td>{{ item.num_workgroups }}</td>
+            <td>{{ item.num_ras }}</td>
+            {% if show_all %}
+                <td>
+                    {{ item.state }}
+                </td>
+            {% endif %}
+            <td><a class="btn btn-primary btn-small" href="{% url 'aristotle:stewards:group:settings' item.slug %}">Edit</a></td>
+        </tr>
     {% endfor %}
 
-</tbody>
+    </tbody>
 </table>
 
 {% include "aristotle_mdr/helpers/paginator.html" with page=page %}

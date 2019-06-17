@@ -5,58 +5,58 @@
 {% block page_title %}{{ stewardship_organisation }} | Collections{% endblock %}
 
 {% block steward_content %}
-<p>
-    
-</p>
+    <p>
+
+    </p>
 
     <section id="ras">
         {% has_group_perm group "manage_collections" as can_manage_collections %}
         {% if can_manage_collections %}
-        <a class="btn btn-default pull-right" href="{% url 'aristotle:stewards:group:collections_create' group.slug %}">Add New Collection</a>
+            <a class="btn btn-default pull-right" href="{% url 'aristotle:stewards:group:collections_create' group.slug %}">Add New Collection</a>
         {% endif %}
 
-<table class="table">
-    <thead>
-    <tr>
-        <th>{% trans 'Collection' %}
-        </th>
-        <th>{% trans 'Description' %}
-        </th>
-        <th>
-            <i class="fa fa-folder" title="{% trans 'Number of sub collections' %}"></i>
-        </th>
-        <th>
-            <i class="fa fa-hashtag" title="{% trans 'Number of items' %}"></i>
-        </th>
-        {% if can_manage_collections %}
-        <th></th>
-        {% endif %}
+        <table class="table">
+            <thead>
+            <tr>
+                <th>{% trans 'Collection' %}
+                </th>
+                <th>{% trans 'Description' %}
+                </th>
+                <th>
+                    <i class="fa fa-folder" title="{% trans 'Number of sub collections' %}"></i>
+                </th>
+                <th>
+                    <i class="fa fa-hashtag" title="{% trans 'Number of items' %}"></i>
+                </th>
+                {% if can_manage_collections %}
+                    <th></th>
+                {% endif %}
 
-    </tr>
-    </thead>
-    <tbody>
-    {% for item in object_list %}
-        <tr>
-            <td>
-                <a href="{{item.get_absolute_url}}">
-                    {{ item.name }}
-                </a>
-            </td>
-            <td>{{ item.description|striptags|truncatewords:50 }}</td>
-            <td>{{ item.collection_set.count }}</td>
-            <td>{{ item.metadata.all.count }}</td>
+            </tr>
+            </thead>
+            <tbody>
+            {% for item in object_list %}
+                <tr>
+                    <td>
+                        <a href="{{item.get_absolute_url}}">
+                            {{ item.name }}
+                        </a>
+                    </td>
+                    <td>{{ item.description|striptags|truncatewords:50 }}</td>
+                    <td>{{ item.collection_set.count }}</td>
+                    <td>{{ item.metadata.all.count }}</td>
 
-            {% if can_manage_collections %}
-            <td>
-            <a class="btn btn-default" href="{% url 'aristotle:stewards:group:collection_delete' group.slug item.pk %}">Delete</a>
-            </td>
-            {% endif %}
+                    {% if can_manage_collections %}
+                        <td>
+                            <a class="btn btn-default" href="{% url 'aristotle:stewards:group:collection_delete' group.slug item.pk %}">Delete</a>
+                        </td>
+                    {% endif %}
 
-        </tr>
-    {% endfor %}
+                </tr>
+            {% endfor %}
 
-    </tbody>
-</table>
+            </tbody>
+        </table>
 
     </section>
 {% endblock %}

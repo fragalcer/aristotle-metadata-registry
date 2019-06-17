@@ -7,11 +7,11 @@
 
 {% block steward_content %}
     <h2>
-    Editing Metadata Collection '{{object.name}}'
+        Editing Metadata Collection '{{object.name}}'
     </h2>
     <form action="" method="POST">
         {% csrf_token %}
-        
+
         {{ form.errors}}
 
         <div class="row">
@@ -20,12 +20,12 @@
                     {{ form.name.label_tag }}<br>
                     <input class="form-control" id="{{form.name.id_for_label}}" value="{{ form.name.value|default:"" }}" name="name">
                     {% if form.name.errors %}
-                    <div class="alert alert-danger">
-                        {{ form.name.errors }}
+                        <div class="alert alert-danger">
+                            {{ form.name.errors }}
                         </div>
                     {% endif %}
                     <p class="help-block">
-                         {{ form.name.help_text }}
+                        {{ form.name.help_text }}
                     </p>
                 </div>
             </div>
@@ -37,17 +37,17 @@
                     {{ form.parent_collection.label_tag }}<br>
                     {{form.parent_collection}}
                     {% if form.parent_collection.errors %}
-                    <div class="alert alert-danger">
-                        {{ form.parent_collection.errors }}
+                        <div class="alert alert-danger">
+                            {{ form.parent_collection.errors }}
                         </div>
                     {% endif %}
                     <p class="help-block">
-                         {{ form.parent_collection.help_text }}
+                        {{ form.parent_collection.help_text }}
                     </p>
                 </div>
             </div>
         </div>
-    
+
         <div class="form-group {% if form.description.errors %}has-error{% endif %}">
             {{ form.description.label_tag }}
             {% if form.description.errors %}

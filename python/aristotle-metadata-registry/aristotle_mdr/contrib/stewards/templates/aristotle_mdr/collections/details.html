@@ -12,61 +12,61 @@
     </h2>
 
     <section>
-    {% include "aristotle_mdr/collections/helpers/actionbar.html" %}
-    {% include "aristotle_mdr/publish/helpers/publication_details_panel.html" with item=item show_no_publication=True %}
+        {% include "aristotle_mdr/collections/helpers/actionbar.html" %}
+        {% include "aristotle_mdr/publish/helpers/publication_details_panel.html" with item=item show_no_publication=True %}
 
-    <header>Description</header>
-    <div class="well">{{ item.description|bleach }}</div>
+        <header>Description</header>
+        <div class="well">{{ item.description|bleach }}</div>
 
-    {% if type_counts %}
-    <header>Metadata in this collection:</header>
-    <div class="well well-sm">
-        <ul>
-        {% for type, count in type_counts.items %}
-            <li>{{ type|title}}{{count|pluralize:",s"}}: {{ count }}</li>
-        {% endfor %}
-        </ul>
-    </div>
-    {% endif %}
+        {% if type_counts %}
+            <header>Metadata in this collection:</header>
+            <div class="well well-sm">
+                <ul>
+                    {% for type, count in type_counts.items %}
+                        <li>{{ type|title}}{{count|pluralize:",s"}}: {{ count }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
 
-    <table class="table">
-        <tbody>
+        <table class="table">
+            <tbody>
             {% for obj in sub_collections.all %}
-            <tr>
-                <td>
-                <a href="{{ obj.get_absolute_url }}">{{obj.name}}</a><br>
-                    <div class="small" style="white-space: nowrap;">
-                        {{ obj.item_type_name }}
-                    </div>
-                </td>
-                <td>
-                    {{ obj.description|striptags }}
-                </td>
-            </tr>
+                <tr>
+                    <td>
+                        <a href="{{ obj.get_absolute_url }}">{{obj.name}}</a><br>
+                        <div class="small" style="white-space: nowrap;">
+                            {{ obj.item_type_name }}
+                        </div>
+                    </td>
+                    <td>
+                        {{ obj.description|striptags }}
+                    </td>
+                </tr>
             {% endfor %}
-        </tbody>
-        
-    </table>
+            </tbody>
 
-    <table class="table">
-        <thead></thead>
-        <tbody>
+        </table>
+
+        <table class="table">
+            <thead></thead>
+            <tbody>
             {% for obj in metadata %}
-            <tr>
-                <td>
-                <a href="{{ obj.get_absolute_url }}">{{obj.name}}</a><br>
-                    <div class="small" style="white-space: nowrap;">
-                        {{ obj.item_type_name }}
-                    </div>
-                </td>
-                <td>
-                    {% include obj.item.list_details_template with item=obj %}
-                </td>
-            </tr>
+                <tr>
+                    <td>
+                        <a href="{{ obj.get_absolute_url }}">{{obj.name}}</a><br>
+                        <div class="small" style="white-space: nowrap;">
+                            {{ obj.item_type_name }}
+                        </div>
+                    </td>
+                    <td>
+                        {% include obj.item.list_details_template with item=obj %}
+                    </td>
+                </tr>
             {% endfor %}
-        </tbody>
-        
-    </table>
+            </tbody>
+
+        </table>
 
     </section>
 

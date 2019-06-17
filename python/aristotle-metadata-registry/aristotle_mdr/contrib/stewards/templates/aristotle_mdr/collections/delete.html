@@ -7,19 +7,19 @@
 
 {% block steward_content %}
     <h2>
-    Delete Metadata Collection '{{object.name}}'
+        Delete Metadata Collection '{{object.name}}'
     </h2>
     <form action="" method="POST">
         {% csrf_token %}
-        
+
         {{ form.errors }}
-        
+
         <div class="alert alert-danger">
             <p>
-            <strong>Are you sure you wish to delete this collection?</strong>
+                <strong>Are you sure you wish to delete this collection?</strong>
             </p><p>
-                This action cannot be undone.
-            </p>
+            This action cannot be undone.
+        </p>
         </div>
         {{ form }}
 
