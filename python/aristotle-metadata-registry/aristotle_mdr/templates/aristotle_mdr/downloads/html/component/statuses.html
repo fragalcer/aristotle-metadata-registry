@@ -1,12 +1,6 @@
 {% load i18n aristotle_tags util_tags %}
 
 <span>{% trans 'Endorsed by' %}</span>
-{% if user.profile.is_registrar %}
-    <a class="inline_action" href="{% url 'aristotle:changeStatus' item.id %}"
-        data-toggle="modal" data-target="#statusChange">Change</a>
-        {% bootstrap_modal "statusChange" size='lg' %}
-
-{% endif %}
 
 <ul>
     {% if statuses.all %}
@@ -26,8 +20,5 @@
             <li><em>{% trans 'Not endorsed' %}</em>
             </li>
         {% endfor %}
-    {% endif %}
-    {% if statuses and item %}
-    <li class="viewHistory"><strong><a href="{% url 'aristotle:registrationHistory' item.id %}">{% trans 'View registration history'%}</a></strong></li>
     {% endif %}
 </ul>

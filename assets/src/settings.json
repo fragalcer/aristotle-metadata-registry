@@ -1,4 +1,6 @@
 {
+  "no_permission_msg": "You don't have permission to view this item",
+  "not_found_msg": "Definition could not be loaded",
   "default_time_format": "Do MMMM YYYY",
   "wizard_leave_prompt": true
 }

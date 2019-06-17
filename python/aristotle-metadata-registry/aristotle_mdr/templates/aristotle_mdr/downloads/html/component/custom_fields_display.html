@@ -2,26 +2,24 @@
 
 {% with custom_values=item|get_custom_values_for_item:user %}
 {% if custom_values %}
-<dt>Custom Fields</dt>
+<dl class="custom_fields">
+<dt class="main_heading">Custom Fields</dt>
 <dd>
-    <div class="container">
+    <dl>
         {% for cv in custom_values %}
-            <div class="row">
-                <div class="col-sm-3">
-                    <b>{{ cv.field.name }}</b>
-                </div>
-                <div class="col-sm-9">
-                    {% if cv.is_html %}
-                    <div class="indent-right-2">
-                        {{ cv.content|bleach }}
-                    </div>
-                    {% else %}
-                        {{ cv.content }}
-                    {% endif %}
-                </div>
-            </div>
+            <dt>
+                {{ cv.field.name }}
+            </dt>
+            <dd>
+                {% if cv.is_html %}
+                    {{ cv.content|bleach }}
+                {% else %}
+                    {{ cv.content }}
+                {% endif %}
+            </dd>
         {% endfor %}
-    </div>
+    </dl>
 </dd>
+</dl>
 {% endif %}
 {% endwith %}

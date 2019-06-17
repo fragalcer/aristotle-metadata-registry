@@ -1,4 +1,4 @@
-from typing import Iterable, List, Dict
+from typing import Iterable, List, Dict, Set
 from django import forms
 from django.contrib.contenttypes.models import ContentType
 
@@ -55,6 +55,7 @@ class CustomValueFormMixin:
 
     def __init__(self, custom_fields: Iterable[CustomField] = [], **kwargs):
         # This is immediately overridden by __init__ but python type checking demands it
+        self.bad_value_custom_fields: Set = set()
         self.initial: Dict
 
         super().__init__(**kwargs)  # type: ignore
@@ -65,7 +66,6 @@ class CustomValueFormMixin:
         fields_to_remove = []
 
         # Iterate over mapping
-
         for custom_fname, custom_field in self.cfields.items():
 
             key = custom_field.form_field_name
@@ -86,8 +86,18 @@ class CustomValueFormMixin:
                 # Flatten into list of values
                 choice_values = itertools.chain(*choice_lists)
                 # Make into 2 tuple
-                choices = [(v, v) for v in choice_values]
-                choices.append(('', '------'))
+                choices = [('', '------')]
+                for val in choice_values:
+                    choices.append((val, val))
+
+                if custom_fname in self.initial:
+                    value = self.initial[custom_fname]
+                    if value not in choice_values:
+                        # If there is an initial value that isnt in the option list
+                        # Add it as the last option
+                        choices.append((value, value + ' (Old Value)'))
+                        self.bad_value_custom_fields.add(custom_fname)
+
                 field_default_args['choices'] = choices
 
             if custom_field.state == CUSTOM_FIELD_STATES.inactive:

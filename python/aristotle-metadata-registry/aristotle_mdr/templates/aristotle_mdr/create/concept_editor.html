@@ -264,12 +264,18 @@
                 {# Slots also displays custom fields #}
                 {% for field in form.custom_fields %}
                     <div class="wizard_field">
+
                         <span>{{ field.label_tag }} {{ field.help_text }}</span>
                         {% if field.errors %}
                             <span class="alert alert-danger">
                             {{ field.errors }}
                         {% endif %}
-                        {{ field }}
+                          {% if field.name in form.bad_value_custom_fields %}
+                            <div class="alert alert-warning">
+                              An old value is set for this field, if edited the old value will not be reselectable
+                            </div>
+                          {% endif %}
+                          {{ field }}
                         {% if field.errors %}
                             </span>
                         {% endif %}

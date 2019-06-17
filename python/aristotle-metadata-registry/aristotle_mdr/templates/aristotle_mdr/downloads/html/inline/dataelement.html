@@ -1,13 +1,12 @@
 {% extends "aristotle_mdr/downloads/html/inline/managedContent.html" %}
 {% block objSpecific %}
-<strong>Components</strong>
+<strong style="main_heading">Components</strong>
 <dl>
     <dt>Data Element Concept -
         {% include "aristotle_mdr/helpers/itemLink.html" with item=item.dataElementConcept %}
     </dt>
     <dd>
         {% include "aristotle_mdr/downloads/html/helpers/inlineDetails.html" with item=item.dataElementConcept name=False %}
-        {% if view == "technical" %}
         <dl class="additionaldetails">
             <dt>Object Class</dt>
             <dd>
@@ -18,7 +17,6 @@
                 {% include "aristotle_mdr/downloads/html/helpers/inlineDetails.html" with item=item.dataElementConcept.property %}
             </dd>
         </dl>
-        {% endif %}
     </dd>
     <dt>Value Domain -
         {% include "aristotle_mdr/helpers/itemLink.html" with item=item.valueDomain %}

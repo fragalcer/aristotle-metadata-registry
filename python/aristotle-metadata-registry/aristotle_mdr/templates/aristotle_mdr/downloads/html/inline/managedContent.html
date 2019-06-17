@@ -15,10 +15,15 @@
 <div class="status">
     {% include "aristotle_mdr/downloads/html/component/statuses.html" with statuses=item.current_statuses only %}
 </div>
+
+  {% include "aristotle_mdr/downloads/html/slots/slots_display.html" %}
+  {% include "aristotle_mdr/downloads/html/component/custom_fields_display.html" %}
+
 <div class="objectSpecific">
     {% block objSpecific %}
     {% endblock %}
 </div>
+
 </section>
 
 {% endblock %}

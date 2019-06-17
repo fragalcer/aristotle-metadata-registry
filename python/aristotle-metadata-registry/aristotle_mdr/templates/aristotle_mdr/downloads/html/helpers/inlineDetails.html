@@ -1,4 +1,37 @@
-{% include 'aristotle_mdr/helpers/inlineDetails.html' with item=item %}
+{% load aristotle_tags %}
+
+{% if skip_can_view or item|can_view:user %}
+    {% if item %}
+        <dl>
+            <dt>Name</dt>
+            <dd>
+                {% include "aristotle_mdr/helpers/itemLink.html" with skip_can_view=True %}
+            </dd>
+            <dt>
+                {% firstof infobox_identifier_name "Item ID" %}
+            </dt>
+            <dd>
+              {{item.id}}
+              {% if item.version %}v {{item.version}}{% endif %}
+            </dd>
+            <dt>Definition</dt>
+            <dd>
+                <div class="definition">
+                    {{ item.definition | striptags }}
+                </div>
+            </dd>
+        {% if statuses != False %}
+            <dt>Statuses</dt>
+            <dd>
+                {% include "aristotle_mdr/downloads/html/component/statuses.html" with skip_can_view=True statuses=item.current_statuses %}
+            </dd>
+        {% endif %}
+
+    {% endif %}
+{% else %}
+    <em>You dont have permission to view this item</em>
+{% endif %}
+
 {% if options.include_related %}
   {% include 'aristotle_mdr/downloads/html/inline/relational_attrs.html' with item=item %}
 {% endif %}

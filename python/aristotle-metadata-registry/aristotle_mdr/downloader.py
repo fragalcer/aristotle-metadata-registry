@@ -15,6 +15,7 @@ from django.urls import reverse
 from django.utils.module_loading import import_string
 from django.utils.safestring import mark_safe
 from django.utils.timezone import now
+from django.utils.translation import ugettext_lazy as _
 
 from hashlib import sha256
 import pickle
@@ -251,6 +252,7 @@ class HTMLDownloader(Downloader):
         page_size = aristotle_settings.get('PDF_PAGE_SIZE', 'A4')
 
         context = {
+            'infobox_identifier_name': aristotle_settings.get('INFOBOX_IDENTIFIER_NAME', _("Item ID")),
             'user': self.user,
             'page_size': page_size,
             'options': self.options,

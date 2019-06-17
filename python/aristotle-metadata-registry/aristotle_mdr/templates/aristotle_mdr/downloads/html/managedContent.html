@@ -22,7 +22,8 @@
     {% endif %}
   </header>
   <dl>
-    <dt class="small">Item id
+    <dt class="small">
+      {% firstof infobox_identifier_name "Item ID" %}
     </dt>
     <dd>
       {{item.id}}
@@ -121,27 +122,33 @@
     </dd>
     {% endcomment %}  
   </dl>
-  
-  {% if subitems %}
-      {% if is_bulk_download %}
-        <header>Additional Components</header>
-      {% else %}
-          <h1>Additional Components</h1>
-      {% endif %}
-      {% for l,dict in subitems.items %}
-      <div style="page-break-after:always;">
-          <h2>{{ dict.verbose_name }}</h2>
-          {% if dict.help %}<p>{% relink dict.help 'brief' %}</p>{% endif %}
-          {% for i in dict.items %} 
-              <div id='{{i.id}}'>
-                  {% include i|template_path:'html,inline' with item=i header='h3' user=user only %}
-              </div>
-          {% endfor %}
-      </div>
-      {% endfor %}
-  {% endif %}
+
   {% include "aristotle_mdr/downloads/html/slots/slots_display.html" %}
   {% include "aristotle_mdr/downloads/html/component/custom_fields_display.html" %}
+
+  {% if subitems %}
+      <div style="page-break-before:always">
+
+      {% if is_bulk_download %}
+        <header>Supporting Items</header>
+      {% else %}
+          <h1>Supporting Items</h1>
+      {% endif %}
+
+      {% for l,dict in subitems.items %}
+        <div style="page-break-before:always;">
+            <h2>{{ dict.verbose_name_plural }}</h2>
+            {% if dict.help %}<p>{% relink dict.help 'brief' %}</p>{% endif %}
+            {% for i in dict.items %} 
+                <div id='{{i.id}}'  style="page-break-before:always;">
+                    {% include i|template_path:'html,inline' with item=i header='h3' user=user only %}
+                </div>
+            {% endfor %}
+        </div>
+      {% endfor %}
+      </div>
+  {% endif %}
+
 </section>
 
 {% endblock %}

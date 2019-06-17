@@ -574,6 +574,37 @@ class GeneralItemPageTestCase(utils.AristotleTestUtils, TestCase):
         self.assertTrue(cf.form_field_name in initial)
         self.assertEqual(initial[cf.form_field_name], '4')
 
+    @tag('custfield')
+    def test_edit_page_custom_field_non_enum_initial(self):
+        """Test handling of initial value not in emum list"""
+        self.login_editor()
+        # Add field and value
+        cf = CustomField.objects.create(
+            name='Pokemon',
+            type='enum',
+            help_text='Custom',
+            choices='Charmander,Squirtle',
+            order=0
+        )
+        cv = CustomValue.objects.create(
+            field=cf,
+            concept=self.item,
+            content='Bulbasaur'
+        )
+        # Edit item
+        response = self.reverse_get(
+            'aristotle:edit_item',
+            reverse_args=[self.item.id],
+            status_code=200
+        )
+        # Check in initial
+        form = response.context['form']
+        self.assertTrue(cf.form_field_name in form.initial)
+        self.assertEqual(form.initial[cf.form_field_name], 'Bulbasaur')
+        field = form.fields['custom_Pokemon_{}'.format(cf.id)]
+        # Make sure bad value was added as last option
+        self.assertEqual(field.choices[-1][0], 'Bulbasaur')
+
     def get_custom_values_for_user(self, user):
         """Util function used for the following 3 tests"""
         view = ConceptRenderView()

@@ -70,6 +70,17 @@ dd {
     padding-left: 2.5em;
 }
 
+dl {
+    padding-left: 0px;
+}
+.main_heading {
+    border-bottom: 1px solid #333;
+}
+
+dl.custom_fields>dd {
+    padding-left: 0px;
+}
+
 a {
     text-decoration: none;
     color:#222;
