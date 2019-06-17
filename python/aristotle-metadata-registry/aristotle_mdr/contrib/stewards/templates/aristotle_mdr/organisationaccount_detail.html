@@ -7,37 +7,37 @@
 
 
 {% block page %}
-<h1>
-{% block title %}{{object.name}}{% endblock %}
-</h1>
+    <h1>
+        {% block title %}{{object.name}}{% endblock %}
+    </h1>
 
-<a class="btn btn-default" href="{%url view.manager.namespace|add:":update" object.slug %}">Edit</a>
+    <a class="btn btn-default" href="{%url view.manager.namespace|add:":update" object.slug %}">Edit</a>
 
-<div>
-    {{object.description}}
-</div>
+    <div>
+        {{object.description}}
+    </div>
 
-<h2>Current Members</h2>
-<a href="{%url view.manager.namespace|add:":member_list" object.slug %}">Edit roles</a>
+    <h2>Current Members</h2>
+    <a href="{%url view.manager.namespace|add:":member_list" object.slug %}">Edit roles</a>
 
-<ul class="list-group">
-    {% regroup object.members.all by user as member_list %}
-    {% for member in member_list %}
-    {% with member_user=member.grouper %}
-    <li class="list-group-item">
-        <img style="width:32px;" src="{{ member_user.profile.get_profile_picture_url }}" alt=""></img>
-        <a class="list-group-item-heading" href="{{ member_user.pk }}">{{ member_user.display_name }}</a>
-        <small>{{ member_user.censored_email }}</small>
+    <ul class="list-group">
+        {% regroup object.members.all by user as member_list %}
+        {% for member in member_list %}
+            {% with member_user=member.grouper %}
+                <li class="list-group-item">
+                    <img style="width:32px;" src="{{ member_user.profile.get_profile_picture_url }}" alt=""></img>
+                    <a class="list-group-item-heading" href="{{ member_user.pk }}">{{ member_user.display_name }}</a>
+                    <small>{{ member_user.censored_email }}</small>
 
-        {% user_has_role group=object user=member_user role="admin" as is_admin %}
-        
-        {% if is_admin %}
-        <small>Admin</small>
-        {% endif %}
-        
-    </li>
-    {% endwith %}
-    {% endfor %}
-</ul>
+                    {% user_has_role group=object user=member_user role="admin" as is_admin %}
+
+                    {% if is_admin %}
+                        <small>Admin</small>
+                    {% endif %}
+
+                </li>
+            {% endwith %}
+        {% endfor %}
+    </ul>
 
 {% endblock %}
