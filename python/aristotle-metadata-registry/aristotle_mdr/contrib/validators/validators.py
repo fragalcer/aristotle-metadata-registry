@@ -135,7 +135,7 @@ class StatusValidator(BaseValidator):
             concept=item._concept_ptr,
             registrationAuthority=ra,
         ).order_by(
-            '-registrationDate',
+            '-effective_date',
             '-created'
         )
 

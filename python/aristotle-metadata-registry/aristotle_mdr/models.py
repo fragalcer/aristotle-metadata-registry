@@ -476,15 +476,15 @@ class RegistrationAuthority(Organization):
         """
         if self.active is RA_ACTIVE_CHOICES.active:
             changeDetails = kwargs.get('changeDetails', "")
-            # If registrationDate is None (like from a form), override it with
+            # If effective_date is None (like from a form), override it with
             # todays date.
-            registrationDate = kwargs.get('registrationDate', None) or timezone.now().date()
+            effective_date = kwargs.get('effective_date', None) or timezone.now().date()
             until_date = kwargs.get('until_date', None)
 
             Status.objects.create(
                 concept=item,
                 registrationAuthority=self,
-                registrationDate=registrationDate,
+                effective_date=effective_date,
                 state=state,
                 changeDetails=changeDetails,
                 until_date=until_date
@@ -1140,9 +1140,8 @@ class Status(TimeStampedModel):
         default=STATES.incomplete,
         help_text=_("Designation (3.2.51) of the status in the registration life-cycle of an Administered_Item")
     )
-    # TODO: Below should be changed to 'effective_date' to match ISO IEC
     # 11179-6 (Section 8.1.2.6.2.2)
-    registrationDate = models.DateField(
+    effective_date = models.DateField(
         _('Date registration effective'),
         help_text=_("date and time an Administered_Item became/becomes available to registry users")
     )
@@ -1168,7 +1167,7 @@ class Status(TimeStampedModel):
             stat=self.state_name,
             ra=self.registrationAuthority,
             desc=self.changeDetails,
-            date=self.registrationDate
+            date=self.effective_date
         )
 
 
@@ -1783,16 +1782,19 @@ class PossumProfile(models.Model):
         return self.workgroups_for_user().filter(archived=False)
 
     @property
-    def myWorkgroupCount(self):
+    def my_workgroup_count(self):
         return self.myWorkgroups.all().count()
 
     @property
     def mySandboxContent(self):
-        """ Sandbox content is content:
+        """
+        Sandbox content is content:
             1. Submitted by the user
             2. That is not registered
             3. That is not under review or is for a review that has been revoked
-            4. That has not been added to a workgroup"""
+            4. That has not been added to a workgroup
+        :return: _concept queryset
+        """
         from aristotle_mdr.contrib.reviews.const import REVIEW_STATES
         return _concept.objects.filter(
             Q(submitter=self.user,

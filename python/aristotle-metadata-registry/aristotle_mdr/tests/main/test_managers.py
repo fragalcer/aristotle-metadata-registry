@@ -39,13 +39,13 @@ class ConceptManagerTestCase(TestCase):
         status = models.Status.objects.create(
             registrationAuthority=self.ra,
             concept=self.item.concept,
-            registrationDate=date(2001, 1, 1),
+            effective_date=date(2001, 1, 1),
             state=models.STATES.standard
         )
         status2 = models.Status.objects.create(
             registrationAuthority=self.ra2,
             concept=self.item.concept,
-            registrationDate=date(2001, 1, 1),
+            effective_date=date(2001, 1, 1),
             state=models.STATES.standard
         )
         # Make sure user is considered a registrar
@@ -65,7 +65,7 @@ class ConceptManagerTestCase(TestCase):
         status = models.Status.objects.create(
             registrationAuthority=self.ra,
             concept=self.item.concept,
-            registrationDate=date(2001, 1, 1),
+            effective_date=date(2001, 1, 1),
             state=models.STATES.standard
         )
         # Create review request for item
@@ -95,7 +95,7 @@ class ConceptManagerTestCase(TestCase):
         status = models.Status.objects.create(
             registrationAuthority=self.ra,
             concept=self.item.concept,
-            registrationDate=date(2001, 1, 1),
+            effective_date=date(2001, 1, 1),
             state=models.STATES.standard
         )
         # Get visible concepts to user

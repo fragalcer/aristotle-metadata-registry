@@ -67,7 +67,7 @@ class BulkWorkgroupActionsPage(BulkActionsTest, TestCase):
         postdata = {
             'change_state-state': new_state,
             'change_state-items': [str(a) for a in items],
-            'change_state-registrationDate': reg_date,
+            'change_state-effective_date': reg_date,
             'change_state-cascadeRegistration': 0,
             'change_state-changeDetails': "Because",
             'change_state-registrationAuthorities': [self.ra.id],
@@ -297,7 +297,7 @@ class BulkWorkgroupActionsPage(BulkActionsTest, TestCase):
         postdata = {
             'change_state-state': new_state,
             'change_state-items': [str(a) for a in items],
-            'change_state-registrationDate': reg_date,
+            'change_state-effective_date': reg_date,
             'change_state-cascadeRegistration': 0,
             'change_state-changeDetails': "Because",
             'change_state-registrationAuthorities': [self.ra.id],
@@ -321,12 +321,12 @@ class BulkWorkgroupActionsPage(BulkActionsTest, TestCase):
         self.assertTrue(self.item1.is_registered)
         self.assertEqual(self.item2.is_registered, item2_changed)
 
-        self.assertTrue(self.item1.current_statuses().first().registrationDate == reg_date)
+        self.assertTrue(self.item1.current_statuses().first().effective_date == reg_date)
         self.assertTrue(self.item1.current_statuses().first().state == new_state)
         self.assertTrue(self.item1.current_statuses().first().registrationAuthority == self.ra)
 
         if item2_changed:
-            self.assertTrue(self.item2.current_statuses().first().registrationDate == reg_date)
+            self.assertTrue(self.item2.current_statuses().first().effective_date == reg_date)
             self.assertTrue(self.item2.current_statuses().first().state == new_state)
             self.assertTrue(self.item2.current_statuses().first().registrationAuthority == self.ra)
         else:
@@ -353,7 +353,7 @@ class BulkWorkgroupActionsPage(BulkActionsTest, TestCase):
         models.Status.objects.create(
             concept=self.item1,
             registrationAuthority=self.ra,
-            registrationDate=timezone.now(),
+            effective_date=timezone.now(),
             state=STATES.candidate
         )
 
@@ -361,7 +361,7 @@ class BulkWorkgroupActionsPage(BulkActionsTest, TestCase):
         models.Status.objects.create(
             concept=self.item2,
             registrationAuthority=self.ra,
-            registrationDate=timezone.now(),
+            effective_date=timezone.now(),
             state=STATES.standard
         )
 
@@ -389,7 +389,7 @@ class BulkWorkgroupActionsPage(BulkActionsTest, TestCase):
         models.Status.objects.create(
             concept=self.item1,
             registrationAuthority=self.ra,
-            registrationDate=timezone.now(),
+            effective_date=timezone.now(),
             state=STATES.standard
         )
 
@@ -397,7 +397,7 @@ class BulkWorkgroupActionsPage(BulkActionsTest, TestCase):
         models.Status.objects.create(
             concept=self.item2,
             registrationAuthority=self.ra,
-            registrationDate=timezone.now(),
+            effective_date=timezone.now(),
             state=STATES.preferred
         )
 
@@ -459,7 +459,7 @@ class BulkWorkgroupActionsPage(BulkActionsTest, TestCase):
         postdata = {
             'change_state-state': new_state,
             'change_state-items': items_strings,
-            'change_state-registrationDate': reg_date,
+            'change_state-effective_date': reg_date,
             'change_state-cascadeRegistration': 1,
             'change_state-changeDetails': "Because",
             'change_state-registrationAuthorities': [self.ra.id],
@@ -489,7 +489,7 @@ class BulkWorkgroupActionsPage(BulkActionsTest, TestCase):
 
         for item in cascade_items:
 
-            self.assertTrue(item.current_statuses().first().registrationDate == reg_date)
+            self.assertTrue(item.current_statuses().first().effective_date == reg_date)
             self.assertTrue(item.current_statuses().first().state == new_state)
             self.assertTrue(item.current_statuses().first().registrationAuthority == self.ra)
 
@@ -527,7 +527,7 @@ class BulkWorkgroupActionsPage(BulkActionsTest, TestCase):
             {
                 'change_state-state': new_state,
                 'change_state-items': [str(a) for a in items],
-                'change_state-registrationDate': reg_date,
+                'change_state-effective_date': reg_date,
                 'change_state-cascadeRegistration': 0,
                 'change_state-changeDetails': "Because",
                 'change_state-registrationAuthorities': [self.ra.id],
@@ -543,7 +543,7 @@ class BulkWorkgroupActionsPage(BulkActionsTest, TestCase):
         self.assertFalse(self.item2.is_registered)
         self.assertFalse(self.item4.is_registered)
 
-        self.assertTrue(self.item1.current_statuses().first().registrationDate == reg_date)
+        self.assertTrue(self.item1.current_statuses().first().effective_date == reg_date)
         self.assertTrue(self.item1.current_statuses().first().state == new_state)
         self.assertTrue(self.item1.current_statuses().first().registrationAuthority == self.ra)
 

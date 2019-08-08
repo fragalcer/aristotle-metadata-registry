@@ -492,7 +492,7 @@
       "state": 5,
       "changeDetails": null,
       "until_date": null,
-      "registrationDate": "2009-04-28"
+      "effective_date": "2009-04-28"
     },
     "model": "aristotle_mdr.status",
     "pk": 1

@@ -372,7 +372,7 @@ def registrationHistory(request, iid):
         else:
             raise PermissionDenied
 
-    history = item.statuses.order_by("registrationAuthority", "-registrationDate", "-until_date", "-created")
+    history = item.statuses.order_by("registrationAuthority", "-effective_date", "-until_date", "-created")
     out = {}
     for status in history:
         if status.registrationAuthority in out.keys():
@@ -486,7 +486,7 @@ class ReviewChangesView(SessionWizardView):
             state = cleaned_data['state']
             ra = cleaned_data['registrationAuthorities']
 
-            static_content = {'new_state': state, 'new_reg_date': cleaned_data['registrationDate']}
+            static_content = {'new_state': state, 'new_reg_date': cleaned_data['effective_date']}
             # Need to check wether cascaded was true here
 
             if cascade == 1:
@@ -568,7 +568,7 @@ class ReviewChangesView(SessionWizardView):
 
         ras = cleaned_data['registrationAuthorities']
         state = cleaned_data['state']
-        regDate = cleaned_data['registrationDate']
+        regDate = cleaned_data['effective_date']
         cascade = cleaned_data['cascadeRegistration']
         changeDetails = cleaned_data['changeDetails']
 
@@ -693,7 +693,7 @@ class EditStatus(UpdateView):
         self.item = get_object_or_404(MDR._concept, pk=self.kwargs['iid'])
         self.status = get_object_or_404(MDR.Status, pk=self.kwargs['sid'])
         initial = super().get_initial()
-        initial['registrationDate'] = self.status.registrationDate
+        initial['effective_date'] = self.status.effective_date
         initial['until_date'] = self.status.until_date
         initial['state'] = self.status.state
 

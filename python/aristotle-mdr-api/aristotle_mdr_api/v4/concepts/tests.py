@@ -52,7 +52,7 @@ class ConceptAPITestCase(BaseAPITestCase):
         self.status  = mdr_models.Status.objects.create(
             concept=self.public_concept,
             registrationAuthority=self.ra,
-            registrationDate=timezone.now(),
+            effective_date=timezone.now(),
             state=self.ra.public_state
         )
 

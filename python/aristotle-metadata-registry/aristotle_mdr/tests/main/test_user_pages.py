@@ -95,7 +95,7 @@ class UserHomePages(utils.AristotleTestUtils, TestCase):
         models.Status.objects.create(
             concept=self.item3,
             registrationAuthority=self.ra,
-            registrationDate = datetime.date(2009,4,28),
+            effective_date = datetime.date(2009,4,28),
             state =  models.STATES.standard
         )
 

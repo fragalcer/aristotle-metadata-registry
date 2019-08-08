@@ -465,7 +465,7 @@ def get_status_change_details(queryset, ra, new_state):
     extra_info = {}
     subclassed_queryset = queryset.select_subclasses()
     statuses = Status.objects.filter(concept__in=queryset, registrationAuthority=ra).select_related('concept')
-    statuses = statuses.valid().order_by("-registrationDate", "-created")
+    statuses = statuses.valid().order_by("-effective_date", "-created")
 
     # new_state_num = static_content['new_state']
     if new_state:
@@ -478,7 +478,7 @@ def get_status_change_details(queryset, ra, new_state):
     states_dict = {}
     for status in statuses:
         state_name = str(STATES[status.state])
-        reg_date = status.registrationDate
+        reg_date = status.effective_date
         if status.concept.id not in states_dict:
             states_dict[status.concept.id] = {
                 'name': state_name,

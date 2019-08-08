@@ -56,7 +56,7 @@ class AnonymousUserViewingThePages(TestCase):
         s = models.Status.objects.create(
             concept=item,
             registrationAuthority=ra,
-            registrationDate=timezone.now(),
+            effective_date=timezone.now(),
             state=ra.locked_state
         )
         response = self.client.get(url_slugify_concept(item))
@@ -980,7 +980,7 @@ class LoggedInViewConceptPages(utils.AristotleTestUtils):
         models.Status.objects.create(
             concept=self.item1,
             registrationAuthority=self.ra,
-            registrationDate=datetime.date(2009, 4, 28),
+            effective_date=datetime.date(2009, 4, 28),
             state=models.STATES.standard
         )
 
@@ -2078,7 +2078,7 @@ class ValueDomainViewPage(LoggedInViewConceptPages, TestCase):
         models.Status.objects.create(
             concept=self.item1,
             registrationAuthority=self.ra,
-            registrationDate=timezone.now(),
+            effective_date=timezone.now(),
             state=self.ra.locked_state
         )
 
@@ -2515,19 +2515,19 @@ class DataElementConceptViewPage(LoggedInViewConceptPages, TestCase):
         s = models.Status.objects.create(
             concept=item,
             registrationAuthority=ra,
-            registrationDate=timezone.now(),
+            effective_date=timezone.now(),
             state=ra.locked_state
         )
         s = models.Status.objects.create(
             concept=item,
             registrationAuthority=self.ra,
-            registrationDate=timezone.now(),
+            effective_date=timezone.now(),
             state=ra.locked_state
         )
         s = models.Status.objects.create(
             concept=self.item1,
             registrationAuthority=self.ra,
-            registrationDate=timezone.now(),
+            effective_date=timezone.now(),
             state=ra.public_state
         )
 
@@ -3022,7 +3022,7 @@ class RegistrationAuthorityViewPage(utils.LoggedInViewPages, TestCase):
         models.Status.objects.create(
             concept=self.item2,
             registrationAuthority=self.item1,
-            registrationDate=timezone.now(),
+            effective_date=timezone.now(),
             state=models.STATES.standard
         )
 

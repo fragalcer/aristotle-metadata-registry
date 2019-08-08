@@ -228,7 +228,7 @@ class CustomConceptQuerySetTest(TestCase):
         self.assertEqual(len(models.ValueDomain.objects.all().public()),0)
 
         # Register OC1 only
-        ra.register(oc1,models.STATES.standard,user,registrationDate=datetime.date(2010,10,1))
+        ra.register(oc1,models.STATES.standard,user,effective_date=datetime.date(2010,10,1))
 
         # Assert only OC1 is public
         self.assertEqual(len(models.ValueDomain.objects.all().public()),1)
@@ -242,13 +242,13 @@ class CustomConceptQuerySetTest(TestCase):
         # Deregister OC1
         state=models.STATES.incomplete
         regDate=datetime.date(2010,10,1)
-        registration_attempt = ra.register(oc1,state,user,registrationDate=regDate)
+        registration_attempt = ra.register(oc1,state,user,effective_date=regDate)
 
         oc1 = models.ValueDomain.objects.get(pk=oc1.pk)
 
         self.assertTrue(registration_attempt['failed'] == [])
         self.assertTrue(len(oc1.current_statuses()) == 1)
-        self.assertTrue(oc1.current_statuses().first().registrationDate == regDate)
+        self.assertTrue(oc1.current_statuses().first().effective_date == regDate)
         self.assertFalse(oc1._is_public)
 
         # Assert no public items
@@ -280,13 +280,13 @@ class RegistryCascadeTest(TestCase):
         self.assertEqual(self.dec.statuses.count(),0)
 
         state=models.STATES.candidate
-        self.ra.register(self.dec,state,user,registrationDate=datetime.date(2001,10,1),changeDetails='test DEC register')
+        self.ra.register(self.dec,state,user,effective_date=datetime.date(2001,10,1),changeDetails='test DEC register')
         self.assertEqual(self.oc.statuses.count(),0)
         self.assertEqual(self.pr.statuses.count(),0)
         self.assertEqual(self.dec.statuses.count(),1)
 
         state=models.STATES.standard
-        self.ra.cascaded_register(self.dec,state,user,registrationDate=datetime.date(2010,10,1),changeDetails='test DEC cascade register')
+        self.ra.cascaded_register(self.dec,state,user,effective_date=datetime.date(2010,10,1),changeDetails='test DEC cascade register')
         self.assertEqual(len(self.dec.current_statuses()),1)
         self.assertEqual(len(self.oc.current_statuses()),1)
         self.assertEqual(len(self.pr.current_statuses()),1)
@@ -329,7 +329,7 @@ class RegistryCascadeTest(TestCase):
         self.assertEqual(self.de.statuses.count(),0)
 
         state=models.STATES.candidate
-        self.ra.register(self.de,state,user,registrationDate=datetime.date(2001,10,1),)
+        self.ra.register(self.de,state,user,effective_date=datetime.date(2001,10,1),)
         self.assertEqual(len(self.oc.current_statuses()),0)
         self.assertEqual(len(self.pr.current_statuses()),0)
         self.assertEqual(len(self.vd.current_statuses()),0)
@@ -337,7 +337,7 @@ class RegistryCascadeTest(TestCase):
         self.assertEqual(len(self.de.current_statuses()),1)
 
         state=models.STATES.standard
-        self.ra.cascaded_register(self.de,state,user,registrationDate=datetime.date(2010,10,1),)
+        self.ra.cascaded_register(self.de,state,user,effective_date=datetime.date(2010,10,1),)
         self.assertEqual(len(self.de.current_statuses()),1)
         self.assertEqual(len(self.dec.current_statuses()),1)
         self.assertEqual(len(self.vd.current_statuses()),1)

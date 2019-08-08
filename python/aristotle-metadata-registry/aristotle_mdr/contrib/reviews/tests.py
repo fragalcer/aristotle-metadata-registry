@@ -741,7 +741,7 @@ class ReviewRequestActionsPage(utils.AristotleTestUtils, TestCase):
 
             self.assertTrue(state.registrationAuthority == review.registration_authority)
             self.assertTrue(state.state == review.state)
-            self.assertTrue(state.registrationDate == review.registration_date)
+            self.assertTrue(state.effective_date == review.registration_date)
         else:
             self.assertTrue(item.current_statuses().count() == 0)
 
@@ -860,7 +860,7 @@ class OldReviewRequestActionsPage(utils.AristotleTestUtils, TestCase):
 
             self.assertTrue(state.registrationAuthority == review.registration_authority)
             self.assertTrue(state.state == review.state)
-            self.assertTrue(state.registrationDate == review.registration_date)
+            self.assertTrue(state.effective_date == review.registration_date)
         else:
             self.assertTrue(item.current_statuses().count() == 0)
 

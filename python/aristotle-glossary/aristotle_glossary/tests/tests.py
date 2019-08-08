@@ -29,7 +29,7 @@ class GlossaryPage(utils.LoggedInViewPages, TestCase):
             models.Status.objects.create(
                 concept=gitem,
                 registrationAuthority=ra2,
-                registrationDate=datetime.date(2000, 1, 1),
+                effective_date=datetime.date(2000, 1, 1),
                 state=self.ra.public_state,
                 )
         gitem = gmodels.GlossaryItem.objects.create(name="Glossary item locked", workgroup=self.wg2)
@@ -37,7 +37,7 @@ class GlossaryPage(utils.LoggedInViewPages, TestCase):
         models.Status.objects.create(
             concept=gitem,
             registrationAuthority=ra2,
-            registrationDate=datetime.date(2000, 1, 1),
+            effective_date=datetime.date(2000, 1, 1),
             state=self.ra.locked_state,
             )
         gmodels.GlossaryItem.objects.create(name="Glossary item unregistered", workgroup=self.wg2)
@@ -104,7 +104,7 @@ class GlossaryViewPage(LoggedInViewConceptPages, TestCase):
         s1 = models.Status.objects.create(
             concept=gitem,
             registrationAuthority=ra2,
-            registrationDate=datetime.date(2000, 1, 1),
+            effective_date=datetime.date(2000, 1, 1),
             state=self.ra.public_state,
             )
 

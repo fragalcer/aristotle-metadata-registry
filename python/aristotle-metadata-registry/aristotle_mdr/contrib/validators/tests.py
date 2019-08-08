@@ -171,13 +171,13 @@ class TestStatusValidator(ValidationTester):
         MDR.Status.objects.create(
             concept=self.item,
             registrationAuthority=self.ra,
-            registrationDate=datetime.date(2014, 1, 1),
+            effective_date=datetime.date(2014, 1, 1),
             state=MDR.STATES.incomplete
         )
         MDR.Status.objects.create(
             concept=self.item,
             registrationAuthority=self.ra,
-            registrationDate=datetime.date(2014, 1, 2),
+            effective_date=datetime.date(2014, 1, 2),
             state=MDR.STATES.standard
         )
 

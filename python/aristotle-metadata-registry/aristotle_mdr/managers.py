@@ -417,7 +417,7 @@ class StatusQuerySet(models.QuerySet):
         return self.valid_at_date(timezone.now().date())
 
     def valid_at_date(self, when=timezone.now().date()):
-        registered_before_now = Q(registrationDate__lte=when)
+        registered_before_now = Q(effective_date__lte=when)
         registration_still_valid = (
             Q(until_date__gte=when) |
             Q(until_date__isnull=True)
@@ -437,7 +437,7 @@ class StatusQuerySet(models.QuerySet):
             when = when.date()
 
         states = self.valid_at_date(when)
-        states = states.order_by("registrationAuthority", "concept_id", "-registrationDate", "-created", )
+        states = states.order_by("registrationAuthority", "concept_id", "-effective_date", "-created", )
 
         from django.db import connection
         if connection.vendor == 'postgresql':

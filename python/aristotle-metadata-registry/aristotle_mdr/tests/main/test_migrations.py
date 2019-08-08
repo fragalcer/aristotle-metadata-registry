@@ -279,14 +279,14 @@ class TestSupersedingMigration(MigrationsTestCase, TestCase):
         Status.objects.create(
             concept=self.oc_old_1,
             registrationAuthority=self.ra,
-            registrationDate=timezone.now().date(),
+            effective_date=timezone.now().date(),
             state=STATES.superseded,
         )
 
         Status.objects.create(
             concept=self.oc_new,
             registrationAuthority=self.ra,
-            registrationDate=timezone.now().date(),
+            effective_date=timezone.now().date(),
             state=STATES.standard,
         )
     def test_migration(self):

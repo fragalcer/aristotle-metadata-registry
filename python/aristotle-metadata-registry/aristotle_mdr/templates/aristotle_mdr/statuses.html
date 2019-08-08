@@ -13,14 +13,14 @@
         {% for status in statuses.all %}
         <li>
             <a href="{% url 'aristotle:registrationAuthority' status.registrationAuthority.id status.registrationAuthority.name|slugify %}">{{ status.registrationAuthority }}</a>
-            : {% trans status.state_name %} on <time datetime="{{ status.registrationDate|isotime }}">{{ status.registrationDate }}</time>
+            : {% trans status.state_name %} on <time datetime="{{ status.effective_date|isotime }}">{{ status.effective_date }}</time>
             </li>
         {% endfor %}
     {% else %}
         {% for status in statuses %}
         <li>
            <a href="{% url 'aristotle:registrationAuthority' status.registrationAuthority.id status.registrationAuthority.name|slugify %}">{{ status.registrationAuthority }}</a>
-            : {% trans status.state_name %} on <time datetime="{{ status.registrationDate|isotime }}">{{ status.registrationDate }}</time>
+            : {% trans status.state_name %} on <time datetime="{{ status.effective_date|isotime }}">{{ status.effective_date }}</time>
             </li>
         {% empty %}
             <li><em>{% trans 'Not endorsed' %}</em>

@@ -253,7 +253,7 @@ def public_standards(regAuth, itemType="aristotle_mdr._concept"):
     For example::
 
         {% for item, status in registrationAuthority|public_standards:'aristotle_mdr.DataElement' %}
-          {{ item }} - made standard on {{ status.registrationDate }}.
+          {{ item }} - made standard on {{ status.effective_date }}.
         {% endfor %}
     """
     try:

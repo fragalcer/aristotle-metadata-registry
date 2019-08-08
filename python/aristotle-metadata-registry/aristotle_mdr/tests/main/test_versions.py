@@ -296,7 +296,7 @@ class VersionComparisionTestCase(utils.AristotleTestUtils, TestCase):
         self.status = MDR.Status.objects.create(
             concept=self.object_class,
             registrationAuthority=self.ra,
-            registrationDate=timezone.now(),
+            effective_date=timezone.now(),
             state=self.ra.public_state
         )
 
@@ -512,7 +512,7 @@ class TestViewingVersionPermissions(utils.AristotleTestUtils, TestCase):
         self.status = MDR.Status.objects.create(
             concept=item_without_permissions,
             registrationAuthority=self.ra,
-            registrationDate=timezone.now(),
+            effective_date=timezone.now(),
             state=self.ra.public_state
         )
 

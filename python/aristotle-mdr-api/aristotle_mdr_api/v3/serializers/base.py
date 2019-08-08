@@ -122,7 +122,7 @@ class Serializer(PySerializer):
                 "registration_authority": status.registrationAuthority.uuid,
                 "state": status.state,
                 "state_meaning": status.get_state_display(),
-                "registration_date": status.registrationDate
+                "registration_date": status.effective_date
             }
             for status in obj.current_statuses()
         ]
@@ -479,7 +479,7 @@ def Deserializer(manifest, **options):
                         "until_date": status.get("until_date", None),
                         "registrationAuthority": ra,
                         "state": int(status["state"]),
-                        "registrationDate": datetime.datetime.strptime(status["registration_date"], '%Y-%m-%d'),
+                        "effective_date": datetime.datetime.strptime(status["registration_date"], '%Y-%m-%d'),
                         "concept": obj
                     }
                 st, c = MDR.Status.objects.get_or_create(**state)

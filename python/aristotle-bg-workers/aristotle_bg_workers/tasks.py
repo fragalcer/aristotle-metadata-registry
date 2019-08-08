@@ -177,7 +177,7 @@ def register_items(ids: List[int], cascade: bool, state: int, ra_id: int, user_i
                 state,
                 user,
                 changeDetails=change_details,
-                registrationDate=registration_date
+                effective_date=registration_date
             )
             success.extend(status['success'])
             failed.extend(status['failed'])

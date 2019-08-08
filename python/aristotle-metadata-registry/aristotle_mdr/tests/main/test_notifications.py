@@ -138,13 +138,13 @@ class TestNotifications(utils.AristotleTestUtils, TestCase):
         models.Status.objects.create(
             concept=self.item1,
             registrationAuthority=self.ra,
-            registrationDate=datetime.date(2015,4,28),
+            effective_date=datetime.date(2015,4,28),
             state=self.ra.locked_state
             )
         models.Status.objects.create(
             concept=self.item2,
             registrationAuthority=self.ra,
-            registrationDate=datetime.date(2015,4,28),
+            effective_date=datetime.date(2015,4,28),
             state=self.ra.locked_state
         )
         user1 = self.registrar
@@ -170,7 +170,7 @@ class TestNotifications(utils.AristotleTestUtils, TestCase):
         models.Status.objects.create(
             concept=self.item1,
             registrationAuthority=self.ra,
-            registrationDate=timezone.now(),
+            effective_date=timezone.now(),
             state=self.ra.locked_state
         )
 
@@ -181,7 +181,7 @@ class TestNotifications(utils.AristotleTestUtils, TestCase):
         models.Status.objects.create(
             concept=self.item1,
             registrationAuthority=self.ra,
-            registrationDate=timezone.now(),
+            effective_date=timezone.now(),
             state=self.ra.public_state
         )
 

@@ -47,8 +47,6 @@
     <li {% ifequal activeTab "workgroups" %}class="active"{% endifequal %}>
         <a href="{% url 'aristotle:userWorkgroups' %}">
             <i class="fa fa-users fa-fw"></i> {% trans "Workgroups" %}
-            {# TODO: Can we cache the workgroup count? Do we even need it? #}
-            {# <span class="badge pull-right">{{ user.profile.myWorkgroupCount }}</span>  #}
         </a>
         {% ifequal activeTab "workgroupArchives" %}
             <ul class="nav nav-pills nav-stacked nav-collapse dashSubMenu">
@@ -113,12 +111,12 @@
                 <i class="fa fa-user-md fa-fw"></i> {% trans "Django administration" %}
             </a>
         </li>
-    <li role="presentation" class="nav-divider"></li>
-    {% for addon in config.DASHBOARD_ADDONS %}
-        {% with addon|add:'/dashboard/sidebar.html' as template %}
-            {% include template %}
-        {% endwith %}
-    {% endfor %}
+        <li role="presentation" class="nav-divider"></li>
+        {% for addon in config.DASHBOARD_ADDONS %}
+            {% with addon|add:'/dashboard/sidebar.html' as template %}
+                {% include template %}
+            {% endwith %}
+        {% endfor %}
 
     {% endif %}
 </ul>

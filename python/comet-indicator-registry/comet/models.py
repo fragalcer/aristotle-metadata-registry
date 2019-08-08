@@ -12,7 +12,6 @@ import aristotle_mdr.models as MDR
 import aristotle_dse.models as aristotle_dse
 from aristotle_mdr.fields import ConceptForeignKey, ConceptManyToManyField
 from aristotle_mdr.utils.model_utils import (
-    ManagedItem,
     aristotleComponent,
 )
 from comet.managers import FrameworkDimensionManager

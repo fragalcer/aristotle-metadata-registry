@@ -360,11 +360,11 @@ class TestSearch(utils.AristotleTestUtils, TestCase):
         self.assertFalse(dp.is_public())
 
         self.ra.register(dp,models.STATES.incomplete,self.registrar,
-            registrationDate=timezone.now()+datetime.timedelta(days=-7)
+            effective_date=timezone.now()+datetime.timedelta(days=-7)
         )
 
         self.ra.register(dp,models.STATES.standard,self.registrar,
-            registrationDate=timezone.now()+datetime.timedelta(days=-1)
+            effective_date=timezone.now()+datetime.timedelta(days=-1)
         )
 
         response = self.client.get(reverse('aristotle:search')+"?q=deadpool")
@@ -400,7 +400,7 @@ class TestSearch(utils.AristotleTestUtils, TestCase):
         self.assertFalse(dp.is_public())
 
         self.ra.register(dp,models.STATES.candidate,self.registrar,
-            registrationDate=timezone.now()+datetime.timedelta(days=-7)
+            effective_date=timezone.now()+datetime.timedelta(days=-7)
         )
 
         response = self.client.get(reverse('aristotle:search')+"?q=xman")

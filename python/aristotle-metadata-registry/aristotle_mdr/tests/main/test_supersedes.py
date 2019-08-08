@@ -29,7 +29,7 @@ class SupersededProperty(TestCase):
             state=models.STATES.superseded,
             registrationAuthority=self.ra,
             concept=self.item1,
-            registrationDate=timezone.now()
+            effective_date=timezone.now()
         )
         self.item1.save()
         self.assertTrue(self.item1.is_superseded)
@@ -37,7 +37,7 @@ class SupersededProperty(TestCase):
         s = models.Status.objects.create(
             concept=self.item1,
             registrationAuthority=self.ra,
-            registrationDate=timezone.now(),
+            effective_date=timezone.now(),
             state=self.ra.public_state
         )
         # self.item1=models.ObjectClass.objects.get(id=self.item1.id)

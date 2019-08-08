@@ -215,7 +215,7 @@ class ReviewStatusChangeBase(ReviewActionMixin, ReviewChangesView):
         change_data = {
             'registrationAuthorities': [review.registration_authority],
             'state': review.target_registration_state,
-            'registrationDate': review.registration_date,
+            'effective_date': review.registration_date,
             'cascadeRegistration': review.cascade_registration,
             'changeDetails': self.get_cleaned_data_for_step(self.change_step_name)['status_message']
         }
@@ -315,7 +315,7 @@ class ReviewAcceptView(ReviewStatusChangeBase):
 
             # Approve supersedes
             cleaned_data = self.get_change_data()
-            regDate = cleaned_data['registrationDate']
+            regDate = cleaned_data['effective_date']
             self.approve_supersedes(review, regDate)
 
             messages.add_message(self.request, messages.INFO, self.message)
@@ -341,7 +341,7 @@ class ReviewEndorseView(ReviewStatusChangeBase):
     def get_change_data(self, register=False):
         change_data = super().get_change_data(register)
         change_data['state'] = int(self.get_cleaned_data_for_step(self.change_step_name)['registration_state'])
-        change_data['registrationDate'] = self.get_cleaned_data_for_step(self.change_step_name)['registration_date']
+        change_data['effective_date'] = self.get_cleaned_data_for_step(self.change_step_name)['registration_date']
         cascade = self.get_cleaned_data_for_step(self.change_step_name)['cascade_registration']
 
         try:

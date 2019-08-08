@@ -372,7 +372,7 @@ class Command(BaseCommand):
                 #     ra.cascaded_register(
                 #         item=ds,
                 #         state=MDR.STATES.recorded,
-                #         registrationDate=datetime.date(*reg_date),
+                #         effective_date=datetime.date(*reg_date),
                 #     )
         except KeyboardInterrupt:
             raise

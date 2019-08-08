@@ -26,7 +26,7 @@ class AristotleReportingToolsPage(AristotleTestUtils, TestCase):
         self.status_prop_non_standard = MDR.Status.objects.create(
             concept=self.property_non_std,
             registrationAuthority=self.ra,
-            registrationDate=timezone.now(),
+            effective_date=timezone.now(),
             state=MDR.STATES.qualified,
         )
 
@@ -39,7 +39,7 @@ class AristotleReportingToolsPage(AristotleTestUtils, TestCase):
         MDR.Status.objects.create(
             concept=self.object_class_non_std,
             registrationAuthority=self.ra,
-            registrationDate=timezone.now(),
+            effective_date=timezone.now(),
             state=MDR.STATES.qualified,
         )
 
@@ -53,7 +53,7 @@ class AristotleReportingToolsPage(AristotleTestUtils, TestCase):
         MDR.Status.objects.create(
             concept=self.property_non_std,
             registrationAuthority=self.ra,
-            registrationDate=timezone.now(),
+            effective_date=timezone.now(),
             state=MDR.STATES.qualified,
         )
 
@@ -66,7 +66,7 @@ class AristotleReportingToolsPage(AristotleTestUtils, TestCase):
         MDR.Status.objects.create(
             concept=self.vd_non_std,
             registrationAuthority=self.ra,
-            registrationDate=timezone.now(),
+            effective_date=timezone.now(),
             state=MDR.STATES.qualified,
         )
 
@@ -80,7 +80,7 @@ class AristotleReportingToolsPage(AristotleTestUtils, TestCase):
         MDR.Status.objects.create(
             concept=self.de_std,
             registrationAuthority=self.ra,
-            registrationDate=timezone.now(),
+            effective_date=timezone.now(),
             state=MDR.STATES.standard,
         )
 
@@ -110,7 +110,7 @@ class AristotleReportingToolsPage(AristotleTestUtils, TestCase):
         my_status_for_lonely_data_element = MDR.Status.objects.create(
             concept=my_data_element,
             registrationAuthority=self.ra,
-            registrationDate=timezone.now(),
+            effective_date=timezone.now(),
             state=MDR.STATES.incomplete,
         )
 
@@ -142,7 +142,7 @@ class AristotleReportingToolsPage(AristotleTestUtils, TestCase):
         MDR.Status.objects.create(
             concept=de_qualified,
             registrationAuthority=self.ra,
-            registrationDate=timezone.now(),
+            effective_date=timezone.now(),
             state=MDR.STATES.qualified,
         )
 
@@ -150,7 +150,7 @@ class AristotleReportingToolsPage(AristotleTestUtils, TestCase):
         MDR.Status.objects.create(
             concept=data_element_concept_for_de_qualified,
             registrationAuthority=self.ra,
-            registrationDate=timezone.now(),
+            effective_date=timezone.now(),
             state=MDR.STATES.qualified,
         )
 
@@ -187,7 +187,7 @@ class AristotleReportingToolsPage(AristotleTestUtils, TestCase):
         MDR.Status.objects.create(
             concept=data_element_with_second_ra,
             registrationAuthority=another_ra,
-            registrationDate=timezone.now(),
+            effective_date=timezone.now(),
             state=MDR.STATES.preferred,
         )
 
@@ -217,20 +217,20 @@ class AristotleReportingToolsPage(AristotleTestUtils, TestCase):
         data_element = MDR.Status.objects.create(
             concept=data_element,
             registrationAuthority=self.ra,
-            registrationDate=datetime.date(2017, 1, 1)
+            effective_date=datetime.date(2017, 1, 1)
         )
 
         # Register the Value Domain as Standard
         MDR.Status.objects.create(
             concept=value_domain,
             registrationAuthority=self.ra,
-            registrationDate=datetime.date(2017, 1, 1)
+            effective_date=datetime.date(2017, 1, 1)
         )
         # Retire it later
         MDR.Status.objects.create(
             concept=value_domain,
             registrationAuthority=self.ra,
-            registrationDate=datetime.date(2018, 1, 1)
+            effective_date=datetime.date(2018, 1, 1)
         )
 
         # Assert that Retired is displayed

@@ -21,7 +21,7 @@ logger.debug("Logging started for " + __name__)
 
 class ChangeStatusGenericForm(RegistrationAuthorityMixin, UserAwareForm):
     state = forms.ChoiceField(choices=MDR.STATES, widget=forms.RadioSelect)
-    registrationDate = forms.DateField(
+    effective_date = forms.DateField(
         required=False,
         label=_("Registration date"),
         widget=BootstrapDateTimePicker(options={"format": "YYYY-MM-DD"}),
@@ -145,9 +145,9 @@ class EditUserForm(ModelForm):
 class EditStatusForm(ModelForm):
     class Meta:
         model = MDR.Status
-        fields = ['registrationDate', 'until_date', 'state', 'changeDetails']
+        fields = ['effective_date', 'until_date', 'state', 'changeDetails']
 
-    registrationDate = forms.DateField(
+    effective_date = forms.DateField(
         required=False,
         label=_("Registration date"),
         widget=BootstrapDateTimePicker(options={"format": "YYYY-MM-DD"}),

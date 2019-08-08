@@ -141,7 +141,7 @@ class ManagedObjectVisibility(object):
         s = models.Status.objects.create(
             concept=self.item,
             registrationAuthority=self.ra,
-            registrationDate=timezone.now(),
+            effective_date=timezone.now(),
             state=models.STATES.notprogressed
         )
         self.assertEqual(self.item.is_public(), False)
@@ -163,7 +163,7 @@ class ManagedObjectVisibility(object):
         s1 = models.Status.objects.create(
             concept=self.item,
             registrationAuthority=self.ra,
-            registrationDate=datetime.date(2000, 1, 1),
+            effective_date=datetime.date(2000, 1, 1),
             state=models.STATES.incomplete,
             changeDetails="s1",
         )
@@ -172,7 +172,7 @@ class ManagedObjectVisibility(object):
         s2 = models.Status.objects.create(
             concept=self.item,
             registrationAuthority=self.ra,
-            registrationDate=datetime.date(2005, 1, 1),
+            effective_date=datetime.date(2005, 1, 1),
             until_date=datetime.date(2005, 6, 29),
             state=self.ra.public_state,
             changeDetails="s2",
@@ -183,7 +183,7 @@ class ManagedObjectVisibility(object):
         s3 = models.Status.objects.create(
             concept=self.item,
             registrationAuthority=self.ra,
-            registrationDate=datetime.date(2005, 7, 1),
+            effective_date=datetime.date(2005, 7, 1),
             state=self.ra.public_state,
             changeDetails="s3",
         )
@@ -192,7 +192,7 @@ class ManagedObjectVisibility(object):
         s4 = models.Status.objects.create(
             concept=self.item,
             registrationAuthority=self.ra,
-            registrationDate=datetime.date(2006, 1, 1),
+            effective_date=datetime.date(2006, 1, 1),
             until_date=datetime.date(2006, 12, 30),
             state=self.ra.locked_state,
             changeDetails="s4",
@@ -202,7 +202,7 @@ class ManagedObjectVisibility(object):
         s5 = models.Status.objects.create(
             concept=self.item,
             registrationAuthority=self.ra,
-            registrationDate=datetime.date(2006, 3, 1),
+            effective_date=datetime.date(2006, 3, 1),
             until_date=datetime.date(2006, 7, 30),
             state=self.ra.public_state,
             changeDetails="s5",
@@ -212,7 +212,7 @@ class ManagedObjectVisibility(object):
         s6 = models.Status.objects.create(
             concept=self.item,
             registrationAuthority=self.ra,
-            registrationDate=datetime.date(2006, 11, 1),
+            effective_date=datetime.date(2006, 11, 1),
             until_date=datetime.date(2008, 7, 30),
             state=self.ra.public_state,
             changeDetails="s6",
@@ -223,7 +223,7 @@ class ManagedObjectVisibility(object):
         s7 = models.Status.objects.create(
             concept=self.item,
             registrationAuthority=self.ra,
-            registrationDate=the_future,
+            effective_date=the_future,
             state=self.ra.locked_state,
             changeDetails="s7",
         )
@@ -312,7 +312,7 @@ class ManagedObjectVisibility(object):
         models.Status.objects.create(
             concept=self.item,
             registrationAuthority=self.ra,
-            registrationDate=timezone.now(),
+            effective_date=timezone.now(),
             state=models.STATES.candidate
         )
         self.item = models._concept.objects.get(id=self.item.id)  # Stupid cache
@@ -343,7 +343,7 @@ class ManagedObjectVisibility(object):
         s = models.Status.objects.create(
             concept=self.item,
             registrationAuthority=self.ra,
-            registrationDate=timezone.now(),
+            effective_date=timezone.now(),
             state=models.STATES.notprogressed
         )
         self.assertEqual(self.item.is_locked(), False)
@@ -365,7 +365,7 @@ class ManagedObjectVisibility(object):
         models.Status.objects.create(
             concept=self.item,
             registrationAuthority=self.ra,
-            registrationDate=timezone.now(),
+            effective_date=timezone.now(),
             state=models.STATES.candidate
         )
         self.item = models._concept.objects.get(id=self.item.id)  # Stupid cache
@@ -399,7 +399,7 @@ class ManagedObjectVisibility(object):
         models.Status.objects.create(
             concept=self.item,
             registrationAuthority=self.ra,
-            registrationDate=timezone.now(),
+            effective_date=timezone.now(),
             state=self.ra.locked_state
         )
         self.assertEqual(perms.user_can_view(r1, self.item), False)
@@ -439,7 +439,7 @@ class ManagedObjectVisibility(object):
         s = models.Status.objects.create(
             concept=self.item,
             registrationAuthority=self.ra,
-            registrationDate=timezone.now(),
+            effective_date=timezone.now(),
             state=self.ra.locked_state
         )
         # Editor 2 can view. Editor 1 cannot
@@ -487,7 +487,7 @@ class ManagedObjectVisibility(object):
         models.Status.objects.create(
             concept=self.item,
             registrationAuthority=self.ra,
-            registrationDate=timezone.now(),
+            effective_date=timezone.now(),
             state=self.ra.locked_state
         )
         # Editor 2 can no longer edit. Neither can Editor 1
@@ -868,7 +868,7 @@ class AristotleTestUtils(LoggedInViewPages, GeneralTestUtils,
         s = models.Status.objects.create(
             concept=item,
             registrationAuthority=ra,
-            registrationDate=timezone.now(),
+            effective_date=timezone.now(),
             state=ra.public_state
         )
         return s

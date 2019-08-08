@@ -104,25 +104,25 @@ class TestPrivatePermissions(BaseStewardOrgsTestCase, TestCase):
             item=self.private_oc,
             state=models.STATES.standard,
             user=self.su,
-            registrationDate=(timezone.now()-timedelta(days=5)).date()
+            effective_date=(timezone.now()-timedelta(days=5)).date()
         )
         self.regular_ra.register(
             item=self.regular_oc,
             state=models.STATES.standard,
             user=self.su,
-            registrationDate=(timezone.now()-timedelta(days=5)).date()
+            effective_date=(timezone.now()-timedelta(days=5)).date()
         )
         self.private_ra.register(
             item=self.regular_oc,
             state=models.STATES.standard,
             user=self.su,
-            registrationDate=(timezone.now()-timedelta(days=5)).date()
+            effective_date=(timezone.now()-timedelta(days=5)).date()
         )
         self.regular_ra.register(
             item=self.private_oc,
             state=models.STATES.standard,
             user=self.su,
-            registrationDate=(timezone.now()-timedelta(days=5)).date()
+            effective_date=(timezone.now()-timedelta(days=5)).date()
         )
 
         self.assertTrue(

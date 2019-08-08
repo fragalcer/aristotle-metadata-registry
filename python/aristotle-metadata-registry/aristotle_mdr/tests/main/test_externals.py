@@ -68,7 +68,7 @@ class AristotleAutocompletes(utils.AristotleTestUtils, TestCase):
         self.make_review_request(self.item1, self.registrar)
 
         self.ra.register(self.item1,models.STATES.standard,self.registrar,
-            registrationDate=timezone.now()+datetime.timedelta(days=-1)
+            effective_date=timezone.now()+datetime.timedelta(days=-1)
         )
         self.assertTrue(models.ObjectClass.objects.get(name='AC1').is_public())
 
@@ -114,11 +114,11 @@ class AristotleAutocompletes(utils.AristotleTestUtils, TestCase):
         self.assertFalse(dp.is_public())
 
         self.ra.register(dp,models.STATES.incomplete,self.su,
-            registrationDate=timezone.now()+datetime.timedelta(days=-7)
+            effective_date=timezone.now()+datetime.timedelta(days=-7)
         )
 
         self.ra.register(dp,models.STATES.standard,self.su,
-            registrationDate=timezone.now()+datetime.timedelta(days=-1)
+            effective_date=timezone.now()+datetime.timedelta(days=-1)
         )
 
         response = self.client.get(
