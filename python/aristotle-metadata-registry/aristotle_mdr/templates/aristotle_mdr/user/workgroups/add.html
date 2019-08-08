@@ -2,7 +2,7 @@
 {% load i18n %}
 
 {% block collapse-link %}
-    <i class="fa fa-users fa-fw"></i> Add Workgroup </a>
+    <i class="fa fa-users fa-fw"></i> Add Workgroup
 {% endblock %}
 
 {% block sidebar %}
@@ -10,7 +10,7 @@
 {% endblock %}
 
 {% block page %}
-<h1>{% block title %}New Workgroup{% endblock %}</h1>
+    <h1>{% block title %}New Workgroup{% endblock %}</h1>
     <form action="" method="POST">
         {% csrf_token %}
 
@@ -20,12 +20,12 @@
                     {{ form.stewardship_organisation.label_tag }}<br>
                     {{ form.stewardship_organisation }}
                     {% if form.stewardship_organisation.errors %}
-                    <div class="alert alert-danger">
-                        {{ form.stewardship_organisation.errors }}
-                    </div>
+                        <div class="alert alert-danger">
+                            {{ form.stewardship_organisation.errors }}
+                        </div>
                     {% endif %}
                     <p class="help-block">
-                         The organisation will this workgroup belong to
+                        The organisation will this workgroup belong to
                     </p>
                 </div>
             </div>
@@ -34,12 +34,12 @@
                     {{ form.name.label_tag }}<br>
                     <input class="form-control" id="{{form.name.id_for_label}}" value="{{ form.name.value|default:"" }}" name="name">
                     {% if form.name.errors %}
-                    <div class="alert alert-danger">
-                        {{ form.name.errors }}
+                        <div class="alert alert-danger">
+                            {{ form.name.errors }}
                         </div>
                     {% endif %}
                     <p class="help-block">
-                         {{ form.name.help_text }}
+                        {{ form.name.help_text }}
                     </p>
                 </div>
             </div>
@@ -49,13 +49,13 @@
             {{ form.definition.label_tag }}
             {% if form.definition.errors %}
                 <div class="alert alert-danger">
-                {{ form.definition.errors }}
+                    {{ form.definition.errors }}
                 </div>
             {% endif %}
-                <p class="help-block">
-                 {{ form.definition.help_text }}
-                </p>
-                {{ form.definition }}
+            <p class="help-block">
+                {{ form.definition.help_text }}
+            </p>
+            {{ form.definition }}
         </div>
 
         <button type="Submit" class="btn btn-primary">Create new workgroup</button>

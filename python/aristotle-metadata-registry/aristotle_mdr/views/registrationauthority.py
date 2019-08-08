@@ -174,16 +174,18 @@ class MembersRegistrationAuthority(LoginRequiredMixin, PermissionRequiredMixin, 
     permission_required = "aristotle_mdr.view_registrationauthority_details"
     raise_exception = True
     redirect_unauthenticated_users = True
-
     pk_url_kwarg = 'iid'
     context_object_name = "item"
 
     active_tab = 'members'
 
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         context.update(self.get_tab_context())
         context['is_manager'] = self.is_manager(self.object)
+        context['ra_members'] = context['object'].members.all()
+        context['managers'] = set(context['object'].managers.all().values_list("pk", flat=True))
+        context['registrars'] = set(context['object'].registrars.all().values_list("pk", flat=True))
         return context
 
 

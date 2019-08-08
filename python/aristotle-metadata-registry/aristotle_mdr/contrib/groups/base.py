@@ -22,8 +22,8 @@ class AbstractMembershipBase(ModelBase):
     group_class = None
     group_kwargs: Dict[str, str] = {}
 
-    def __new__(cls, name, bases, attrs):  # noqa
-        clsobj = super().__new__(cls, name, bases, attrs)
+    def __new__(mcs, name, bases, attrs):  # noqa
+        clsobj = super().__new__(mcs, name, bases, attrs)
 
         try:
             field = clsobj._meta.get_field("role")
@@ -78,8 +78,8 @@ class AbstractMultipleMembership(AbstractMembershipModel, metaclass=AbstractMemb
 
 
 class AbstractGroupBase(ModelBase):
-    def __new__(cls, name, bases, attrs):  # noqa
-        clsobj = super().__new__(cls, name, bases, attrs)
+    def __new__(mcs, name, bases, attrs):  # noqa
+        clsobj = super().__new__(mcs, name, bases, attrs)
 
         try:
             field = clsobj._meta.get_field("state")

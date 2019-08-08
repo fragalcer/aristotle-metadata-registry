@@ -66,8 +66,6 @@ defaults:
       - cd .. 
     script: tox -e dj1.11-linux-ally-$ALLY-module_amr
 
-  - &deploy_stage
-
 matrix:
 
   include:
@@ -85,7 +83,7 @@ matrix:
       install:
         - pip install mypy
       python: 3.6
-      script: mypy ./python/*/aristotle_*
+      script: ./scripts/type.sh
 
     - name: "JS Lint"
       language: node_js
@@ -177,19 +175,7 @@ matrix:
       name: "Deploy"
       if: branch = master
       install: skip
-      script: ./scripts/buildandcopy.sh
-      after_success: true
-      deploy:
-        provider: pypi
-        user: Samuel.Spencer
-        skip_upload_docs: true
-        skip_cleanup: true
-        password:
-          secure: fNL+70u1QPgkC3+6iLSPBBeo/J1VrwVn6Tg9PdKR3n4X/m6MgAboDc93CfccfsxVxGqsIRBtEfUwRCJ6MrajWqgfQhjQ9KodiYzPVS8vPUQyOtn73AB8iPYKgKX1pFn6UVXcnI67RmtPyJJEUFPbqy5saKZfRpjVRH3vjM2mDJ0=
-        on:
-          branch: master
-        distributions: sdist bdist_wheel
-        repo: aristotle-mdr/aristotle-metadata-registry
+      script: ./scripts/buildandcopy.sh --manual
 
 after_success:
   - ./scripts/coverage_reporter.sh $MODULE

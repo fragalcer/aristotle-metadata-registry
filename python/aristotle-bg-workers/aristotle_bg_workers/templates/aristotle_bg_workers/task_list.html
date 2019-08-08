@@ -1,47 +1,47 @@
 {% load i18n aristotle_tags %}
 
 <table class="table">
-<thead>
+    <thead>
     <tr>
         <th>{% trans 'Name or ID' %}</th>
         <th>{% trans 'Status' %}</th>
         <th>
             {% if sort == "mod_asc" %}
-            <a href="?{% paginator_get request page.number %}&sort=mod_desc"><i class="fa fa-sort-asc"></i></a>
+                <a href="?{% paginator_get request page.number %}&sort=mod_desc"><i class="fa fa-sort-asc"></i></a>
             {% elif sort == "mod_desc" %}
-            <a href="?{% paginator_get request page.number %}&sort=mod_asc"><i class="fa fa-sort-desc"></i></a>
+                <a href="?{% paginator_get request page.number %}&sort=mod_asc"><i class="fa fa-sort-desc"></i></a>
             {% else %}
-            <a href="?{% paginator_get request page.number %}&sort=mod_desc"><i class="fa fa-sort"></i></a>
+                <a href="?{% paginator_get request page.number %}&sort=mod_desc"><i class="fa fa-sort"></i></a>
             {% endif %}
             {% trans 'Completed' %}
         </th>
         <th>{% trans 'Run by' %}</th>
         {% if not noresult %}
-        <th>{% trans 'Result' %}</th>
+            <th>{% trans 'Result' %}</th>
         {% endif %}
     </tr>
-</thead>
-<tbody>
+    </thead>
+    <tbody>
     {% for item in annotated_list %}
-    <tr>
-        <td data-task-id="{{ item.task_id }}">
-            {% firstof item.display_name item.task_name item.task_id %}
-        </td>
-        <td>{{ item.status }}
-        </td>
-        <td>{{ item.date_done }}</td>
-        <td>{{ item.requester }}</td>
-        {% if not noresult %}
-        <td>
-            <tt>{{ item.safe_result.result|linebreaks }}</tt>
-            {% if item.traceback %}
-            <tt>
-            {{ item.traceback|linebreaks }}
-            </tt>
+        <tr>
+            <td data-task-id="{{ item.task_id }}">
+                {% firstof item.display_name item.task_name item.task_id %}
+            </td>
+            <td>{{ item.status }}
+            </td>
+            <td>{{ item.date_done }}</td>
+            <td>{{ item.requester }}</td>
+            {% if not noresult %}
+                <td>
+                    <tt>{{ item.safe_result.result|linebreaks }}</tt>
+                    {% if item.traceback %}
+                        <tt>
+                            {{ item.traceback|linebreaks }}
+                        </tt>
+                    {% endif %}
+                </td>
             {% endif %}
-        </td>
-        {% endif %}
-    </tr>
+        </tr>
     {% endfor %}
-</tbody>
+    </tbody>
 </table>

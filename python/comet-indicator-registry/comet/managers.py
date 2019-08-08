@@ -19,5 +19,7 @@ class FrameworkDimensionQuerySet(TreeQuerySet):
         return self.filter(framework__in=visible_frameworks)
 
 
-class FrameworkDimensionManager(models.Manager.from_queryset(FrameworkDimensionQuerySet), TreeManager):
-    pass
+class FrameworkDimensionManager(TreeManager):
+
+    def get_queryset(self):
+        return FrameworkDimensionQuerySet(self.model, using=self._db)

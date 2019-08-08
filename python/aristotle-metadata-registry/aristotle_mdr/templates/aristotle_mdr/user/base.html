@@ -23,9 +23,14 @@
                 <span class="icon-bar"></span>
             </button>
             <a href="#" class="navbar-brand visible-xs" style="float:none;">
-                {# % block collapse-link % #}
+                {% comment %}
+                The collapse-link block is just visible on small devices.
+                Should we keep this?
+                Why is this currently not active?
+                {% endcomment %}
+{#                {% block collapse-link %}#}
                     <i class="fa fa-th fa-fw"></i> Dashboard Menu
-                {# % endblock % #}
+{#                {% endblock %}#}
             </a>
         </div>
         <div class="collapse navbar-collapse" id="dashboard-nav">

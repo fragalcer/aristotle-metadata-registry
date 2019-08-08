@@ -19,4 +19,4 @@ def user_can_make_link(user):
     """
     If a user can create metadata, they can make links
     """
-    return perms.user_is_editor(user)
+    return perms.user_is_authenticated_and_active(user)

@@ -364,13 +364,13 @@ class RegistrationAuthority(Organization):
     @property
     def members(self):
         from django.contrib.auth import get_user_model
-        User = get_user_model()
+        um = get_user_model()
 
         reg_pks = list(self.registrars.all().values_list("pk", flat=True))
         man_pks = list(self.managers.all().values_list("pk", flat=True))
 
         pks = set(reg_pks + man_pks)
-        return User.objects.filter(pk__in=pks)
+        return um.objects.filter(pk__in=pks)
 
     @property
     def is_active(self):

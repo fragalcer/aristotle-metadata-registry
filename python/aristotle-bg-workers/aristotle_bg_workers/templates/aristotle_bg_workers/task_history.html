@@ -2,7 +2,7 @@
 {% load i18n %}
 
 {% block collapse-link %}
-    <i class="fa fa-users fa-fw"></i> Task list </a>
+    <i class="fa fa-users fa-fw"></i> Task list
 {% endblock %}
 
 {% block sidebar %}
@@ -10,8 +10,7 @@
 {% endblock %}
 
 {% block page %}
-<h1><i class="fa fa-tasks"></i> {% block title %}Task history{% endblock %}</h1>
-<p><a class="btn btn-default" href="{%url 'aristotle_bg_workers:run_task' %}">{% trans "Back" %}</a></p>
-{% include "aristotle_bg_workers/paginated_task_list.html" with page=page_obj show_all=True %}
-
+    <h1><i class="fa fa-tasks"></i> {% block title %}Task history{% endblock %}</h1>
+    <p><a class="btn btn-default" href="{%url 'aristotle_bg_workers:run_task' %}">{% trans "Back" %}</a></p>
+    {% include "aristotle_bg_workers/paginated_task_list.html" with page=page_obj show_all=True %}
 {% endblock %}

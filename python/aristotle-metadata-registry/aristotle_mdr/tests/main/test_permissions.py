@@ -30,7 +30,7 @@ class SuperuserPermissions(TestCase):
         self.assertTrue(perms.user_can_view(self.su,None))
 
     def test_is_editor(self):
-        self.assertTrue(perms.user_is_editor(self.su))
+        self.assertTrue(perms.user_is_authenticated_and_active(self.su))
 
     def test_is_registrar(self):
         self.assertTrue(perms.user_is_registrar(self.su))

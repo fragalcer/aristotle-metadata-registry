@@ -278,7 +278,6 @@ class TestSearch(utils.AristotleTestUtils, TestCase):
         sqs = SearchQuerySet()
         self.assertEqual(len(sqs.auto_query('Hello')), 1)
 
-
         # User is not in workgroup, so there should be no results
         from aristotle_mdr.forms.search import get_permission_sqs
         psqs = get_permission_sqs().auto_query('Hello').apply_permission_checks(self.viewer)

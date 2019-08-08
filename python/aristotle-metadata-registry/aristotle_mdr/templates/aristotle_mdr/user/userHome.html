@@ -6,7 +6,7 @@
 {% block title %}My Dashboard{% endblock %}
 
 {% block page %}
-<h1><a href="#">My Dashboard</a> <small>- {% firstof user.get_full_name user.email %}</small></h1>
+    <h1><a href="#">My Dashboard</a> <small>- {% firstof user.get_full_name user.email %}</small></h1>
     <div class='row'>
         <section class="col-md-8">
             <div class='panel-body'>
@@ -29,16 +29,16 @@
                     <i class="fa fa-envelope fa-fw"></i>
                     <span class="panel-title" href="{% url 'aristotle:userInbox' %}">Recent Notifications</span>
                 </div>
-                    <ul class="list-group">
+                <ul class="list-group">
                     {% for item in user.notifications.unread|slice:':5' %}
-                      <li class="list-group-item">
-                        {{ item }}
-                      </li>
+                        <li class="list-group-item">
+                            {{ item }}
+                        </li>
                     {% empty %}
                         <li class="list-group-item"> No unread notifications </li>
                     {% endfor %}
-                    </ul>
-                    <div class="panel-footer"><a href="{% url 'aristotle:userInbox' %}">See more</a></div>
+                </ul>
+                <div class="panel-footer"><a href="{% url 'aristotle:userInbox' %}">See more</a></div>
             </div>
         </section>
 
@@ -53,12 +53,12 @@
 
                 <div class="list-group">
                     {% for view in recently_viewed %}
-                      <a class="list-group-item" href="{{ view.concept.get_absolute_url }}">
-                        {{ view.concept }}
-                        <small>({{ view.concept.item_type_name }})</small>
-                        <br>
-                        <small><time datetime="{{ view.view_date|isotime }}" data-time-from="true">{{ view.view_date }}</time></small>
-                      </a>
+                        <a class="list-group-item" href="{{ view.concept.get_absolute_url }}">
+                            {{ view.concept }}
+                            <small>({{ view.concept.item_type_name }})</small>
+                            <br>
+                            <small><time datetime="{{ view.view_date|isotime }}" data-time-from="true">{{ view.view_date }}</time></small>
+                        </a>
 
                     {% empty %}
                         <a class="list-group-item"> No recently viewed metadata </a>
@@ -76,19 +76,19 @@
                     </a>
                 </div>
                 <ul class="list-group">
-                {% for data in recentdata %}
-                    <li class="list-group-item">
-                      <span>{{ data.revision.comment }}</span>
-                      <span><small><time datetime=" {{ data.revision.date_created|isotime }}">{{ data.revision.date_created }}</time></small></span>
-                        <ul>
-                            {% for item in data.versions %}
-                                  <li><a href="{{ item.url }}">{{ item.text }} ({{ item.id }})</a></li>
-                            {% endfor %}
-                        </ul>
-                    </li>
-                {% empty %}
-                    <li class="list-group-item"> No recent items </li>
-                {% endfor %}
+                    {% for data in recentdata %}
+                        <li class="list-group-item">
+                            <span>{{ data.revision.comment }}</span>
+                            <span><small><time datetime=" {{ data.revision.date_created|isotime }}">{{ data.revision.date_created }}</time></small></span>
+                            <ul>
+                                {% for item in data.versions %}
+                                    <li><a href="{{ item.url }}">{{ item.text }} ({{ item.id }})</a></li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    {% empty %}
+                        <li class="list-group-item"> No recent items </li>
+                    {% endfor %}
                 </ul>
             </div>
         </section>

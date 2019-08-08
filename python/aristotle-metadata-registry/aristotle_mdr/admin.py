@@ -171,11 +171,11 @@ class ConceptAdmin(admin.ModelAdmin):
             return perms.user_can_edit(request.user, obj)
 
     def has_add_permission(self, request):
-        return perms.user_is_editor(request.user)
+        return perms.user_is_authenticated_and_active(request.user)
 
     def has_delete_permission(self, request, obj=None):
         if obj is None:
-            return perms.user_is_editor(request.user)
+            return perms.user_is_authenticated_and_active(request.user)
         else:
             return request.user.has_perm("aristotle_mdr.delete_concept_from_admin", obj)
 

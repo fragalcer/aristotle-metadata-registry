@@ -484,11 +484,6 @@ def is_active_extension(extension_name):
 
 
 @register.filter
-def user_roles_for_group(group, user):
-    return group.list_roles_for_user(user)
-
-
-@register.filter
 def get_dataelements_from_m2m(ded, field_name):
 
     throughmodel = getattr(ded, field_name).through

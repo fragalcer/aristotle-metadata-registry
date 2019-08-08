@@ -1,34 +1,26 @@
+import json
+import logging
 from typing import Any
 from django.apps import apps
 from django.contrib.contenttypes.models import ContentType
 from django.conf import settings
-from django.core.exceptions import PermissionDenied, FieldDoesNotExist, ObjectDoesNotExist
+from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.urls import reverse
-from django.db import transaction
 from django.db.models.query import QuerySet
-from django.http import HttpResponseRedirect, HttpResponseForbidden, Http404, HttpResponse
+from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render, redirect, get_object_or_404
-from django.utils.translation import ugettext_lazy as _
 from django.views.generic import TemplateView, RedirectView, DeleteView, UpdateView
 from django.utils.module_loading import import_string
 from django.utils.functional import SimpleLazyObject
 from django.utils import timezone
 from formtools.wizard.views import SessionWizardView
 
-import json
-
-import reversion
-
 from aristotle_mdr.perms import (
     user_can_view, user_can_edit,
-    user_can_add_status,
     user_can_publish_object,
     user_can_supersede,
-    user_can_add_status
+    user_can_add_status,
 )
-from aristotle_mdr import perms
-from aristotle_mdr.utils import url_slugify_concept
-from aristotle_mdr.forms import EditStatusForm
 from aristotle_mdr import forms as MDRForms
 from aristotle_mdr import models as MDR
 from aristotle_mdr.utils import (
@@ -36,11 +28,11 @@ from aristotle_mdr.utils import (
     get_concepts_for_apps,
     fetch_aristotle_settings,
     fetch_aristotle_downloaders,
-    fetch_metadata_apps
+    fetch_metadata_apps,
+    url_slugify_concept,
 )
 from aristotle_mdr.views.utils import (
     generate_visibility_matrix,
-    CachePerItemUserMixin,
     TagsMixin
 )
 from aristotle_mdr.contrib.slots.models import Slot
@@ -50,9 +42,6 @@ from aristotle_bg_workers.tasks import register_items
 from aristotle_bg_workers.utils import run_task_on_commit
 
 from reversion.models import Version
-
-
-import logging
 
 logger = logging.getLogger(__name__)
 logger.debug("Logging started for " + __name__)
@@ -395,15 +384,13 @@ def not_found(request, path):
     return render(request, "404.html", context)
 
 
-def handler500(request, *args, **argv):
+def handler500(request):
     return render(request, '500.html')
 
 
 def create_list(request):
-    if request.user.is_anonymous():
+    if not request.user.is_authenticated():
         return redirect(reverse('friendly_login') + '?next=%s' % request.path)
-    if not perms.user_is_editor(request.user):
-        raise PermissionDenied
 
     aristotle_apps = fetch_aristotle_settings().get('CONTENT_EXTENSIONS', [])
     aristotle_apps += ["aristotle_mdr"]
@@ -676,7 +663,7 @@ class DeleteStatus(DeleteView):
 
 class EditStatus(UpdateView):
     template_name = 'aristotle_mdr/status_edit.html'
-    form_class = EditStatusForm
+    form_class = MDRForms.EditStatusForm
     model = MDR.Status
 
     def get_object(self, queryset=None):

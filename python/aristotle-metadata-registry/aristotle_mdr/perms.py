@@ -2,7 +2,6 @@ from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from django.db.models import Q
 from aristotle_mdr.utils import fetch_aristotle_settings
-
 from aristotle_mdr.contrib.reviews.const import REVIEW_STATES
 
 import logging
@@ -139,11 +138,8 @@ def user_can_edit(user, item):
     return _can_edit
 
 
-# TODO remove this
-def user_is_editor(user, workgroup=None):
-    if user.is_anonymous():
-        return False
-    return user.is_active
+def user_is_authenticated_and_active(user):
+    return user.is_authenticated() and user.is_active
 
 
 def user_can_submit_to_workgroup(user, workgroup):
@@ -447,7 +443,7 @@ def edit_other_users_account(viewing_user, viewed_user):
 
 
 def view_other_users_account(viewing_user, viewed_user):
-    from aristotle_mdr.models import StewardOrganisation, StewardOrganisationMembership
+    from aristotle_mdr.models import StewardOrganisation
     user = viewing_user
     if user.is_anonymous:
         return False
@@ -458,7 +454,6 @@ def view_other_users_account(viewing_user, viewed_user):
     allowed_roles = [
         StewardOrganisation.roles.admin,
     ]
-    kwargs = {"members__user": user, "members__role__in": allowed_roles}
 
     return StewardOrganisation.objects.filter(
         members__user=viewed_user
@@ -468,20 +463,15 @@ def view_other_users_account(viewing_user, viewed_user):
 
 
 def user_can_create_workgroup(user, steward_org=None):
-    from aristotle_mdr.models import StewardOrganisation, StewardOrganisationMembership
-    if user.is_superuser:
-        return True
-    allowed_roles = [
-        StewardOrganisation.roles.admin,
-    ]
-    kwargs = {"members__user": user, "members__role__in": allowed_roles}
-    if steward_org:
-        kwargs["pk"] = steward_org.pk
-    return StewardOrganisation.objects.filter(**kwargs).active().exists()
+    return user_is_superuser_or_has_admin_role_in_steward_organisation(user, steward_org)
 
 
 def user_can_create_registration_authority(user, steward_org=None):
-    from aristotle_mdr.models import StewardOrganisation, StewardOrganisationMembership
+    return user_is_superuser_or_has_admin_role_in_steward_organisation(user, steward_org)
+
+
+def user_is_superuser_or_has_admin_role_in_steward_organisation(user, steward_org=None):
+    from aristotle_mdr.models import StewardOrganisation
     if user.is_superuser:
         return True
     allowed_roles = [

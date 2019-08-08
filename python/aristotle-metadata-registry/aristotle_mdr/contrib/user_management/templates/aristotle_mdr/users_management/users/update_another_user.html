@@ -2,33 +2,31 @@
 {% load bootstrap3 static %}
 
 {% block title %}Edit details for {% firstof object.short_name object.full_name object.email %}{% endblock %}
-{% block collapse-link%}<i class="fa fa-user fa-fw"></i> Edit account details for <em>{% firstof object.short_name object.full_name object.email %}</em></a>{% endblock %}
+{% block collapse-link%}<i class="fa fa-user fa-fw"></i> Edit account details for <em>{% firstof object.short_name object.full_name object.email %}</em>{% endblock %}
 {% block sidebar %}
     {% include "aristotle_mdr/user/userSideBar.html" with activeTab='edit' %}
 {% endblock %}
 
 {% block outerpage %}
     <div class="col-md-8">
-      <h1>
-      <i class="fa fa-user fa-fw"></i> Edit account details for <em>{% firstof object.short_name object.full_name object.email %}</em></a>
-      </h1>
-      <form enctype="multipart/form-data" method="post">{% csrf_token %}
-        {% bootstrap_form form %}
+        <h1>
+            <i class="fa fa-user fa-fw"></i> Edit account details for <em>{% firstof object.short_name object.full_name object.email %}</em>
+        </h1>
+        <form enctype="multipart/form-data" method="post">{% csrf_token %}
+            {% bootstrap_form form %}
 
-        {% buttons %}
-          <a class="btn btn-default" href="{% url 'aristotle-user:view_another_user' object.pk %}">
-            <i class="fa fa-times fa-fw"></i>Cancel
-          </a>
-          <button type="submit" class="btn btn-primary">
-              <i class="fa fa-check fa-fw"></i>Save Changes
-          </button>
-        {% endbuttons %}
+            {% buttons %}
+                <a class="btn btn-default" href="{% url 'aristotle-user:view_another_user' object.pk %}">
+                    <i class="fa fa-times fa-fw"></i>Cancel
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa fa-check fa-fw"></i>Save Changes
+                </button>
+            {% endbuttons %}
+        </form>
     </div>
-
-    </form>
-
 {% endblock %}
 
 {% block after_bundle %}
-  <script src="{% static 'constrainedfilefield/js/file_checker.js' %}"></script>
+    <script src="{% static 'constrainedfilefield/js/file_checker.js' %}"></script>
 {% endblock %}
