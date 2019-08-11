@@ -87,27 +87,46 @@ def concept_by_uuid(request, uuid):
     return redirect(url_slugify_concept(item))
 
 
-def measure(request, iid, model_slug, name_slug):
-    return managed_item(request, "measure", iid)
+class ManagedItemView(TemplateView):
+    def get_item(self):
+        item_id = self.kwargs.pop('iid')
+        model_slug = self.kwargs.pop('model_slug')
+
+        model_class = get_object_or_404(ContentType, model=model_slug).model_class()
+        item = get_object_or_404(model_class, pk=item_id).item
+
+        return item
+
+    def get_template_names(self):
+        if self.template_name:
+            return [self.template_name]
+        # Fall back to fallback template
+        return [getattr(self.managed_item, 'template', 'aristotle_mdr/manageditems/fallback.html')]
+
+    def dispatch(self, request, *args, **kwargs):
+        self.managed_item = self.get_item()
+
+        if not user_can_view(request.user, self.managed_item):
+            raise PermissionDenied
+
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+
+        context.update(
+            {'item': self.managed_item,
+             'group': self.managed_item.stewardship_organisation,
+             'model_name': self.managed_item.meta().model_name,
+             'activetab': 'item'
+             }
+        )
+
+        return context
 
 
-# TODO: Switch to CBV
-def managed_item(request, model_slug, iid):
-    model_class = get_object_or_404(ContentType, model=model_slug).model_class()
-    item = get_object_or_404(model_class, pk=iid).item
-
-    if not user_can_view(request.user, item):
-        raise PermissionDenied
-
-    return render(
-        request, [getattr(item, 'template', "aristotle_mdr/manageditems/fallback.html")],
-        {
-            'item': item,
-            'group': item.stewardship_organisation,
-            'model_name': item.meta().model_name,
-            "activetab": "item",
-        }
-    )
+class MeasureView(ManagedItemView):
+    template_name = 'aristotle_mdr/manageditems/measure.html'
 
 
 class ConceptRenderView(TagsMixin, TemplateView):

@@ -7,7 +7,6 @@ from django.test import TestCase, override_settings, tag, RequestFactory
 from django.urls import reverse
 from django.utils import timezone
 from django.contrib.auth.models import AnonymousUser
-from django.contrib.messages import get_messages
 
 import aristotle_mdr.models as models
 import aristotle_mdr.perms as perms
@@ -730,7 +729,6 @@ class GeneralItemPageTestCase(utils.AristotleTestUtils, TestCase):
         )
         self.assertEqual(response.status_code, 404)
 
-    @skip('Concept comparator temporarily disabled')
     def test_comparator_with_bad_version_data(self):
         """Test that the comparator still works with garbled version data"""
         versions = self.create_versions()
@@ -753,12 +751,12 @@ class GeneralItemPageTestCase(utils.AristotleTestUtils, TestCase):
             reverse('aristotle:compare_concepts') + qparams
         )
         self.assertEqual(response.status_code, 200)
+        # Check that the cannot compare is set by bad version data, and that the page loads
+        self.assertEqual(response.context['cannot_compare'], True)
 
-        # TODO: seems like there should be more than just checking that the page loads
 
-
-# These are run by all item types
 class LoggedInViewConceptPages(utils.AristotleTestUtils):
+    """These are run by all item types"""
     defaults = {}
 
     def setUp(self):

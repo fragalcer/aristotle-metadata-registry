@@ -1,20 +1,11 @@
-from braces.views import LoginRequiredMixin, PermissionRequiredMixin
-# from django.contrib.auth import get_user_model
-from collections import defaultdict
-from django.urls import reverse
-from django.http import HttpResponseRedirect
-from django.shortcuts import redirect, get_object_or_404
-from django.template.defaultfilters import slugify
-from django.views.generic import (
-    CreateView, DetailView, ListView, UpdateView
-)
+import logging
 
 from aristotle_mdr import forms as MDRForms
 from aristotle_mdr import models as MDR
+from aristotle_mdr.contrib.groups.backends import GroupURLManager
 from aristotle_mdr.perms import user_is_workgroup_manager
 from aristotle_mdr.views.utils import (
     paginate_sort_opts,
-    paginated_workgroup_list,
     workgroup_item_statuses,
     ObjectLevelPermissionRequiredMixin,
     SingleRoleChangeView,
@@ -22,14 +13,16 @@ from aristotle_mdr.views.utils import (
     GenericListWorkgroup,
     UserFormViewMixin
 )
+from aristotle_mdr.models import Workgroup
 
-from aristotle_mdr.contrib.groups.backends import (
-    GroupURLManager, GroupMixin,
-    HasRoleMixin, HasRolePermissionMixin,
+from braces.views import LoginRequiredMixin, PermissionRequiredMixin
+from django.http import HttpResponseRedirect
+from django.shortcuts import redirect, get_object_or_404
+from django.template.defaultfilters import slugify
+from django.urls import reverse
+from django.views.generic import (
+    CreateView, DetailView, ListView, UpdateView, FormView
 )
-
-
-import logging
 
 logger = logging.getLogger(__name__)
 logger.debug("Logging started for " + __name__)
@@ -126,19 +119,12 @@ class ArchiveView(LoginRequiredMixin, WorkgroupContextMixin, ObjectLevelPermissi
         return HttpResponseRedirect(self.workgroup.get_absolute_url())
 
 
-class AddMembersView(LoginRequiredMixin, WorkgroupContextMixin, ObjectLevelPermissionRequiredMixin, UpdateView):
-    # TODO: Replace UpdateView with DetailView, FormView
-    # This is required for Django 1.8 only.
-
+class AddMembersView(LoginRequiredMixin, WorkgroupContextMixin, ObjectLevelPermissionRequiredMixin, FormView):
     template_name = 'aristotle_mdr/actions/addWorkgroupMember.html'
     form_class = MDRForms.workgroups.AddMembers
     permission_required = "aristotle_mdr.change_workgroup"
 
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        # TODO: Not happy about this as its not an updateForm
-        kwargs.pop('instance')
-        return kwargs
+    pk_url_kwarg = 'iid'
 
     def get_context_data(self, **kwargs):
         kwargs.update({
@@ -146,10 +132,19 @@ class AddMembersView(LoginRequiredMixin, WorkgroupContextMixin, ObjectLevelPermi
         })
         return super().get_context_data(**kwargs)
 
+    def get_object(self):
+        return self.get_workgroup()
+
+    def get_workgroup(self):
+        pk = self.kwargs.get(self.pk_url_kwarg)
+        workgroup = get_object_or_404(Workgroup, pk=pk)
+        return workgroup
+
     def form_valid(self, form):
         user = form.cleaned_data['user']
         role = form.cleaned_data['role']
-        self.get_object().giveRoleToUser(role, user)
+        self.get_workgroup().giveRoleToUser(role, user)
+
         return redirect(self.get_success_url())
 
     def get_initial(self):

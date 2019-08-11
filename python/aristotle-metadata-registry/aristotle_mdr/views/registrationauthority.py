@@ -12,6 +12,7 @@ from django.views.generic import (
     ListView,
     DetailView,
     UpdateView,
+    FormView
 )
 from django.views.generic.detail import SingleObjectMixin
 from django.core.exceptions import PermissionDenied
@@ -105,28 +106,27 @@ class CreateRegistrationAuthority(UserFormViewMixin, LoginRequiredMixin, Permiss
         return reverse('aristotle:registrationAuthority', kwargs={'iid': self.object.id})
 
 
-class AddUser(LoginRequiredMixin, ObjectLevelPermissionRequiredMixin, UpdateView):
+class AddUser(LoginRequiredMixin, ObjectLevelPermissionRequiredMixin, FormView):
     template_name = "aristotle_mdr/user/registration_authority/add_user.html"
     permission_required = "aristotle_mdr.change_registrationauthority_memberships"
     raise_exception = True
     redirect_unauthenticated_users = True
     form_class = actions.AddRegistrationUserForm
 
-    model = MDR.RegistrationAuthority
-    pk_url_kwarg = 'iid'
-    context_object_name = "item"
-
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs.update({'user': self.request.user})
 
-        # TODO: Not happy about this as its not an updateForm
-        kwargs.pop('instance')
         return kwargs
 
     def dispatch(self, request, *args, **kwargs):
         self.item = get_object_or_404(MDR.RegistrationAuthority, pk=self.kwargs.get('iid'))
+
         return super().dispatch(request, *args, **kwargs)
+
+    def get_object(self):
+        # For object level permissions mix in
+        return self.item
 
     def get_context_data(self, **kwargs):
         """
@@ -196,7 +196,6 @@ class EditRegistrationAuthority(LoginRequiredMixin, ObjectLevelPermissionRequire
     permission_required = "aristotle_mdr.change_registrationauthority"
     raise_exception = True
     redirect_unauthenticated_users = True
-    object_level_permissions = True
 
     fields = ('name', 'definition', 'active')
     widgets = {
@@ -230,7 +229,6 @@ class EditRegistrationAuthorityStates(LoginRequiredMixin,
     permission_required = "aristotle_mdr.change_registrationauthority"
     raise_exception = True
     redirect_unauthenticated_users = True
-    object_level_permissions = True
 
     form_class = EditRegistationAuthorityForm
 

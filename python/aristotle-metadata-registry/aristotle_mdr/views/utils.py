@@ -381,25 +381,7 @@ class GenericListWorkgroup(LoginRequiredMixin, SortedListView):
 
 
 class ObjectLevelPermissionRequiredMixin(PermissionRequiredMixin):
-    def check_permissions(self, request):
-        """
-        Returns True or False depending on whether or not the user has permission to perform an action
-
-        If you're using it as a mixin you are required to set either 'object' or get_object
-        """
-        perms = self.get_permission_required(request)
-        # TODO handle permission not required
-
-        has_permission = False
-
-        if hasattr(self, 'object') and self.object is not None:
-            has_permission = request.user.has_perm(self.get_permission_required(request), self.object)
-        elif hasattr(self, 'get_object') and callable(self.get_object):
-            has_permission = request.user.has_perm(self.get_permission_required(request), self.get_object())
-        else:
-            has_permission = request.user.has_perm(self.get_permission_required(request))
-
-        return has_permission
+    object_level_permissions = True
 
 
 class GroupMemberMixin(object):
@@ -431,7 +413,6 @@ class GroupMemberMixin(object):
 class RoleChangeView(GroupMemberMixin, LoginRequiredMixin, ObjectLevelPermissionRequiredMixin, BaseDetailView, FormView):
     raise_exception = True
     redirect_unauthenticated_users = True
-    object_level_permissions = True
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -455,7 +436,6 @@ class RoleChangeView(GroupMemberMixin, LoginRequiredMixin, ObjectLevelPermission
 class SingleRoleChangeView(GroupMemberMixin, LoginRequiredMixin, ObjectLevelPermissionRequiredMixin, BaseDetailView, FormView):
     raise_exception = True
     redirect_unauthenticated_users = True
-    object_level_permissions = True
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -476,7 +456,6 @@ class SingleRoleChangeView(GroupMemberMixin, LoginRequiredMixin, ObjectLevelPerm
 class MemberRemoveFromGroupView(GroupMemberMixin, LoginRequiredMixin, ObjectLevelPermissionRequiredMixin, DetailView):
     raise_exception = True
     redirect_unauthenticated_users = True
-    object_level_permissions = True
 
     http_method_names = ['get', 'post']
 

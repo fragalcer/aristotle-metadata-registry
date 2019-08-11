@@ -36,7 +36,6 @@ class ConceptEditFormView(ObjectLevelPermissionRequiredMixin):
     """
     raise_exception = True
     redirect_unauthenticated_users = True
-    object_level_permissions = True
     model = MDR._concept
     pk_url_kwarg = 'iid'
 

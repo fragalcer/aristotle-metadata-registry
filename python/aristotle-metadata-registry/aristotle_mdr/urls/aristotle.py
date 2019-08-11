@@ -91,8 +91,8 @@ urlpatterns = [
     url(r'^item/(?P<iid>\d+)(?:/.*)?$', views.ConceptView.as_view(), name='item_short'),  # Catch every other 'item' URL and throw it for a redirect
     url(r'^item/(?P<uuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/?(.*)?$', views.concept_by_uuid, name='item_uuid'),
 
-    url(r'^unmanaged/measure/(?P<iid>\d+)(?:/(?P<model_slug>\w+)/(?P<name_slug>.+))?/?$', views.measure, name='measure'),
-    url(r"^managed_items/(?P<model_slug>.+)/(?P<iid>.+)?$", view=views.managed_item, name="view_managed_item"),
+    url(r'^unmanaged/measure/(?P<iid>\d+)(?:/(?P<model_slug>\w+)/(?P<name_slug>.+))?/?$', views.MeasureView.as_view(), name='measure'),
+    url(r"^managed_items/(?P<model_slug>.+)/(?P<iid>.+)?$", view=views.ManagedItemView.as_view(), name="view_managed_item"),
 
     # url(r'^create/?$', views.item, name='item'),
     url(r'^create/?$', views.create_list, name='create_list'),
@@ -120,7 +120,6 @@ urlpatterns = [
     url(r'^action/changestatus/(?P<iid>\d+)$', views.ChangeStatusView.as_view(), name='changeStatus'),
     url(r'^action/deletestatus/(?P<sid>\d+)/(?P<iid>\d+)$', views.DeleteStatus.as_view(), name='deleteStatus'),
     url(r'^action/editstatus/(?P<sid>\d+)/item/(?P<iid>\d+)/registrationauthority/(?P<raid>\w+)$', views.EditStatus.as_view(), name='editStatus'),
-    # url(r'^remove/WorkgroupUser/(?P<iid>\d+)/(?P<userid>\d+)$', views.removeWorkgroupUser, name='removeWorkgroupUser'),
 
     url(r'^account/?$', RedirectView.as_view(url=reverse_lazy("aristotle:userHome"), permanent=True)),
     url(r'^account/home/?$', views.user_pages.home, name='userHome'),

@@ -72,8 +72,6 @@ class StewardURLManager(GroupURLManager):
             url("managed_items/(?P<model_name>[^\/]+)/?$", view=self.managed_item_list_items(), name="managed_item_list_items"),
             url("managed_items/(?P<model_name>.+)/create/?$", view=self.managed_item_create_view(), name="create_managed_item"),
             url("managed_items/(?P<model_name>.+)/(?P<mi_pk>.+)/edit/?$", view=self.managed_item_edit_view(), name="edit_managed_item"),
-
-            # url("managed_items/(?P<model_name>.+)/(?P<pk>.+)?$", view=self.managed_item_view(), name="create_managed_item"),
             url("ras/$", view=self.registration_authority_list_view(), name="registrationauthorities"),
 
             url("collections/$", view=self.collection_list_view(), name="collections"),
