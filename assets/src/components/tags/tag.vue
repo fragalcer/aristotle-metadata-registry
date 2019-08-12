@@ -37,7 +37,6 @@ export default {
             },
         })
 
-
         // Attach events, used by autocomplete
         let input = this.tag_editor.getInput()
         input.addEventListener('input', (e) => {
@@ -52,7 +51,7 @@ export default {
         input.addEventListener('blur', (e) => {
             let rt = e.relatedTarget
             // If being blurred by tag submit button
-            // This is a quick fix, should be changed
+            // TODO This is a quick fix, should be changed
             if (rt != null && rt.id == 'tag-editor-submit') {
                 this.tag_editor.add(input.value)
             }
