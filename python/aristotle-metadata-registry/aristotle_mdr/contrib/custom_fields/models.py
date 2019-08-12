@@ -25,7 +25,10 @@ class CustomField(TimeStampedModel):
         blank=True,
         help_text="Longer contextual help and business rules describing a field.",
     )
-    allowed_model = models.ForeignKey(ContentType, blank=True, null=True)
+    allowed_model = models.ForeignKey(
+        ContentType, blank=True, null=True,
+        on_delete=models.PROTECT
+    )
 
     visibility = models.IntegerField(
         choices=permission_choices,
@@ -69,9 +72,9 @@ class CustomField(TimeStampedModel):
 
 
 class CustomValue(TimeStampedModel):
-    field = models.ForeignKey(CustomField, related_name='values')
+    field = models.ForeignKey(CustomField, related_name='values', on_delete=models.CASCADE)
     content = models.TextField(blank=True)
-    concept = ConceptForeignKey(_concept)
+    concept = ConceptForeignKey(_concept, on_delete=models.CASCADE)
 
     objects = CustomValueManager()
 

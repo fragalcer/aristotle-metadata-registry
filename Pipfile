@@ -10,7 +10,7 @@ django-haystack-elasticsearch = "*"
 django-redis = "*"
 
 # ---------- Pins --------
-django = "~=1.11"
+django = "~=2.2.0"
 django-haystack = ">=2.7.dev1,<2.8.0"
 psycopg2 = "~=2.7.0"
 redis = ">2.10,<3.0"

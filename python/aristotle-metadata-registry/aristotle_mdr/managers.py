@@ -27,7 +27,7 @@ class PublishedMixin(object):
             return self.all()
 
         q = self.is_published_public
-        if user.is_anonymous():
+        if user.is_anonymous:
             return self.filter(q)
 
         q |= self.is_published_auth
@@ -99,7 +99,7 @@ class StewardOrganisationQuerySet(AbstractGroupQuerySet):
     def visible(self, user):
         from aristotle_mdr.models import StewardOrganisation
 
-        if user is None or user.is_anonymous():
+        if user is None or user.is_anonymous:
             return self.filter(
                 state__in=[
                     StewardOrganisation.states.active,
@@ -135,7 +135,7 @@ class StewardOrganisationQuerySet(AbstractGroupQuerySet):
 
 class WorkgroupQuerySet(AbstractGroupQuerySet):
     def visible(self, user):
-        if user.is_anonymous():
+        if user.is_anonymous:
             return self.none()
 
         if user.is_superuser:
@@ -286,7 +286,7 @@ class ConceptQuerySet(PublishedMixin, MetadataItemQuerySet):
         from aristotle_mdr.models import StewardOrganisation, Workgroup
         if user.is_superuser:
             return self.all()
-        if user.is_anonymous():
+        if user.is_anonymous:
             return self.none()
         q = Q()
 
@@ -386,7 +386,7 @@ class ReviewRequestQuerySet(models.QuerySet):
 
         if user.is_superuser:
             return self.all()
-        if user.is_anonymous():
+        if user.is_anonymous:
             return self.none()
         q = Q(requester=user)  # Users can always see reviews they requested
         if user.profile.is_registrar:
@@ -483,7 +483,7 @@ class ManagedItemQuerySet(PublishedItemQuerySet):
         """
         if user.is_superuser:
             return self.all()
-        if user.is_anonymous():
+        if user.is_anonymous:
             return self.none()
 
         from aristotle_mdr.models import StewardOrganisation

@@ -77,7 +77,7 @@ class GroupBase(GroupTemplateMixin):
         else:
             qs = self.group_class.objects.all()
         qs = qs.prefetch_related('members')
-        if self.request.user.is_anonymous():
+        if self.request.user.is_anonymous:
             return qs
         return qs
 

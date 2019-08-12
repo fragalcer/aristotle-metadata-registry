@@ -24,7 +24,7 @@ class EditLinkFormView(FormView):
             link_models.Link, pk=self.kwargs['linkid']
         )
         self.relation = self.link.relation
-        if request.user.is_anonymous():
+        if request.user.is_anonymous:
             return redirect(reverse('friendly_login') + '?next=%s' % request.path)
         if not perms.user_can_change_link(request.user, self.link):
             raise PermissionDenied
@@ -101,7 +101,7 @@ class AddLinkWizard(SessionWizardView):
     ]
 
     def dispatch(self, request, *args, **kwargs):
-        if request.user.is_anonymous():
+        if request.user.is_anonymous:
             return redirect(reverse('friendly_login') + '?next=%s' % request.path)
         if not request.user.has_perm('aristotle_mdr_links.add_link'):
             raise PermissionDenied

@@ -21,7 +21,7 @@ class Slot(TimeStampedModel):
     # on save confirm the cardinality
     name = models.CharField(max_length=256)  # Or some other sane length
     type = models.CharField(max_length=256, blank=True)  # Or some other sane length
-    concept = ConceptForeignKey(MDR._concept, related_name='slots')
+    concept = ConceptForeignKey(MDR._concept, related_name='slots', on_delete=models.CASCADE)
     value = models.TextField()
     order = models.PositiveSmallIntegerField("Position", default=0)
     permission = models.IntegerField(

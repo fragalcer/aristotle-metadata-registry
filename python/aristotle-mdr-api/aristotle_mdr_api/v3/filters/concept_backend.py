@@ -15,7 +15,9 @@ class SupersedeRelationshipFilter(django_filters.rest_framework.FilterSet):
     class Meta:
         model = MDR.SupersedeRelationship
         fields: dict = {}
-        strict = django_filters.STRICTNESS.RAISE_VALIDATION_ERROR
+        
+        # TODO: Enable below through view, or remove v3 API
+        # strict = django_filters.STRICTNESS.RAISE_VALIDATION_ERROR
 
     superseded_by = django_filters.UUIDFilter(
         name='newer_item__uuid',
@@ -87,7 +89,8 @@ class ConceptFilter(django_filters.rest_framework.FilterSet):
             'created': ['exact', 'gte', 'lte'],
             'type': ['exact']
         }
-        strict = django_filters.STRICTNESS.RAISE_VALIDATION_ERROR
+        # TODO: Enable below through view, or remove v3 API
+        # strict = django_filters.STRICTNESS.RAISE_VALIDATION_ERROR
 
 
     def superseded_by_filter(self, queryset, name, value):

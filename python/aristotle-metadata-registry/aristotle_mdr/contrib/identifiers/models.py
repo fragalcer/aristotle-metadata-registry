@@ -27,8 +27,8 @@ class Namespace(ManagedItem):
 
 
 class ScopedIdentifier(TimeStampedModel, MDR.aristotleComponent):
-    namespace = models.ForeignKey(Namespace)
-    concept = ConceptForeignKey(MDR._concept, related_name='identifiers')
+    namespace = models.ForeignKey(Namespace, on_delete=models.CASCADE)
+    concept = ConceptForeignKey(MDR._concept, related_name='identifiers', on_delete=models.CASCADE)
     identifier = models.CharField(  # 7.2.2.2.2.1
         max_length=512,
         help_text=_('String used to unambiguously denote an Item within the scope of a specified Namespace.')

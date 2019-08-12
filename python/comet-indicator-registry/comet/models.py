@@ -37,7 +37,7 @@ class Indicator(MDR.concept):
 
     quality_statement = ConceptForeignKey(
         "QualityStatement",
-        null=True, blank=True,
+        null=True, blank=True, on_delete=models.SET_NULL,
         help_text=_("A statement of multiple quality dimensions for the purpose of assessing the quality of the data for reporting against this Indicator.")
     )
     rationale = MDR.RichTextField(blank=True)
@@ -98,15 +98,15 @@ class IndicatorDataElementBase(aristotleComponent):
         abstract = True
         ordering = ['order']
 
-    indicator = ConceptForeignKey(Indicator)
+    indicator = ConceptForeignKey(Indicator, on_delete=models.CASCADE)
     order = models.PositiveSmallIntegerField(
         "Order",
         help_text=_("The position of this data element in the indicator")
     )
     guide_for_use = MDR.RichTextField(blank=True)
-    data_element = ConceptForeignKey(MDR.DataElement, blank=True, null=True)
-    data_set_specification = ConceptForeignKey(aristotle_dse.DataSetSpecification, blank=True, null=True)
-    data_set = ConceptForeignKey(aristotle_dse.Dataset, blank=True, null=True)
+    data_element = ConceptForeignKey(MDR.DataElement, blank=True, null=True, on_delete=models.SET_NULL)
+    data_set_specification = ConceptForeignKey(aristotle_dse.DataSetSpecification, blank=True, null=True, on_delete=models.SET_NULL)
+    data_set = ConceptForeignKey(aristotle_dse.Dataset, blank=True, null=True, on_delete=models.SET_NULL)
     description = MDR.RichTextField(blank=True)
 
     inline_field_layout = 'list'
@@ -152,8 +152,8 @@ class IndicatorInclusion(aristotleComponent):
         "Order",
         help_text=_("The position of this indicator in the set")
     )
-    indicator_set = ConceptForeignKey(IndicatorSet)
-    indicator = ConceptForeignKey(Indicator, blank=True, null=True)
+    indicator_set = ConceptForeignKey(IndicatorSet, on_delete=models.CASCADE)
+    indicator = ConceptForeignKey(Indicator, blank=True, null=True, on_delete=models.SET_NULL)
     name = models.CharField(
         max_length=1024, blank=True,
         help_text=_("The name identifying this indicator in the set")
@@ -198,7 +198,7 @@ class FrameworkDimension(MPTTModel, TimeStampedModel, aristotleComponent):
     parent_field_name = 'framework'
 
     objects = FrameworkDimensionManager()
-    framework = ConceptForeignKey('Framework')
+    framework = ConceptForeignKey('Framework', on_delete=models.CASCADE)
     name = models.CharField(max_length=2048)
     description = MDR.RichTextField(blank=True)
     parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='child_dimensions')

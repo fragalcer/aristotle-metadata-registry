@@ -33,7 +33,7 @@ class BootstrapDropdownSearchCategoriesSelect(RadioSelect):
     option_template_name = 'search/forms/widgets/checkbox_option.html'
 
 
-# Lovingly upgraded from the link below to support Django1.11
+# Lovingly upgraded from the link below to support Django 2+
 # https://github.com/tutorcruncher/django-bootstrap3-datetimepicker
 
 class BootstrapDateTimePicker(DateTimeInput):
@@ -104,7 +104,7 @@ class BootstrapDateTimePicker(DateTimeInput):
 
         if value != '':
             # Only add the 'value' attribute if a value is non-empty.
-            input_attrs['value'] = force_text(self._format_value(value))
+            input_attrs['value'] = force_text(self.format_value(value))
 
         if not self.picker_id:
             self.picker_id = (input_attrs.get('id', '') + '_pickers').replace(' ', '_')

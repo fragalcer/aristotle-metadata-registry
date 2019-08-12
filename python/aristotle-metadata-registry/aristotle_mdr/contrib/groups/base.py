@@ -46,6 +46,7 @@ class AbstractMembershipBase(ModelBase):
                     clsobj.group_class,
                     related_name="members",
                     **clsobj.group_kwargs,
+                    on_delete=models.CASCADE
                 )
             )
 
@@ -66,7 +67,7 @@ class AbstractMembership(AbstractMembershipModel, metaclass=AbstractMembershipBa
         abstract = True
         unique_together = ("user", "group")
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
 
 
 class AbstractMultipleMembership(AbstractMembershipModel, metaclass=AbstractMembershipBase):
@@ -74,7 +75,7 @@ class AbstractMultipleMembership(AbstractMembershipModel, metaclass=AbstractMemb
         abstract = True
         unique_together = ("user", "group", "role")
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
 
 
 class AbstractGroupBase(ModelBase):
@@ -135,7 +136,7 @@ class AbstractGroup(models.Model, metaclass=AbstractGroupBase):
 
         @classmethod
         def is_member(cls, user, group):
-            if user.is_anonymous():
+            if user.is_anonymous:
                 return False
             if not group.is_active():
                 return False
@@ -179,7 +180,7 @@ class AbstractGroup(models.Model, metaclass=AbstractGroupBase):
                     perm = perm_or_role
                     yield perm(user, group=self)
                 else:
-                    if user.is_anonymous():
+                    if user.is_anonymous:
                         yield False
                     elif not self.is_active():
                         yield False

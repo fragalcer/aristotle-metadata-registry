@@ -63,7 +63,7 @@ class GenericWithItemURLView(View):
                 all([perm(request.user, self.item) for perm in self.permission_checks]) and
                 all([perm(request.user) for perm in self.user_checks])
         ):
-            if request.user.is_anonymous():
+            if request.user.is_anonymous:
                 return redirect(reverse('friendly_login') + '?next=%s' % request.path)
             else:
                 raise PermissionDenied

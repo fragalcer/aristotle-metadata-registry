@@ -32,7 +32,7 @@ class Collection(TimeStampedModel):
     # objects = CollectionManager()
 
     stewardship_organisation = models.ForeignKey(
-        'aristotle_mdr.StewardOrganisation', to_field="uuid", null=False,
+        'aristotle_mdr.StewardOrganisation', to_field="uuid", null=False, on_delete=models.CASCADE
     )
     name = ShortTextField(
         help_text=_("The name of the group.")
@@ -43,7 +43,7 @@ class Collection(TimeStampedModel):
     )
 
     metadata = ConceptManyToManyField('aristotle_mdr._concept', blank=True)
-    parent_collection = models.ForeignKey('self', blank=True, null=True)
+    parent_collection = models.ForeignKey('self', blank=True, null=True, on_delete=models.CASCADE)
     publication_details = GenericRelation('aristotle_mdr_publishing.PublicationRecord')
 
     def get_absolute_url(self):

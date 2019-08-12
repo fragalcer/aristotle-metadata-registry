@@ -254,7 +254,7 @@ class InboxViewAll(LoginRequiredMixin, ListView):
 
 @login_required
 def admin_tools(request):
-    if request.user.is_anonymous():
+    if request.user.is_anonymous:
         return redirect(reverse('friendly_login') + '?next=%s' % request.path)
     elif not request.user.has_perm("aristotle_mdr.access_aristotle_dashboard"):
         raise PermissionDenied
@@ -295,7 +295,7 @@ def admin_tools(request):
 
 @login_required
 def admin_stats(request):
-    if request.user.is_anonymous():
+    if request.user.is_anonymous:
         return redirect(reverse('friendly_login') + '?next=%s' % request.path)
     elif not request.user.has_perm("aristotle_mdr.access_aristotle_dashboard"):
         raise PermissionDenied

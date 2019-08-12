@@ -19,7 +19,7 @@ class BulkAction(FormView):
         if not action:
             return HttpResponseRedirect(self.request.GET.get("next", "/"))
         if not action['can_use'](self.request.user):
-            if self.request.user.is_anonymous():
+            if self.request.user.is_anonymous:
                 return redirect(
                     reverse('friendly_login') + '?next=%s' % self.request.path
                 )

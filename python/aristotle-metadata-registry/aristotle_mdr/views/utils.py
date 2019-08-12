@@ -538,7 +538,7 @@ class CachePerItemUserMixin:
         if not settings.CACHE_ITEM_PAGE:
             return super().get(request, *args, **kwargs)
 
-        if request.user.is_anonymous():
+        if request.user.is_anonymous:
             user = 'anonymous'
         else:
             user = request.user.id
@@ -578,7 +578,7 @@ class TagsMixin:
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data()
 
-        if self.request.user.is_authenticated():
+        if self.request.user.is_authenticated:
             item_tags = Favourite.objects.filter(
                 tag__profile=self.request.user.profile,
                 tag__primary=False,

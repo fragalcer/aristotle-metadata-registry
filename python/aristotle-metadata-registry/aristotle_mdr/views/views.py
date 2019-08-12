@@ -54,7 +54,7 @@ class SmartRoot(RedirectView):
     authenticated_pattern = None
 
     def get_redirect_url(self, *args, **kwargs):
-        if self.request.user.is_authenticated():
+        if self.request.user.is_authenticated:
             self.pattern_name = self.authenticated_pattern
         else:
             self.pattern_name = self.unauthenticated_pattern
@@ -233,7 +233,7 @@ class ConceptRenderView(TagsMixin, TemplateView):
 
         result = self.check_item(self.item)
         if not result:
-            if self.request.user.is_anonymous():
+            if self.request.user.is_anonymous:
                 redirect_url = '{}?next={}'.format(
                     reverse('friendly_login'),
                     self.request.path
@@ -271,7 +271,7 @@ class ConceptRenderView(TagsMixin, TemplateView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
 
-        if self.request.user.is_anonymous():
+        if self.request.user.is_anonymous:
             context['isFavourite'] = False
         else:
             context['isFavourite'] = self.request.user.profile.is_favourite(self.item)
@@ -375,7 +375,7 @@ class DataElementView(ConceptRenderView):
 def registrationHistory(request, iid):
     item = get_if_user_can_view(MDR._concept, request.user, iid)
     if not item:
-        if request.user.is_anonymous():
+        if request.user.is_anonymous:
             return redirect(reverse('friendly_login') + '?next=%s' % request.path)
         else:
             raise PermissionDenied
@@ -392,14 +392,14 @@ def registrationHistory(request, iid):
 
 
 def unauthorised(request, path=''):
-    if request.user.is_anonymous():
+    if request.user.is_anonymous:
         return render(request, "401.html", {"path": path, "anon": True, }, status=401)
     else:
         return render(request, "403.html", {"path": path, "anon": True, }, status=403)
 
 
 def not_found(request, path):
-    context = {'anon': request.user.is_anonymous(), 'path': path}
+    context = {'anon': request.user.is_anonymous, 'path': path}
     return render(request, "404.html", context)
 
 
@@ -408,7 +408,7 @@ def handler500(request):
 
 
 def create_list(request):
-    if not request.user.is_authenticated():
+    if not request.user.is_authenticated:
         return redirect(reverse('friendly_login') + '?next=%s' % request.path)
 
     aristotle_apps = fetch_aristotle_settings().get('CONTENT_EXTENSIONS', [])
@@ -630,7 +630,7 @@ class ChangeStatusView(ReviewChangesView):
         self.item = get_object_or_404(MDR._concept, pk=kwargs['iid']).item
 
         if not user_can_add_status(request.user, self.item):
-            if request.user.is_anonymous():
+            if request.user.is_anonymous:
                 return redirect(reverse('friendly_login') + '?next=%s' % request.path)
             else:
                 raise PermissionDenied

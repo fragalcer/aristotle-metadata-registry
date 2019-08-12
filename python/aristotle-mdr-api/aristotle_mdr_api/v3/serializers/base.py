@@ -139,14 +139,14 @@ class Serializer(PySerializer):
             self._current[field.name] = field.value_to_string(obj)
 
     def handle_fk_field(self, obj, field):
-        foreign_model = field.rel.to  # change to field.remote_field.model for django >= 1.9
+        foreign_model = field.remote_field.model
         from aristotle_mdr.fields import ConceptForeignKey
         if type(field) is ConceptForeignKey:
             value = []
 
             if getattr(obj, field.get_attname()) is not None:
                 value = foreign_model.objects.get(pk=getattr(obj, field.get_attname())).uuid
-                #value = getattr(obj, field.get_attname()).uuid
+                # value = getattr(obj, field.get_attname()).uuid
             else:
                 value = None
 

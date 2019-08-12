@@ -82,7 +82,7 @@ def user_can_view(user, item):
     if item.__class__ == get_user_model():  # -- Sometimes duck-typing fails --
         return user == item                 # A user can edit their own details
 
-    if user.is_anonymous():
+    if user.is_anonymous:
         user_key = "anonymous"
     else:
         user_key = str(user.id)
@@ -110,7 +110,7 @@ def user_can_edit(user, item):
     if user.is_superuser:
         return True
     # Anonymous users can edit nothing
-    if user.is_anonymous():
+    if user.is_anonymous:
         return False
     # A user can edit their own details
     if item.__class__ == get_user_model():  # -- Sometimes duck-typing fails --
@@ -139,7 +139,7 @@ def user_can_edit(user, item):
 
 
 def user_is_authenticated_and_active(user):
-    return user.is_authenticated() and user.is_active
+    return user.is_authenticated and user.is_active
 
 
 def user_can_submit_to_workgroup(user, workgroup):
@@ -147,7 +147,7 @@ def user_can_submit_to_workgroup(user, workgroup):
 
 
 def user_is_registrar(user, ra=None):
-    if user.is_anonymous():
+    if user.is_anonymous:
         return False
     if user.is_superuser:
         return True
@@ -158,7 +158,7 @@ def user_is_registrar(user, ra=None):
 
 
 def user_is_registation_authority_manager(user, ra=None):
-    if user.is_anonymous():
+    if user.is_anonymous:
         return False
     if user.is_superuser:
         return True
@@ -170,7 +170,7 @@ def user_is_registation_authority_manager(user, ra=None):
 
 def user_can_add_status(user, item):
     """Can the user add a status to this item in some RA"""
-    if user.is_anonymous():
+    if user.is_anonymous:
         return False
     if user.is_superuser:
         return True
@@ -196,7 +196,7 @@ def user_can_add_status(user, item):
 
 def user_can_add_ra_status(user, ra, item):
     """Can the user add a status to this item in this RA"""
-    if user.is_anonymous():
+    if user.is_anonymous:
         return False
     if user.is_superuser:
         return True
@@ -222,7 +222,7 @@ def user_can_add_ra_status(user, ra, item):
 
 
 def user_can_supersede(user, item):
-    if user.is_anonymous():
+    if user.is_anonymous:
         return False
     if user.is_superuser:
         return True
@@ -235,7 +235,7 @@ def user_can_supersede(user, item):
 
 
 def user_can_view_review(user, review):
-    if user.is_anonymous():
+    if user.is_anonymous:
         return False
     # A user can see all their requests
     if review.requester == user:
@@ -260,7 +260,7 @@ def user_can_view_review(user, review):
 
 
 def user_can_edit_review(user, review):
-    if user.is_anonymous():
+    if user.is_anonymous:
         return False
     # A user can edit all their requests
     if review.requester == user:
@@ -278,7 +278,7 @@ def user_can_edit_review(user, review):
 
 
 def user_can_edit_review_comment(user, reviewcomment):
-    if user.is_anonymous():
+    if user.is_anonymous:
         return False
     # A user can edit all their requests
     if reviewcomment.author == user:
@@ -300,7 +300,7 @@ def user_can_view_review_comment(user, reviewcomment):
 
 
 def user_can_revoke_review(user, review):
-    if user.is_anonymous():
+    if user.is_anonymous:
         return False
     # A user can see all their requests
     if review.requester == user:
@@ -313,7 +313,7 @@ def user_can_revoke_review(user, review):
 
 
 def user_can_close_or_reopen_review(user, review):
-    if user.is_anonymous():
+    if user.is_anonymous:
         return False
     # A user can see all their requests
     if review.requester == user:
@@ -331,7 +331,7 @@ def user_can_close_or_reopen_review(user, review):
 
 
 def user_can_approve_review(user, review):
-    if user.is_anonymous():
+    if user.is_anonymous:
         return False
     # Can't approve a closed request
     if review.status != REVIEW_STATES.open:
@@ -427,7 +427,7 @@ def user_can_move_between_workgroups(user, workgroup_a, workgroup_b):
 
 
 def user_can_query_user_list(user):
-    if user.is_anonymous():
+    if user.is_anonymous:
         return False
     user_visbility = fetch_aristotle_settings().get('USER_VISIBILITY', 'owner')
     return (

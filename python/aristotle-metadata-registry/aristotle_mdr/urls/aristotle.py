@@ -29,7 +29,7 @@ urlpatterns = [
     url(r'^sitemap.xml$', views.sitemaps.main, name='sitemap_xml'),
     url(r'^sitemaps/sitemap_(?P<page>[0-9]+).xml$', views.sitemaps.page_range, name='sitemap_range_xml'),
 
-    url(r'^steward', include('aristotle_mdr.contrib.stewards.urls', namespace="stewards")),
+    url(r'^steward', include(('aristotle_mdr.contrib.stewards.urls', 'aristotle_mdr.contrib.stewards'), namespace='stewards')),
 
     # all the below take on the same form:
     # all the below take on the same form:

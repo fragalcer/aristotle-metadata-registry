@@ -7,7 +7,7 @@ from django.utils.functional import SimpleLazyObject
 # This allows us to pass the Aristotle settings through to the final rendered page
 def general_context_processor(request):
 
-    if not request.user.is_anonymous():
+    if not request.user.is_anonymous:
         notifcount = request.user.notifications.unread().count()
         if notifcount > 100:
             notifcount = "100 +"

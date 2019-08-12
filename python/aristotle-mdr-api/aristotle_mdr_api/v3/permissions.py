@@ -15,7 +15,7 @@ class IsSuperuserOrReadOnly(permissions.BasePermission):
             return True
         return (
             request.user and
-            request.user.is_authenticated() and
+            request.userself.is_authenticated and
             request.user.is_superuser
         )
 

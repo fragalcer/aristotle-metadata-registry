@@ -88,6 +88,7 @@ class Dataset(aristotle.models.concept):
     catalog = models.ForeignKey(
         DataCatalog,
         blank=True, null=True,
+        on_delete=models.SET_NULL,
         help_text=_('An entity responsible for making the dataset available.'),
         )
     landing_page = models.URLField(
@@ -133,6 +134,7 @@ class Distribution(aristotle.models.concept):
     dataset = models.ForeignKey(
         Dataset,
         blank=True, null=True,
+        on_delete=models.SET_NULL,
         help_text=_('Connects a distribution to its available datasets'),
         )
     license = models.TextField(
@@ -172,16 +174,19 @@ class DistributionDataElementPath(aristotle.models.aristotleComponent):
         ordering = ['order']
     parent_field_name = 'distribution'
 
+    # TODO: Set this to NOT NULL
     distribution = models.ForeignKey(
         Distribution,
         blank=True, null=True,
+        on_delete=models.CASCADE,
         help_text=_('A relation to the DCAT Distribution Record.'),
         )
     data_element = ConceptForeignKey(
         aristotle.models.DataElement,
         blank=True, null=True,
         help_text=_('An entity responsible for making the dataset available.'),
-        verbose_name='Data Element'
+        verbose_name='Data Element',
+        on_delete=models.SET_NULL,
         )
     logical_path = models.CharField(
         max_length=256,
@@ -217,6 +222,7 @@ class DataSetSpecification(aristotle.models.concept):
 
     statistical_unit = ConceptForeignKey(
         aristotle.models._concept,
+        on_delete=models.SET_NULL,
         related_name='statistical_unit_of',
         blank=True,
         null=True,
@@ -399,7 +405,7 @@ class DSSInclusion(aristotle.models.aristotleComponent):
         default=''
     )
 
-    dss = ConceptForeignKey(DataSetSpecification)
+    dss = ConceptForeignKey(DataSetSpecification, on_delete=models.CASCADE)
     maximum_occurrences = models.PositiveIntegerField(
         default=1,
         verbose_name=_("Maximum Occurrences"),
@@ -437,7 +443,7 @@ class DSSGrouping(aristotle.models.aristotleComponent):
     inline_field_layout = 'list'
     parent_field_name = 'dss'
 
-    dss = ConceptForeignKey(DataSetSpecification, related_name="groups")
+    dss = ConceptForeignKey(DataSetSpecification, related_name="groups", on_delete=models.CASCADE)
     name = ShortTextField(
         help_text=_("The name applied to the grouping.")
     )
@@ -461,10 +467,11 @@ class DSSGrouping(aristotle.models.aristotleComponent):
 
 # Holds the link between a DSS and a Data Element with the DSS Specific details.
 class DSSDEInclusion(DSSInclusion):
-    data_element = ConceptForeignKey(aristotle.models.DataElement, related_name="dssInclusions")
+    data_element = ConceptForeignKey(aristotle.models.DataElement, related_name="dssInclusions", on_delete=models.CASCADE)
     group = models.ForeignKey(
         DSSGrouping,
         blank=True, null=True,
+        on_delete=models.SET_NULL
     )
     specialisation_classes = ConceptManyToManyField(
         aristotle.models.ObjectClass,
@@ -508,7 +515,7 @@ class DSSClusterInclusion(DSSInclusion):
     """
     The child in this relationship is considered to be a child of the parent DSS as specified by the `dss` property.
     """
-    child = ConceptForeignKey(DataSetSpecification, related_name='parent_dss')
+    child = ConceptForeignKey(DataSetSpecification, related_name='parent_dss', on_delete=models.CASCADE)
 
     inline_field_layout = 'list'
     inline_field_order = [

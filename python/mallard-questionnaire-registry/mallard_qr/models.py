@@ -17,7 +17,11 @@ class AdministrationMode(aristotle.models.unmanagedObject):
 
 class Question(aristotle.models.concept):
     template = "mallard_qr/question.html"
-    collected_data_element = models.ForeignKey(aristotle.models.DataElement,blank=True,null=True,related_name="questions")
+    collected_data_element = models.ForeignKey(
+        aristotle.models.DataElement,
+        blank=True, null=True, on_delete=models.SET_NULL,
+        related_name="questions",
+    )
     question_text = aristotle.models.RichTextField(
         blank=True,
         help_text=_("The text which describes the information which is to be obtained.")
@@ -36,8 +40,12 @@ class ResponseDomain(aristotle.models.aristotleComponent):
     class Meta:
         ordering = ['order']
 
-    question = models.ForeignKey(Question, related_name="response_domains")
-    value_domain = models.ForeignKey(aristotle.models.ValueDomain)
+    question = models.ForeignKey(Question, related_name="response_domains", on_delete=models.CASCADE)
+    value_domain = models.ForeignKey(
+        aristotle.models.ValueDomain,
+        null=True, blank=True,
+        on_delete=models.SET_NULL,
+    )
     maximum_occurrences = models.PositiveIntegerField(
         default=1,
         help_text=_("The maximum number of times a response can be included in a question")

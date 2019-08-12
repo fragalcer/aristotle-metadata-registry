@@ -56,9 +56,9 @@ if skip_migrations:  # pragma: no cover
 
     MIGRATION_MODULES = DisableMigrations()
 
-db_from_env = dj_database_url.config(conn_max_age=500, default='sqlite:////tmp/db.db')
+# db_from_env = dj_database_url.config(conn_max_age=500, default='sqlite:////tmp/db.db')
 
-DATABASES = {'default': db_from_env}
+# DATABASES = {'default': db_from_env}
 
 
 if os.environ.get('SEARCH') == 'whoosh':

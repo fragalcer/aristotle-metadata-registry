@@ -24,7 +24,7 @@ defaults:
         esac
         echo "Running script with DATABASE_URL="$DATABASE_URL
         echo "Running script with DB="$DB
-        tox -e dj$DJANGO_VERSION-test-linux-db-$DB-search-$SEARCH-module_$MODULE
+        tox -e dj-test-linux-db-$DB-search-$SEARCH-module_$MODULE
     services:
       - postgresql
       - redis-server
@@ -64,7 +64,7 @@ defaults:
       - npm install
       - npm run devbuild
       - cd .. 
-    script: tox -e dj1.11-linux-ally-$ALLY-module_amr
+    script: tox -e dj-linux-ally-$ALLY-module_amr
 
 matrix:
 
@@ -99,6 +99,8 @@ matrix:
     - stage: documentation
       name: "Documentation"
       language: python
+      env:
+        DATABASE_URL=postgresql://postgres:@localhost/aristotle_test_db
       install:
         - pip install codecov coveralls
         - pip install 'tox>=3.0'
@@ -119,47 +121,47 @@ matrix:
     - stage: testing-aristotle-mdr
       name: "Aristotle Tests Sqlite/Elasticsearch"
       if: type = push
-      env: DJANGO_VERSION='1.11'  DB=sqlite  SEARCH=elastic MODULE=amr
+      env: DB=sqlite  SEARCH=elastic MODULE=amr
       <<: *main_test_script_py36
     - stage: testing-aristotle-mdr
       name: "Aristotle Tests Postgres/Elasticsearch"
-      env: DJANGO_VERSION='1.11'  DB=postgres  SEARCH=elastic MODULE=amr
+      env: DB=postgres  SEARCH=elastic MODULE=amr
       <<: *main_test_script_py36
     - stage: testing-aristotle-mdr
       name: "Aristotle Tests Sqlite/Whoosh"
       if: type = push
-      env: DJANGO_VERSION='1.11'  DB=sqlite    SEARCH=whoosh MODULE=amr
+      env: DB=sqlite    SEARCH=whoosh MODULE=amr
       <<: *main_test_script_py36
     - stage: testing-aristotle-mdr
       name: "Aristotle Tests Postgres/Whoosh"
       if: type = push
-      env: DJANGO_VERSION='1.11'  DB=postgres  SEARCH=whoosh MODULE=amr
+      env: DB=postgres  SEARCH=whoosh MODULE=amr
       <<: *main_test_script_py36
     - stage: testing-aristotle-mdr
       name: "Aristotle Tests Mariadb/Whoosh"
       if: type = push
-      env: DJANGO_VERSION='1.11'  DB=mariadb   SEARCH=whoosh MODULE=amr
+      env: DB=mariadb   SEARCH=whoosh MODULE=amr
       <<: *main_test_script_py36
     - stage: testing-aristotle-mdr
       name: "Aristotle Tests Mariadb/Elasticsearch"
       if: type = push
-      env: DJANGO_VERSION='1.11'  DB=mariadb   SEARCH=elastic MODULE=amr
+      env: DB=mariadb   SEARCH=elastic MODULE=amr
       <<: *main_test_script_py36
     - stage: testing-modules
       name: "Dataset Extenstions Tests"
-      env: DJANGO_VERSION='1.11'  DB=postgres   SEARCH=elastic MODULE=dse
+      env: DB=postgres   SEARCH=elastic MODULE=dse
       <<: *main_test_script_py36
     - stage: testing-modules
       name: "Comet Tests"
-      env: DJANGO_VERSION='1.11'  DB=postgres   SEARCH=elastic MODULE=cir
+      env: DB=postgres   SEARCH=elastic MODULE=cir
       <<: *main_test_script_py36
     - stage: testing-modules
       name: "Graphql Tests"
-      env: DJANGO_VERSION='1.11'  DB=postgres   SEARCH=elastic MODULE=gql
+      env: DB=postgres   SEARCH=elastic MODULE=gql
       <<: *main_test_script_py36
     - stage: testing-modules
       name: "API Tests"
-      env: DJANGO_VERSION='1.11'  DB=postgres   SEARCH=elastic MODULE=api
+      env: DB=postgres   SEARCH=elastic MODULE=api
       <<: *main_test_script_py36
 
     # Test Accessibility

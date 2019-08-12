@@ -84,7 +84,7 @@ class ReviewActionMixin(LoginRequiredMixin, UserFormViewMixin):
         perm_func = getattr(perms, self.perm_function)
         if not perm_func(self.request.user, self.review):
             # TODO: make this use CBVs
-            if self.request.user.is_anonymous():
+            if self.request.user.is_anonymous:
                 return redirect(reverse('friendly_login') + '?next=%s' % request.path)
             else:
                 raise PermissionDenied
