@@ -154,7 +154,7 @@ def register_items(ids: List[int], cascade: bool, state: int, ra_id: int, user_i
     ra = RegistrationAuthority.objects.get(id=ra_id)
     items = _concept.objects.filter(id__in=ids)
     user = get_user_model().objects.get(id=user_id)
-    effective_date = datetime.date(effective_date[0], effective_date[1], effective_date[2])
+    registration_date = datetime.date(effective_date[0], effective_date[1], effective_date[2])
 
     # Bulk get subclasses
     items = items.select_subclasses()
@@ -177,7 +177,7 @@ def register_items(ids: List[int], cascade: bool, state: int, ra_id: int, user_i
                 state,
                 user,
                 changeDetails=change_details,
-                effective_date=effective_date
+                effective_date=registration_date
             )
             success.extend(status['success'])
             failed.extend(status['failed'])
