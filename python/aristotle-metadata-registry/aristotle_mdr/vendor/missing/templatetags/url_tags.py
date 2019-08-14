@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-import re, unicodedata
+import re
+import unicodedata
 
 from django import template
 
@@ -15,6 +16,7 @@ from django.template import defaultfilters
 from django.utils import encoding, html, safestring
 
 register = template.Library()
+
 
 class FullUrlNode(template.Node):
     def __init__(self, url):

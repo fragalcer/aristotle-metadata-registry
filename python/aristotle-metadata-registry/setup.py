@@ -64,7 +64,7 @@ setup(
         'diff-match-patch',
 
         # Fancy UI stuff
-        'django-autocomplete-light>=3.0.0,<3.3.0',
+        'django-autocomplete-light',
         'django-bootstrap3>8.0,<9.0',
         'django-bootstrap3-datetimepicker-2>=2.5.0',
 
