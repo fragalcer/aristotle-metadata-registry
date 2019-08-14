@@ -2,7 +2,6 @@
 {% load bootstrap3 static %}
 
 {% block title %}Edit details for {% firstof object.short_name object.full_name object.email %}{% endblock %}
-{% block collapse-link%}<i class="fa fa-user fa-fw"></i> Edit account details for <em>{% firstof object.short_name object.full_name object.email %}</em>{% endblock %}
 {% block sidebar %}
     {% include "aristotle_mdr/user/userSideBar.html" with activeTab='edit' %}
 {% endblock %}

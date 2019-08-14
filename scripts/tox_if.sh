@@ -1,5 +1,5 @@
 #!/bin/bash
-# This script was having issiues and is currently not being used
+# This script was having issues and is currently not being used
 TOX_ENV_TO_RUN=$1
 
 # Setup git for diff as per https://github.com/travis-ci/travis-ci/issues/6069

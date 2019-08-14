@@ -2,7 +2,13 @@ sudo: false
 dist: trusty
 
 defaults:
-  - &main_test_script
+  - &main_test_script_py36
+    language: python
+    python: 3.6
+    install:
+      - pip install codecov coveralls
+      - pip install 'tox>=3.0'
+      - nvm install 10.13.0
     before_script:
       ./scripts/main_before_script.sh
     script:
@@ -23,18 +29,7 @@ defaults:
         repo_token: ac63d774ebdd641ef502acf1588b36248726a28a50e4e1f4ba4295a157477f54
       mariadb: '10.1'
 
-  - &main_test_script_py36
-    language: python
-    python: 3.6
-    install:
-      - pip install codecov coveralls
-      - pip install 'tox>=3.0'
-      - nvm install 10.13.0
-    <<: *main_test_script
-
   - &test_accessibility_py36
-    stage: accessibility
-    name: "Accessibility Tests"
     language: python
     python: 3.6
     install:
@@ -86,8 +81,9 @@ matrix:
         - pip install 'tox>=3.0'
       script: tox -e docs
 
+    # FRONTEND JAVASCRIPT TESTS:
     - stage: "Frontend"
-      name: "Frontend Tests"
+      name: "Javascript Tests"
       language: node_js
       node_js: 10
       before_install:
@@ -97,71 +93,73 @@ matrix:
       script:
         - npm run test
 
-    - stage: "Testing Aristotle Metadata Registry"
+    # THESE CONCURRENT JOBS MUST ALWAYS BE RUN FOR THE MAIN ARISTOTLE REPO.
+    # THEY INCLUDE OUR USUAL SETUP COMBINATION (POSTGRES DB AND ELASTIC SEARCH ENGINE)
+    # MODULES ARE ALSO RUN CONCURRENTLY IN THIS STAGE.
+    - stage: "Aristotle Postgres DB and Elastic Search setup Python Tests"
+      name: "Aristotle Tests Postgres/Elasticsearch"
+      env: DB=postgres  SEARCH=elastic MODULE=amr
+      <<: *main_test_script_py36
+
+    - name: "Dataset Extension Tests"
+      env: DB=postgres   SEARCH=elastic MODULE=dse
+      <<: *main_test_script_py36
+
+    - name: "Comet Extension Tests"
+      env: DB=postgres   SEARCH=elastic MODULE=cir
+      <<: *main_test_script_py36
+
+    - name: "Graphql Tests"
+      env: DB=postgres   SEARCH=elastic MODULE=gql
+      <<: *main_test_script_py36
+
+    - name: "API Tests"
+      env: DB=postgres   SEARCH=elastic MODULE=api
+      <<: *main_test_script_py36
+
+    # THE FOLLOWING JOBS ARE ONLY RUN IF TYPE OF GIT COMMAND = PUSH:
+    # THESE TESTS REPRESENT DIFFERENT DATABASE AND SEARCH ENGINE SETUPS FOR ARISTOTLE.
+    - stage: "Aristotle Metadata Registry Python Tests (Testing different database and search-engine combinations)."
       name: "Aristotle Tests Sqlite/Elasticsearch"
       if: type = push
       env: DB=sqlite  SEARCH=elastic MODULE=amr
       <<: *main_test_script_py36
 
-    - stage: "Testing Modules"
-      name: "Aristotle Tests Postgres/Elasticsearch"
-      env: DB=postgres  SEARCH=elastic MODULE=amr
-      <<: *main_test_script_py36
-
-    - stage: "Testing Aristotle Metadata Registry"
-      name: "Aristotle Tests Sqlite/Whoosh"
-      if: type = push
-      env: DB=sqlite    SEARCH=whoosh MODULE=amr
-      <<: *main_test_script_py36
-
-    - stage: "Testing Aristotle Metadata Registry"
-      name: "Aristotle Tests Postgres/Whoosh"
+    - name: "Aristotle Tests Postgres/Whoosh"
       if: type = push
       env: DB=postgres  SEARCH=whoosh MODULE=amr
       <<: *main_test_script_py36
 
-    - stage: "Testing Aristotle Metadata Registry"
-      name: "Aristotle Tests MariaDB/Whoosh"
+    - name: "Aristotle Tests MariaDB/Whoosh"
       if: type = push
       env: DB=mariadb   SEARCH=whoosh MODULE=amr
       <<: *main_test_script_py36
 
-    - stage: "Testing Aristotle Metadata Registry"
-      name: "Aristotle Tests MariaDB/Elasticsearch"
+    - name: "Aristotle Tests MariaDB/Elasticsearch"
       if: type = push
       env: DB=mariadb   SEARCH=elastic MODULE=amr
       <<: *main_test_script_py36
 
-    - stage: "Testing Modules"
-      name: "Dataset Extenstions Tests"
-      env: DB=postgres   SEARCH=elastic MODULE=dse
+    - name: "Aristotle Tests Sqlite/Whoosh"
+      if: type = push
+      env: DB=sqlite    SEARCH=whoosh MODULE=amr
       <<: *main_test_script_py36
 
-    - stage: "Testing Modules"
-      name: "Comet Tests"
-      env: DB=postgres   SEARCH=elastic MODULE=cir
-      <<: *main_test_script_py36
-
-    - stage: "Testing Modules"
-      name: "Graphql Tests"
-      env: DB=postgres   SEARCH=elastic MODULE=gql
-      <<: *main_test_script_py36
-
-    - stage: "Testing Modules"
-      name: "API Tests"
-      env: DB=postgres   SEARCH=elastic MODULE=api
-      <<: *main_test_script_py36
-
-    # Test Accessibility
-    - <<: *test_accessibility_py36
+    # ACCESSIBILITY TESTS:
+    - stage: "Accessibility"
+      name: "Accessibility Tests Metadata Item"
+      <<: *test_accessibility_py36
       env: ALLY=metadata_item MODULE=aristotle-metadata-registry
-    - <<: *test_accessibility_py36
+    - name: "Accessibility Tests Metadata Action"
+      <<: *test_accessibility_py36
       env: ALLY=metadata_action MODULE=aristotle-metadata-registry
-    - <<: *test_accessibility_py36
+    - name: "Accessibility Tests Static"
+      <<: *test_accessibility_py36
       env: ALLY=static MODULE=aristotle-metadata-registry
 
-    - stage: deploy-it
-      name: "Deploy"
+    # DEPLOYMENT (ONLY IF THE BRANCH IS THE MASTER BRANCH).:
+    - stage: "Deployment"
+      name: "Deployment"
       if: branch = master
       install: skip
       script: ./scripts/buildandcopy.sh --manual

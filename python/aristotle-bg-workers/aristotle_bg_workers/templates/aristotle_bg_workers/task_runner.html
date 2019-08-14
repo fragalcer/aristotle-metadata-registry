@@ -2,10 +2,6 @@
 {% load i18n static %}
 {% load render_bundle from webpack_loader %}
 
-{% block collapse-link %}
-    <i class="fa fa-users fa-fw"></i> Task list
-{% endblock %}
-
 {% block sidebar %}
     {% include "aristotle_mdr/user/userSideBar.html" with activeTab='adminTools' %}
 {% endblock %}

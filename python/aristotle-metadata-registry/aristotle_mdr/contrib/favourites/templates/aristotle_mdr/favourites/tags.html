@@ -3,7 +3,7 @@
 {% load render_bundle from webpack_loader %}
 
 {% block title %}{{ title }}{% endblock %}
-{% block collapse-link%}<i class="fa fa-bookmark fa-fw"></i> {{ title }}{% endblock %}
+
 {% block sidebar %}
     {% include "aristotle_mdr/user/userSideBar.html" with activeTab='favourites' %}
 {% endblock %}

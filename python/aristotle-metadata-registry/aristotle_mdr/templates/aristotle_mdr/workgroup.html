@@ -2,10 +2,6 @@
 
 {% load humanize i18n aristotle_tags util_tags %}
 {% has_group_perm group "edit_group_details" as can_edit_workgroup %}
-
-{% block collapse-link%}
-    <i class="fa fa-users fa-fw"></i> {{ workgroup.name }}
-{% endblock %}
 {% block workgroupSub %}
     <ul class="nav nav-pills nav-stacked nav-collapse">
         <li class="active">
