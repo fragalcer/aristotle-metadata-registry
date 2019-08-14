@@ -33,7 +33,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ConceptHelp',
             fields=[
-                ('helpbase_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='aristotle_mdr_help.HelpBase')),
+                ('helpbase_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr_help.HelpBase')),
                 ('concept_type', models.CharField(max_length=256)),
                 ('brief', models.TextField(help_text='A short description of the concept')),
                 ('offical_definition', models.TextField(help_text='An official description of the concept, e.g. the ISO/IEC definition for an Object Class', null=True, blank=True)),
@@ -49,7 +49,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='HelpPage',
             fields=[
-                ('helpbase_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='aristotle_mdr_help.HelpBase')),
+                ('helpbase_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr_help.HelpBase')),
             ],
             options={
                 'ordering': ('title',),

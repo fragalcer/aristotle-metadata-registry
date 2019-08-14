@@ -32,11 +32,11 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Question',
             fields=[
-                ('_concept_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='aristotle_mdr._concept')),
+                ('_concept_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr._concept')),
                 ('question_text', ckeditor_uploader.fields.RichTextUploadingField(blank=True)),
                 ('instruction_text', ckeditor_uploader.fields.RichTextUploadingField(blank=True)),
                 ('estimated_seconds_response_time', models.PositiveIntegerField(help_text='he estimated amount of time required to answer a question expressed in seconds.', null=True, blank=True)),
-                ('collected_data_element', models.ForeignKey(related_name='questions', blank=True, to='aristotle_mdr.DataElement', null=True)),
+                ('collected_data_element', models.ForeignKey(related_name='questions', blank=True, on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr.DataElement', null=True)),
             ],
             options={
                 'abstract': False,
@@ -51,8 +51,8 @@ class Migration(migrations.Migration):
                 ('minimum_occurances', models.PositiveIntegerField(default=1, help_text='The minimum number of times a response can be included in a question')),
                 ('blank_is_missing_value', models.BooleanField(default=False, help_text='When value is true a blank or empty variable content should be treated as a missing value.')),
                 ('order', models.PositiveSmallIntegerField(help_text='If a dataset is ordered, this indicates which position this item is in a dataset.', null=True, verbose_name='Position', blank=True)),
-                ('question', models.ForeignKey(related_name='response_domains', to='mallard_qr.Question')),
-                ('value_domain', models.ForeignKey(to='aristotle_mdr.ValueDomain')),
+                ('question', models.ForeignKey(related_name='response_domains', on_delete=django.db.models.deletion.CASCADE, to='mallard_qr.Question')),
+                ('value_domain', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr.ValueDomain')),
             ],
             options={
                 'ordering': ['order'],

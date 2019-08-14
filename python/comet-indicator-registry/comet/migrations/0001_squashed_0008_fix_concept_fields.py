@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Framework',
             fields=[
-                ('_concept_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='aristotle_mdr._concept')),
+                ('_concept_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr._concept')),
             ],
             options={
                 'abstract': False,
@@ -29,7 +29,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Indicator',
             fields=[
-                ('_concept_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='aristotle_mdr._concept')),
+                ('_concept_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr._concept')),
                 ('numerator_description', models.TextField(blank=True)),
                 ('numerator_computation', models.TextField(blank=True)),
                 ('denominator_description', models.TextField(blank=True)),
@@ -37,7 +37,7 @@ class Migration(migrations.Migration):
                 ('computationDescription', ckeditor_uploader.fields.RichTextUploadingField(blank=True)),
                 ('rationale', ckeditor_uploader.fields.RichTextUploadingField(blank=True)),
                 ('disaggregation_description', ckeditor_uploader.fields.RichTextUploadingField(blank=True)),
-                ('dataElementConcept', models.ForeignKey(verbose_name='Data Element Concept', blank=True, to='aristotle_mdr.DataElementConcept', null=True)),
+                ('dataElementConcept', models.ForeignKey(verbose_name='Data Element Concept', blank=True, on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr.DataElementConcept', null=True)),
                 ('denominators', models.ManyToManyField(related_name='as_demoninator', to='aristotle_mdr.DataElement', blank=True)),
                 ('disaggregators', models.ManyToManyField(related_name='as_disaggregator', to='aristotle_mdr.DataElement', blank=True)),
             ],
@@ -49,7 +49,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='IndicatorSet',
             fields=[
-                ('_concept_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='aristotle_mdr._concept')),
+                ('_concept_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr._concept')),
             ],
             options={
                 'abstract': False,
@@ -72,7 +72,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='IndicatorType',
             fields=[
-                ('_concept_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='aristotle_mdr._concept')),
+                ('_concept_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr._concept')),
             ],
             options={
                 'abstract': False,
@@ -82,7 +82,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='OutcomeArea',
             fields=[
-                ('_concept_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='aristotle_mdr._concept')),
+                ('_concept_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr._concept')),
             ],
             options={
                 'abstract': False,
@@ -92,7 +92,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='QualityStatement',
             fields=[
-                ('_concept_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='aristotle_mdr._concept')),
+                ('_concept_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr._concept')),
                 ('timeliness', ckeditor_uploader.fields.RichTextUploadingField(blank=True)),
                 ('accessibility', ckeditor_uploader.fields.RichTextUploadingField(blank=True)),
                 ('interpretability', ckeditor_uploader.fields.RichTextUploadingField(blank=True)),
@@ -110,7 +110,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='indicatorset',
             name='indicatorSetType',
-            field=models.ForeignKey(blank=True, to='comet.IndicatorSetType', null=True),
+            field=models.ForeignKey(blank=True, on_delete=django.db.models.deletion.CASCADE, to='comet.IndicatorSetType', null=True),
         ),
         migrations.AddField(
             model_name='indicatorset',
@@ -120,7 +120,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='indicator',
             name='indicatorType',
-            field=models.ForeignKey(blank=True, to='comet.IndicatorType', null=True),
+            field=models.ForeignKey(blank=True, on_delete=django.db.models.deletion.CASCADE, to='comet.IndicatorType', null=True),
         ),
         migrations.AddField(
             model_name='indicator',
@@ -135,7 +135,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='indicator',
             name='valueDomain',
-            field=models.ForeignKey(verbose_name='Value Domain', blank=True, to='aristotle_mdr.ValueDomain', null=True),
+            field=models.ForeignKey(verbose_name='Value Domain', blank=True, on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr.ValueDomain', null=True),
         ),
         migrations.AddField(
             model_name='framework',
@@ -145,6 +145,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='framework',
             name='parentFramework',
-            field=models.ForeignKey(related_name='childFrameworks', blank=True, to='comet.Framework', null=True),
+            field=models.ForeignKey(related_name='childFrameworks', blank=True, on_delete=django.db.models.deletion.CASCADE, to='comet.Framework', null=True),
         ),
     ]

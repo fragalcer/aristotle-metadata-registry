@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import django.db.models
 from django.db import migrations, models
 
 
@@ -14,10 +15,10 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Question',
             fields=[
-                ('_concept_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='aristotle_mdr._concept')),
+                ('_concept_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr._concept')),
                 ('questionText', models.TextField(null=True, blank=True)),
                 ('responseLength', models.PositiveIntegerField(null=True, blank=True)),
-                ('collectedDataElement', models.ForeignKey(related_name='questions', blank=True, to='aristotle_mdr.DataElement', null=True)),
+                ('collectedDataElement', models.ForeignKey(related_name='questions', blank=True, on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr.DataElement', null=True)),
             ],
             options={
                 'abstract': False,
@@ -27,7 +28,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Questionnaire',
             fields=[
-                ('_concept_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='aristotle_mdr._concept')),
+                ('_concept_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr._concept')),
                 ('questions', models.ManyToManyField(related_name='questionnaires', null=True, to='extension_test.Question', blank=True)),
             ],
             options={
@@ -40,8 +41,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('rationale', models.TextField(null=True, blank=True)),
-                ('questionnaire', models.ForeignKey(to='extension_test.Questionnaire')),
-                ('respondent_class', models.ForeignKey(to='aristotle_mdr.ObjectClass')),
+                ('questionnaire', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='extension_test.Questionnaire')),
+                ('respondent_class', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr.ObjectClass')),
             ],
             options={
                 'abstract': False,
