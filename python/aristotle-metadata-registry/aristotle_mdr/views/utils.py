@@ -345,16 +345,15 @@ class AnnotatedPaginator(Paginator):
 
 
 class GenericListWorkgroup(LoginRequiredMixin, SortedListView):
-
     model = MDR.Workgroup
     redirect_unauthenticated_users = True
+
     paginate_by = 20
     paginator_class = AnnotatedPaginator
 
     allowed_sorts = {
         'items': 'num_items',
         'name': 'name',
-        # 'users': 'num_viewers'
     }
 
     default_sort = 'name'
@@ -370,13 +369,11 @@ class GenericListWorkgroup(LoginRequiredMixin, SortedListView):
         return self.paginator_class(*args, **kwargs, annotations=annotations)
 
     def get_queryset(self):
-        # TODO: Fix this query to be faster
         workgroups = self.get_initial_queryset()
-
         if self.text_filter:
             workgroups = workgroups.filter(Q(name__icontains=self.text_filter) | Q(definition__icontains=self.text_filter))
-
         workgroups = self.sort_queryset(workgroups)
+
         return workgroups
 
 
