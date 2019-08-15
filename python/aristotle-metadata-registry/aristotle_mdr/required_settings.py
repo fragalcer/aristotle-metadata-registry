@@ -158,7 +158,7 @@ USE_TZ = True
 USE_I18N = True
 
 MIDDLEWARE = [
-    'user_sessions.middleware.SessionMiddleware',
+    'aristotle_mdr.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',

@@ -12,7 +12,8 @@ class Question(aristotle_mdr.models.concept):
         aristotle_mdr.models.DataElement,
         related_name="questions",
         null=True,
-        blank=True
+        blank=True,
+        on_delete=models.deletion.CASCADE,
     )
 
 
@@ -62,6 +63,6 @@ class TargetRespondentClass(aristotle_mdr.models.aristotleComponent):
     def parentItem(self):
         return self.questionnaire
 
-    questionnaire = models.ForeignKey('Questionnaire')
-    respondent_class = models.ForeignKey(aristotle_mdr.models.ObjectClass)
+    questionnaire = models.ForeignKey('Questionnaire', on_delete=models.deletion.CASCADE)
+    respondent_class = models.ForeignKey(aristotle_mdr.models.ObjectClass, on_delete=models.deletion.CASCADE)
     rationale = models.TextField(blank=True, null=True)

@@ -242,6 +242,8 @@ class AdminPageForConcept(utils.AristotleTestUtils):
         self.assertEqual(register,{'success': [self.item1],'failed':[]})
         self.item1 = self.itemType.objects.get(pk=self.item1.pk)  # Stupid cache
 
+
+
         self.assertEqual(self.item1.current_statuses()[0].state, models.STATES.incomplete)
 
         response = self.client.get(reverse("admin:%s_%s_change"%(self.itemType._meta.app_label,self.itemType._meta.model_name),args=[self.item1.pk]))
