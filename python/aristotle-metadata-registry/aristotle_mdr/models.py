@@ -253,7 +253,7 @@ class RegistrationAuthority(Organization):
     (8.1.5.1) association class.
     """
     objects = RegistrationAuthorityQuerySet.as_manager()
-    stewardship_organisation = models.ForeignKey(StewardOrganisation, to_field="uuid")
+    stewardship_organisation = models.ForeignKey(StewardOrganisation, to_field="uuid", on_delete=models.CASCADE)
     template = "aristotle_mdr/organization/registration_authority/home.html"
 
     active = models.IntegerField(
@@ -364,13 +364,13 @@ class RegistrationAuthority(Organization):
     @property
     def members(self):
         from django.contrib.auth import get_user_model
-        User = get_user_model()
+        um = get_user_model()
 
         reg_pks = list(self.registrars.all().values_list("pk", flat=True))
         man_pks = list(self.managers.all().values_list("pk", flat=True))
 
         pks = set(reg_pks + man_pks)
-        return User.objects.filter(pk__in=pks)
+        return um.objects.filter(pk__in=pks)
 
     @property
     def is_active(self):
@@ -541,7 +541,7 @@ class Workgroup(AbstractGroup, TimeStampedModel):
     template = "aristotle_mdr/workgroup.html"
     can_invite_new_users_via_email = False
     objects = WorkgroupQuerySet.as_manager()
-    stewardship_organisation = models.ForeignKey(StewardOrganisation, to_field="uuid")
+    stewardship_organisation = models.ForeignKey(StewardOrganisation, to_field="uuid", on_delete=models.CASCADE)
     archived = models.BooleanField(
         default=False,
         help_text=_("Archived workgroups can no longer have new items or "
@@ -644,7 +644,7 @@ class WorkgroupMembership(AbstractMembership):
 
 
 class DiscussionPost(discussionAbstract):
-    workgroup = models.ForeignKey(Workgroup, related_name='discussions')
+    workgroup = models.ForeignKey(Workgroup, related_name='discussions', on_delete=models.CASCADE)
     title = models.CharField(max_length=256)
     relatedItems = models.ManyToManyField(
         '_concept',
@@ -671,7 +671,7 @@ class DiscussionPost(discussionAbstract):
 
 
 class DiscussionComment(discussionAbstract):
-    post = models.ForeignKey(DiscussionPost, related_name='comments')
+    post = models.ForeignKey(DiscussionPost, related_name='comments', on_delete=models.CASCADE)
 
     class Meta:
         ordering = ['created']
@@ -701,17 +701,20 @@ class _concept(baseAristotleObject):
     stewardship_organisation = models.ForeignKey(
         StewardOrganisation, to_field="uuid",
         null=True, blank=True,
-        related_name="metadata"
+        related_name="metadata",
+        on_delete=models.CASCADE
     )
 
     publication_details = ConceptGenericRelation('aristotle_mdr_publishing.PublicationRecord')
     version_publication_details = GenericRelation('aristotle_mdr_publishing.VersionPublicationRecord')
 
-    workgroup = models.ForeignKey(Workgroup, related_name="items", null=True, blank=True)
+    workgroup = models.ForeignKey(Workgroup, related_name="items", null=True, blank=True, on_delete=models.SET_NULL)
     submitter = models.ForeignKey(
         settings.AUTH_USER_MODEL, related_name="created_items",
         null=True, blank=True,
-        help_text=_('This is the person who first created an item. Users can always see items they made.'))
+        help_text=_('This is the person who first created an item. Users can always see items they made.'),
+        on_delete=models.PROTECT
+    )
     # We will query on these, so want them cached with the items themselves
     # To be usable these must be updated when statuses are changed
     _is_public = models.BooleanField(default=False)
@@ -720,7 +723,7 @@ class _concept(baseAristotleObject):
     # Cache of what type of item this is (set in handle_object_save)
     _type = models.ForeignKey(
         ContentType,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         null=True,
         blank=True,
     )
@@ -767,6 +770,9 @@ class _concept(baseAristotleObject):
     class Meta:
         # So the url_name works for items we can't determine.
         verbose_name = "item"
+        indexes = [
+            models.Index(fields=['uuid']),
+        ]
 
     class ReportBuilder:
         exclude = ('_is_public', '_is_locked', '_type')
@@ -1078,12 +1084,14 @@ class SupersedeRelationship(TimeStampedModel):
     older_item = ConceptForeignKey(
         _concept,
         related_name='superseded_by_items_relation_set',
+        on_delete=models.CASCADE
     )
     newer_item = ConceptForeignKey(
         _concept,
         related_name='superseded_items_relation_set',
+        on_delete=models.CASCADE
     )
-    registration_authority = models.ForeignKey(RegistrationAuthority)
+    registration_authority = models.ForeignKey(RegistrationAuthority, on_delete=models.CASCADE)
     message = models.TextField(blank=True, null=True)
     date_effective = models.DateField(
         _('Date effective'),
@@ -1094,7 +1102,8 @@ class SupersedeRelationship(TimeStampedModel):
         'aristotle_mdr_review_requests.ReviewRequest',
         null=True,
         default=None,
-        related_name='supersedes'
+        related_name='supersedes',
+        on_delete=models.SET_NULL
     )
 
     objects = models.Manager()
@@ -1109,8 +1118,8 @@ class RecordRelation(TimeStampedModel):
         ('r', 'Responsible Organization'),
     )
 
-    concept = ConceptForeignKey(_concept, related_name='org_records')
-    organization_record = models.ForeignKey(OrganizationRecord)
+    concept = ConceptForeignKey(_concept, related_name='org_records', on_delete=models.CASCADE)
+    organization_record = models.ForeignKey(OrganizationRecord, on_delete=models.PROTECT)
     type = models.CharField(
         choices=TYPE_CHOICES,
         max_length=1,
@@ -1132,8 +1141,8 @@ class Status(TimeStampedModel):
     The attributes of the Registration_State class are summarized here and specified more formally in 8.1.2.6.2.
     """
     objects = StatusQuerySet.as_manager()
-    concept = ConceptForeignKey(_concept, related_name="statuses")
-    registrationAuthority = models.ForeignKey(RegistrationAuthority)
+    concept = ConceptForeignKey(_concept, related_name="statuses", on_delete=models.CASCADE)
+    registrationAuthority = models.ForeignKey(RegistrationAuthority, on_delete=models.CASCADE)
     changeDetails = models.TextField(blank=True, null=True)
     state = models.IntegerField(
         choices=STATES,
@@ -1259,14 +1268,13 @@ class UnitOfMeasure(concept):
 
     template = "aristotle_mdr/concepts/unitOfMeasure.html"
     list_details_template = "aristotle_mdr/concepts/list_details/unit_of_measure.html"
-    measure = models.ForeignKey(Measure,
-                                blank=True,
-                                null=True,
-                                on_delete=models.SET_NULL,
-                                )
-    symbol = models.CharField(max_length=20,
-                              blank=True,
-                              )
+    measure = models.ForeignKey(
+        Measure,
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+    )
+    symbol = models.CharField(max_length=20, blank=True)
 
     @property
     def relational_attributes(self):
@@ -1350,7 +1358,8 @@ class ValueMeaning(aristotleComponent):
     )
     conceptual_domain = ConceptForeignKey(
         ConceptualDomain,
-        verbose_name='Conceptual Domain'
+        verbose_name='Conceptual Domain',
+        on_delete=models.CASCADE
     )
     order = models.PositiveSmallIntegerField("Position")
     start_date = models.DateField(
@@ -1451,10 +1460,6 @@ class ValueDomain(concept):
                    'range for a set of all values for a Value Domain.')
     )
 
-    # Below is a dirty, dirty hack that came from re-designing permissible
-    # values
-
-    # TODO: Fix references to permissible and supplementary values
     @property
     def permissibleValues(self):
         return self.permissiblevalue_set.all()
@@ -1480,11 +1485,13 @@ class PermissibleValue(AbstractValue):
     """
 
     class Meta:
+        ordering = ['order']
         verbose_name = "Permissible Value"
 
 
 class SupplementaryValue(AbstractValue):
     class Meta:
+        ordering = ['order']
         verbose_name = "Supplementary Value"
 
 
@@ -1504,17 +1511,20 @@ class DataElementConcept(concept):
     objectClass = ConceptForeignKey(  # 11.2.3.3
         ObjectClass, blank=True, null=True,
         help_text=_('references an Object_Class that is part of the specification of the Data_Element_Concept'),
-        verbose_name='Object Class'
+        verbose_name='Object Class',
+        on_delete=models.SET_NULL
     )
     property = ConceptForeignKey(  # 11.2.3.1
         Property, blank=True, null=True,
         help_text=_('references a Property that is part of the specification of the Data_Element_Concept'),
-        verbose_name='Property'
+        verbose_name='Property',
+        on_delete=models.SET_NULL
     )
     conceptualDomain = ConceptForeignKey(  # 11.2.3.2
         ConceptualDomain, blank=True, null=True,
         help_text=_('references a Conceptual_Domain that is part of the specification of the Data_Element_Concept'),
-        verbose_name='Conceptual Domain'
+        verbose_name='Conceptual Domain',
+        on_delete=models.SET_NULL
     )
 
     related_objects = [
@@ -1565,6 +1575,7 @@ class DataElement(concept):
         verbose_name="Data Element Concept",
         blank=True,
         null=True,
+        on_delete=models.SET_NULL,
         help_text=_(
             "binds with a Value_Domain that describes a set of possible values that may be recorded in an instance of the Data_Element")
     )
@@ -1573,6 +1584,7 @@ class DataElement(concept):
         verbose_name="Value Domain",
         blank=True,
         null=True,
+        on_delete=models.SET_NULL,
         help_text=_("binds with a Data_Element_Concept that provides the meaning for the Data_Element")
     )
 
@@ -1680,12 +1692,14 @@ class PossumProfile(models.Model):
     """
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
-        related_name='profile'
+        related_name='profile',
+        on_delete=models.PROTECT,
     )
     savedActiveWorkgroup = models.ForeignKey(
         Workgroup,
         blank=True,
-        null=True
+        null=True,
+        on_delete=models.SET_NULL,
     )
     profilePictureWidth = models.IntegerField(
         blank=True,
@@ -1828,7 +1842,7 @@ class PossumProfile(models.Model):
     @property
     def is_ra_manager(self):
         user = self.user
-        if user.is_anonymous():
+        if user.is_anonymous:
             return False
         if user.is_superuser:
             return True
@@ -1928,7 +1942,8 @@ class SandboxShare(models.Model):
     )
     profile = models.OneToOneField(
         PossumProfile,
-        related_name='share'
+        related_name='share',
+        on_delete=models.PROTECT,
     )
     created = models.DateTimeField(
         auto_now=True

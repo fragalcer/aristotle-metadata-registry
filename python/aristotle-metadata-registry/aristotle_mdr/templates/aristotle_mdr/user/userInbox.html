@@ -1,9 +1,6 @@
 {% extends "aristotle_mdr/user/userHome.html" %}
 {% load notifications_tags aristotle_tags util_tags i18n %}
 
-{% block collapse-link%}
-    <i class="fa fa-envelope fa-fw"></i> Notifications
-{% endblock %}
 {% block sidebar %}
     {% include "aristotle_mdr/user/userSideBar.html" with inboxFolder=folder %}
 {% endblock %}
@@ -71,7 +68,6 @@
                     {% endif %}
 
                     {% if notice.target %}
-{#                        {% trans "in" %}#}
                         {% if notice.target.get_absolute_url %}
                             <a href="{{notice.target.get_absolute_url}}">{{ notice.target }}</a>
                         {% else %}

@@ -345,16 +345,15 @@ class AnnotatedPaginator(Paginator):
 
 
 class GenericListWorkgroup(LoginRequiredMixin, SortedListView):
-
     model = MDR.Workgroup
     redirect_unauthenticated_users = True
+
     paginate_by = 20
     paginator_class = AnnotatedPaginator
 
     allowed_sorts = {
         'items': 'num_items',
         'name': 'name',
-        # 'users': 'num_viewers'
     }
 
     default_sort = 'name'
@@ -370,36 +369,16 @@ class GenericListWorkgroup(LoginRequiredMixin, SortedListView):
         return self.paginator_class(*args, **kwargs, annotations=annotations)
 
     def get_queryset(self):
-        # TODO: Fix this query to be faster
         workgroups = self.get_initial_queryset()
-
         if self.text_filter:
             workgroups = workgroups.filter(Q(name__icontains=self.text_filter) | Q(definition__icontains=self.text_filter))
-
         workgroups = self.sort_queryset(workgroups)
+
         return workgroups
 
 
 class ObjectLevelPermissionRequiredMixin(PermissionRequiredMixin):
-    def check_permissions(self, request):
-        """
-        Returns True or False depending on whether or not the user has permission to perform an action
-
-        If you're using it as a mixin you are required to set either 'object' or get_object
-        """
-        perms = self.get_permission_required(request)
-        # TODO handle permission not required
-
-        has_permission = False
-
-        if hasattr(self, 'object') and self.object is not None:
-            has_permission = request.user.has_perm(self.get_permission_required(request), self.object)
-        elif hasattr(self, 'get_object') and callable(self.get_object):
-            has_permission = request.user.has_perm(self.get_permission_required(request), self.get_object())
-        else:
-            has_permission = request.user.has_perm(self.get_permission_required(request))
-
-        return has_permission
+    object_level_permissions = True
 
 
 class GroupMemberMixin(object):
@@ -431,7 +410,6 @@ class GroupMemberMixin(object):
 class RoleChangeView(GroupMemberMixin, LoginRequiredMixin, ObjectLevelPermissionRequiredMixin, BaseDetailView, FormView):
     raise_exception = True
     redirect_unauthenticated_users = True
-    object_level_permissions = True
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -455,7 +433,6 @@ class RoleChangeView(GroupMemberMixin, LoginRequiredMixin, ObjectLevelPermission
 class SingleRoleChangeView(GroupMemberMixin, LoginRequiredMixin, ObjectLevelPermissionRequiredMixin, BaseDetailView, FormView):
     raise_exception = True
     redirect_unauthenticated_users = True
-    object_level_permissions = True
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -476,7 +453,6 @@ class SingleRoleChangeView(GroupMemberMixin, LoginRequiredMixin, ObjectLevelPerm
 class MemberRemoveFromGroupView(GroupMemberMixin, LoginRequiredMixin, ObjectLevelPermissionRequiredMixin, DetailView):
     raise_exception = True
     redirect_unauthenticated_users = True
-    object_level_permissions = True
 
     http_method_names = ['get', 'post']
 
@@ -559,7 +535,7 @@ class CachePerItemUserMixin:
         if not settings.CACHE_ITEM_PAGE:
             return super().get(request, *args, **kwargs)
 
-        if request.user.is_anonymous():
+        if request.user.is_anonymous:
             user = 'anonymous'
         else:
             user = request.user.id
@@ -599,7 +575,7 @@ class TagsMixin:
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data()
 
-        if self.request.user.is_authenticated():
+        if self.request.user.is_authenticated:
             item_tags = Favourite.objects.filter(
                 tag__profile=self.request.user.profile,
                 tag__primary=False,

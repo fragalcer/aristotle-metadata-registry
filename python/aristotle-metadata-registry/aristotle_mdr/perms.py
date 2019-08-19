@@ -2,7 +2,6 @@ from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from django.db.models import Q
 from aristotle_mdr.utils import fetch_aristotle_settings
-
 from aristotle_mdr.contrib.reviews.const import REVIEW_STATES
 
 import logging
@@ -83,7 +82,7 @@ def user_can_view(user, item):
     if item.__class__ == get_user_model():  # -- Sometimes duck-typing fails --
         return user == item                 # A user can edit their own details
 
-    if user.is_anonymous():
+    if user.is_anonymous:
         user_key = "anonymous"
     else:
         user_key = str(user.id)
@@ -111,7 +110,7 @@ def user_can_edit(user, item):
     if user.is_superuser:
         return True
     # Anonymous users can edit nothing
-    if user.is_anonymous():
+    if user.is_anonymous:
         return False
     # A user can edit their own details
     if item.__class__ == get_user_model():  # -- Sometimes duck-typing fails --
@@ -139,11 +138,8 @@ def user_can_edit(user, item):
     return _can_edit
 
 
-# TODO remove this
-def user_is_editor(user, workgroup=None):
-    if user.is_anonymous():
-        return False
-    return user.is_active
+def user_is_authenticated_and_active(user):
+    return user.is_authenticated and user.is_active
 
 
 def user_can_submit_to_workgroup(user, workgroup):
@@ -151,7 +147,7 @@ def user_can_submit_to_workgroup(user, workgroup):
 
 
 def user_is_registrar(user, ra=None):
-    if user.is_anonymous():
+    if user.is_anonymous:
         return False
     if user.is_superuser:
         return True
@@ -162,7 +158,7 @@ def user_is_registrar(user, ra=None):
 
 
 def user_is_registation_authority_manager(user, ra=None):
-    if user.is_anonymous():
+    if user.is_anonymous:
         return False
     if user.is_superuser:
         return True
@@ -174,7 +170,7 @@ def user_is_registation_authority_manager(user, ra=None):
 
 def user_can_add_status(user, item):
     """Can the user add a status to this item in some RA"""
-    if user.is_anonymous():
+    if user.is_anonymous:
         return False
     if user.is_superuser:
         return True
@@ -200,7 +196,7 @@ def user_can_add_status(user, item):
 
 def user_can_add_ra_status(user, ra, item):
     """Can the user add a status to this item in this RA"""
-    if user.is_anonymous():
+    if user.is_anonymous:
         return False
     if user.is_superuser:
         return True
@@ -226,7 +222,7 @@ def user_can_add_ra_status(user, ra, item):
 
 
 def user_can_supersede(user, item):
-    if user.is_anonymous():
+    if user.is_anonymous:
         return False
     if user.is_superuser:
         return True
@@ -239,7 +235,7 @@ def user_can_supersede(user, item):
 
 
 def user_can_view_review(user, review):
-    if user.is_anonymous():
+    if user.is_anonymous:
         return False
     # A user can see all their requests
     if review.requester == user:
@@ -264,7 +260,7 @@ def user_can_view_review(user, review):
 
 
 def user_can_edit_review(user, review):
-    if user.is_anonymous():
+    if user.is_anonymous:
         return False
     # A user can edit all their requests
     if review.requester == user:
@@ -282,7 +278,7 @@ def user_can_edit_review(user, review):
 
 
 def user_can_edit_review_comment(user, reviewcomment):
-    if user.is_anonymous():
+    if user.is_anonymous:
         return False
     # A user can edit all their requests
     if reviewcomment.author == user:
@@ -304,7 +300,7 @@ def user_can_view_review_comment(user, reviewcomment):
 
 
 def user_can_revoke_review(user, review):
-    if user.is_anonymous():
+    if user.is_anonymous:
         return False
     # A user can see all their requests
     if review.requester == user:
@@ -317,7 +313,7 @@ def user_can_revoke_review(user, review):
 
 
 def user_can_close_or_reopen_review(user, review):
-    if user.is_anonymous():
+    if user.is_anonymous:
         return False
     # A user can see all their requests
     if review.requester == user:
@@ -335,7 +331,7 @@ def user_can_close_or_reopen_review(user, review):
 
 
 def user_can_approve_review(user, review):
-    if user.is_anonymous():
+    if user.is_anonymous:
         return False
     # Can't approve a closed request
     if review.status != REVIEW_STATES.open:
@@ -431,7 +427,7 @@ def user_can_move_between_workgroups(user, workgroup_a, workgroup_b):
 
 
 def user_can_query_user_list(user):
-    if user.is_anonymous():
+    if user.is_anonymous:
         return False
     user_visbility = fetch_aristotle_settings().get('USER_VISIBILITY', 'owner')
     return (
@@ -447,7 +443,7 @@ def edit_other_users_account(viewing_user, viewed_user):
 
 
 def view_other_users_account(viewing_user, viewed_user):
-    from aristotle_mdr.models import StewardOrganisation, StewardOrganisationMembership
+    from aristotle_mdr.models import StewardOrganisation
     user = viewing_user
     if user.is_anonymous:
         return False
@@ -458,7 +454,6 @@ def view_other_users_account(viewing_user, viewed_user):
     allowed_roles = [
         StewardOrganisation.roles.admin,
     ]
-    kwargs = {"members__user": user, "members__role__in": allowed_roles}
 
     return StewardOrganisation.objects.filter(
         members__user=viewed_user
@@ -468,20 +463,15 @@ def view_other_users_account(viewing_user, viewed_user):
 
 
 def user_can_create_workgroup(user, steward_org=None):
-    from aristotle_mdr.models import StewardOrganisation, StewardOrganisationMembership
-    if user.is_superuser:
-        return True
-    allowed_roles = [
-        StewardOrganisation.roles.admin,
-    ]
-    kwargs = {"members__user": user, "members__role__in": allowed_roles}
-    if steward_org:
-        kwargs["pk"] = steward_org.pk
-    return StewardOrganisation.objects.filter(**kwargs).active().exists()
+    return user_is_superuser_or_has_admin_role_in_steward_organisation(user, steward_org)
 
 
 def user_can_create_registration_authority(user, steward_org=None):
-    from aristotle_mdr.models import StewardOrganisation, StewardOrganisationMembership
+    return user_is_superuser_or_has_admin_role_in_steward_organisation(user, steward_org)
+
+
+def user_is_superuser_or_has_admin_role_in_steward_organisation(user, steward_org=None):
+    from aristotle_mdr.models import StewardOrganisation
     if user.is_superuser:
         return True
     allowed_roles = [

@@ -4,6 +4,7 @@ from django.contrib.contenttypes.models import ContentType
 import aristotle_mdr.models as models
 import aristotle_mdr.perms as perms
 from aristotle_mdr.utils.cache import recache_types
+from aristotle_mdr.utils.cached_querysets import get_queryset_from_uuid, register_queryset
 from django.contrib.auth import get_user_model
 
 import datetime
@@ -115,3 +116,38 @@ class TypeCachingTests(TestCase):
 
         self.assertIsNotNone(cached_item)
         self.assertEqual(cached_item, oc)
+
+
+class TestQuerySetCaching(TestCase):
+    def setUp(self):
+        self.oc = models.ObjectClass.objects.create(name="Object Class",
+                                                    definition="Object Class")
+
+        self.concept = models._concept.objects.create(name="Concrete concept",
+                                                      definition="Concrete concept")
+
+    @staticmethod
+    def pickle_and_unpickle_queryset(concept):
+        Model = type(concept)
+
+        queryset = Model.objects.filter(id=concept.id)
+
+        # Register it
+        uuid = register_queryset(queryset)
+
+        # Pull it from the cache
+        unpickled_queryset = get_queryset_from_uuid(uuid, models.ObjectClass)
+
+        return queryset, unpickled_queryset
+
+    def test_pickling_and_unpickling_queryset_works_with_abstract_intermediate_model(self):
+        # For object class
+        original_queryset, unpickled_queryset = self.pickle_and_unpickle_queryset(self.oc)
+        self.assertCountEqual(original_queryset, unpickled_queryset)
+        # For _concept
+        original_queryset, unpickled_queryset = self.pickle_and_unpickle_queryset(self.concept)
+        self.assertCountEqual(original_queryset, unpickled_queryset)
+
+
+
+

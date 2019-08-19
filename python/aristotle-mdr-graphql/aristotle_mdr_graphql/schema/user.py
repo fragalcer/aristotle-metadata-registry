@@ -34,7 +34,7 @@ class SingleUserQuery(graphene.ObjectType):
 
     def resolve_user(self, info, **kwargs):
 
-        if not info.context.user.is_authenticated():
+        if not info.context.user.is_authenticated:
             return User.objects.none()
         else:
             return info.context.user

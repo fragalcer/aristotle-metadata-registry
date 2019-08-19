@@ -2,30 +2,30 @@
 {% load i18n %}
 {% load aristotle_tags %}
 
-{% block title %}Remove user from registation authority {% firstof user_to_change.get_full_name user_to_change.email %}{% endblock %}
+{% block title %}Remove user from registration authority {% firstof user_to_change.get_full_name user_to_change.email %}{% endblock %}
 {% block content %}
     <form method="post" action="{% url 'aristotle:registrationauthority_member_remove' iid=item.id user_pk=user_to_change.pk %}">{% csrf_token %}
         {% if not request.is_ajax %}
             <div class="modal-header">
-                <header class="modal-title">Remove user from registation authority - {% firstof user_to_change.get_full_name user_to_change.email %}</header>
+                <header class="modal-title">Remove user from registration authority - {% firstof user_to_change.get_full_name user_to_change.email %}</header>
             </div>
         {% endif %}
         <div class="modal-body">
             <strong>
                 You are about to remove the account of
                 <em>{% firstof user_to_change.get_full_name user_to_change.email %}</em>
-                from the registation authority <em>{{item.name}}</em>.
+                from the registration authority <em>{{item.name}}</em>.
             </strong>
             <ul>
                 <li>
-                    This will remove all roles from the user in this registation authority,
-                    they will no longer be able to register content for this registation authority.
+                    This will remove all roles from the user in this registration authority,
+                    they will no longer be able to register content for this registration authority.
                 </li>
                 <li>
                     This user will still be able login to this registry and create content in their own space.
                 </li>
                 <li>
-                    You can re-invite this user later to this registation authority.
+                    You can re-invite this user later to this registration authority.
                 </li>
             </ul>
         </div>

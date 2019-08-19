@@ -231,8 +231,8 @@ def subclassed_mixin_modelform(set_model, extra_mixins=[]):
     meta_class = type('Meta', (ConceptForm.Meta,), meta_attrs)
 
     form_class_bases = extra_mixins + [ConceptForm]
-    form_class_attrs = {'Meta': meta_class}
-    form_class_attrs['change_comments'] = forms.CharField(widget=forms.Textarea, required=False)
+    form_class_attrs = {'Meta': meta_class,
+                        'change_comments': forms.CharField(widget=forms.Textarea, required=False)}
 
     form_class = type('MyForm', tuple(form_class_bases), form_class_attrs)
 

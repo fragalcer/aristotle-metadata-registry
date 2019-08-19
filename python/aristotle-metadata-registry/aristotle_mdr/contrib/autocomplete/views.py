@@ -30,7 +30,7 @@ class GenericAutocomplete(autocomplete.Select2QuerySetView):
 
     def get_queryset(self):
         # Don't forget to filter out results depending on the visitor !
-        if not self.request.user.is_authenticated():
+        if not self.request.user.is_authenticated:
             return self.model.objects.none()
 
         qs = self.model.objects.all()
@@ -71,7 +71,7 @@ class GenericConceptAutocomplete(GenericAutocomplete):
         # Get public query parameter
         public = self.request.GET.get('public', '')
         # If we requested public objects, or are not authenticated
-        if public or not self.request.user.is_authenticated():
+        if public or not self.request.user.is_authenticated:
             qs = self.model.objects.public()
         else:
             qs = self.model.objects.visible(self.request.user)
@@ -127,7 +127,7 @@ class UserAutocomplete(GenericAutocomplete):
         self.model = get_user_model()
 
         # Don't forget to filter out results depending on the visitor !
-        if not self.request.user.is_authenticated():
+        if not self.request.user.is_authenticated:
             raise PermissionDenied
 
         if not perms.user_can_query_user_list(self.request.user):
@@ -175,7 +175,7 @@ class WorkgroupAutocomplete(GenericAutocomplete):
 
     def get_queryset(self):
         # Don't forget to filter out results depending on the visitor !
-        if not self.request.user.is_authenticated():
+        if not self.request.user.is_authenticated:
             raise PermissionDenied
 
         if self.q:

@@ -12,7 +12,6 @@ from django.db import transaction
 
 from aristotle_mdr import models as MDR
 from aristotle_mdr import forms as MDRForms
-from aristotle_mdr.perms import user_is_editor
 from aristotle_mdr.utils import url_slugify_concept
 from aristotle_mdr.contrib.custom_fields.models import CustomField
 from aristotle_mdr.contrib.help.models import ConceptHelp
@@ -72,7 +71,7 @@ def create_item(request, app_label=None, model_name=None):
 class PermissionWizard(SessionWizardView):
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
-        if not user_is_editor(request.user):
+        if not request.user.is_active:
             raise PermissionDenied
 
         return super().dispatch(request, *args, **kwargs)
@@ -80,15 +79,10 @@ class PermissionWizard(SessionWizardView):
     def get_template_names(self):
         return [self.templates[self.steps.current]]
 
-    def get_form_kwargs(self, step):
+    def get_form_kwargs(self, step=None):
         kwargs = super().get_form_kwargs(step)
         kwargs.update({'user': self.request.user})
         return kwargs
-
-    def help_guide(self, model=None):
-        # Refactored out as part of help changes
-        # TODO: Need to permanently remove
-        return None
 
     def get_context_data(self, form, **kwargs):
         context = super().get_context_data(form=form, **kwargs)
@@ -205,7 +199,6 @@ class ConceptWizard(ExtraFormsetMixin, PermissionWizard):
                         ).first(),
                         'model_class': self.model,
                         'template_name': self.template_name,
-                        'help_guide': self.help_guide(),
                         'current_step': self.steps.current,
                         'additional_records_active': self.additional_records_active
                         })
@@ -552,13 +545,11 @@ class DataElementConceptWizard(MultiStepAristotleWizard):
             context.update({
                 'model_name': MDR.ObjectClass._meta.verbose_name,
                 'model_class': MDR.ObjectClass,
-                'help_guide': self.help_guide(MDR.ObjectClass),
                 })
         if self.steps.current == 'make_p':
             context.update({
                 'model_name': MDR.Property._meta.verbose_name,
                 'model_class': MDR.Property,
-                'help_guide': self.help_guide(MDR.Property),
                 })
         if self.steps.current == 'find_dec_results':
             context.update({
@@ -863,7 +854,6 @@ class DataElementWizard(MultiStepAristotleWizard):
             context.update({
                 'model_name': MDR.ValueDomain._meta.verbose_name,
                 'model_class': MDR.ValueDomain,
-                'help_guide': self.help_guide(MDR.Property),
                 })
         if self.steps.current == 'make_dec':
             context.update({

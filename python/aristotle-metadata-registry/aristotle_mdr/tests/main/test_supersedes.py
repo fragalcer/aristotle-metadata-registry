@@ -388,8 +388,8 @@ class SupersedePage(utils.AristotleTestUtils, TestCase):
             older_item=self.item2,
             newer_item=self.item1,
             registration_authority=self.ra,
+            message="Superseded"
         )
-
         # Get formset postdata for single supersedes
         postdata = self.get_formset_postdata(
             [{

@@ -1,24 +1,21 @@
 {% extends "aristotle_mdr/user/userHome.html" %}
 
-{% block collapse-link%}
-    <i class="fa fa-users fa-fw"></i> Registry Administrator tools</a>
-{% endblock %}
 {% block sidebar %}
     {% include "aristotle_mdr/user/userSideBar.html" with activeTab='adminTools' %}
 {% endblock %}
 
 {% block page %}
-<h1>{% block title %}Registry Administrator tools{% endblock %}</h1>
-<aside>
-<section id="members">
-</section>
-</aside>
+    <h1>{% block title %}Registry Administrator tools{% endblock %}</h1>
+    <aside>
+        <section id="members">
+        </section>
+    </aside>
 
-<h2>Quick Links</h2>
+    <h2>Quick Links</h2>
 
-<div class="row">
-  <div class="col-lg-4 col-md-6">
-    {% comment %}
+    <div class="row">
+        <div class="col-lg-4 col-md-6">
+            {% comment %}
     <h3>Create</h3>
     <ul class="list-group">
         <a class="list-group-item" href="{% url 'aristotle:workgroup_create'%}">
@@ -36,81 +33,81 @@
     </ul>
     {% endcomment %}
 
-    <h3>Manage Registry</h3>
-    <ul class="list-group">
-        <a class="list-group-item" href="{% url 'aristotle_custom_fields:list' %}">
-          <i class="fa fa-fw fa-i-cursor" aria-hidden="true"></i>
-          Manage Custom Fields
-        </a>
-        <a class="list-group-item" href="{% url 'aristotle:registrationauthority_list'%}">
-          <i class="fa fa-fw fa-institution" aria-hidden="true"></i>
-          Manage Registration Authorities
-        </a>
-        <a class="list-group-item" href="{% url 'aristotle_mdr:stewards:group:list_all' %}">
-          <i class="fa fa-fw fa-sitemap" aria-hidden="true"></i>
-          Manage Stewardship Organisations
-        </a>
-        <a class="list-group-item" href="{% url 'aristotle-user:registry_user_list'%}">
-          <i class="fa fa-fw fa-user" aria-hidden="true"></i>
-          Manage Users
-        </a>
-        <a class="list-group-item" href="{% url 'aristotle:workgroup_list'%}">
-          <i class="fa fa-fw fa-users" aria-hidden="true"></i>
-          Manage Workgroups
-        </a>
-        <a class="list-group-item" href="{% url 'aristotle_validations:validation_edit' %}">
-          <i class="fa fa-check fa-fw" aria-hidden="true"></i>
-          Manage Registry Validation Rules
-        </a>
-        <a class="list-group-item" href="{% url 'aristotle_issues:admin_issue_label_list' %}">
-          <i class="fa fa-exclamation-triangle fa-fw" aria-hidden="true"></i>
-          Manage Issue Labels
-        </a>
-        {% if aristotle_cloud_is_active %}
-        <a class="list-group-item" href="{% url 'aristotle_cloud:cloud_page_management:admin_list' %}">
-          <i class="fa fa-file-o fa-fw" aria-hidden="true"></i>
-          Manage Pages
-        </a>
-        {% endif %}
-    </ul>
-  </div>
-</div>
-
-<h2>Basic item statistics</h2>
-<p>Below is a table of the various concepts managed within this registry.
-These values are updated approximately twice a day,
-therefore the counts below may be out of date due to caching.
-
-<br>For live updates, visit the <a href="{% url 'aristotle:userAdminStats' %}">Advanced concept statistics page</a>.
-</p>
-<table class='table'>
-    <thead>
-    <tr>
-        <th>Extension name</th>
-        <th>Concept type</th>
-        <th>#</th>
-    </thead>
-{% for app in models %}
-    <tbody>
-    {% for model,count,adminlink in app.models %}
-        {% if forloop.first %}
-        <tr>
-            <th>
-                {% firstof app.app.create_page_name app.app.verbose_name %}
-            </th>
-        </tr>
-        {% endif %}
-        <tr>
-            <td></td>
-            <td>
-                <a href="{{ adminlink }}">
-                    {{ model.get_verbose_name }}
+            <h3>Manage Registry</h3>
+            <ul class="list-group">
+                <a class="list-group-item" href="{% url 'aristotle_custom_fields:list' %}">
+                    <i class="fa fa-fw fa-i-cursor" aria-hidden="true"></i>
+                    Manage Custom Fields
                 </a>
-            </td>
-            <td>{{ count }}</td>
-        </tr>
-    {% endfor %}
-    <tbody>
-{% endfor %}
-</table>
+                <a class="list-group-item" href="{% url 'aristotle:registrationauthority_list'%}">
+                    <i class="fa fa-fw fa-institution" aria-hidden="true"></i>
+                    Manage Registration Authorities
+                </a>
+                <a class="list-group-item" href="{% url 'aristotle_mdr:stewards:group:list_all' %}">
+                    <i class="fa fa-fw fa-sitemap" aria-hidden="true"></i>
+                    Manage Stewardship Organisations
+                </a>
+                <a class="list-group-item" href="{% url 'aristotle-user:registry_user_list'%}">
+                    <i class="fa fa-fw fa-user" aria-hidden="true"></i>
+                    Manage Users
+                </a>
+                <a class="list-group-item" href="{% url 'aristotle:workgroup_list'%}">
+                    <i class="fa fa-fw fa-users" aria-hidden="true"></i>
+                    Manage Workgroups
+                </a>
+                <a class="list-group-item" href="{% url 'aristotle_validations:validation_edit' %}">
+                    <i class="fa fa-check fa-fw" aria-hidden="true"></i>
+                    Manage Registry Validation Rules
+                </a>
+                <a class="list-group-item" href="{% url 'aristotle_issues:admin_issue_label_list' %}">
+                    <i class="fa fa-exclamation-triangle fa-fw" aria-hidden="true"></i>
+                    Manage Issue Labels
+                </a>
+                {% if aristotle_cloud_is_active %}
+                    <a class="list-group-item" href="{% url 'aristotle_cloud:cloud_page_management:admin_list' %}">
+                        <i class="fa fa-file-o fa-fw" aria-hidden="true"></i>
+                        Manage Pages
+                    </a>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+
+    <h2>Basic item statistics</h2>
+    <p>Below is a table of the various concepts managed within this registry.
+        These values are updated approximately twice a day,
+        therefore the counts below may be out of date due to caching.
+
+        <br>For live updates, visit the <a href="{% url 'aristotle:userAdminStats' %}">Advanced concept statistics page</a>.
+    </p>
+    <table class='table'>
+        <thead>
+        <tr>
+            <th>Extension name</th>
+            <th>Concept type</th>
+            <th>#</th>
+        </thead>
+        {% for app in models %}
+            <tbody>
+            {% for model,count,adminlink in app.models %}
+                {% if forloop.first %}
+                    <tr>
+                        <th>
+                            {% firstof app.app.create_page_name app.app.verbose_name %}
+                        </th>
+                    </tr>
+                {% endif %}
+                <tr>
+                    <td></td>
+                    <td>
+                        <a href="{{ adminlink }}">
+                            {{ model.get_verbose_name }}
+                        </a>
+                    </td>
+                    <td>{{ count }}</td>
+                </tr>
+            {% endfor %}
+            <tbody>
+        {% endfor %}
+    </table>
 {% endblock %}

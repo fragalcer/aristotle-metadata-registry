@@ -38,10 +38,11 @@ setup(
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
     ],
     install_requires=[
-        "Django<2.0",
+        "Django~=2.2.0",
         'six',  # Setuptools > 36 doesn't install this by default
         'pytz',
         'pyyaml',
+        'dj-database-url',
 
         'django-model-utils>=2.3.1',
         'django-notifications-hq==1.4',
@@ -49,7 +50,7 @@ setup(
         'docutils',
 
         # Search requirements
-        'django-haystack>=2.7.dev1,<2.8.0',
+        'django-haystack~=2.8.0',
 
         # Rich text editors
         'django-ckeditor>=5.3.0',
@@ -63,7 +64,7 @@ setup(
         'diff-match-patch',
 
         # Fancy UI stuff
-        'django-autocomplete-light>=3.0.0,<3.3.0',
+        'django-autocomplete-light>=3.4.0',
         'django-bootstrap3>8.0,<9.0',
         'django-bootstrap3-datetimepicker-2>=2.5.0',
 
@@ -72,11 +73,8 @@ setup(
         # required for help, but thats required
         'django-autoslug',
 
-        # This is only needed for Migration 0024 once this is squashed, remove this dependency
+        # TODO: This is only needed for Migration 0024 once this is squashed, remove this dependency
         'sqlparse',
-
-        # Required for utils.cached_querysets
-        'dill',
 
         'django-organizations',
 
@@ -96,7 +94,8 @@ setup(
         'django-user-sessions',
         'geoip2',
 
-        'django-missing',
+        # Vendored package
+        # 'django-missing', 
 
         # Webpack loading
         'django-webpack-loader',

@@ -8,7 +8,6 @@
 {% endblock %}
 
 {% block title %}Edit details{% endblock %}
-{% block collapse-link%}<i class="fa fa-user fa-fw"></i> Edit my account details{% endblock %}
 {% block sidebar %}
     {% include "aristotle_mdr/user/userSideBar.html" with activeTab='edit' %}
 {% endblock %}
@@ -23,12 +22,12 @@
                     <h3>{{ field.label }}</h3>
                     {{ field }}
                 {% endfor %}
-                    <a class="btn btn-default" href="{% url 'aristotle:userHome' %}">
-                        <i class="fa fa-times fa-fw"></i>Cancel
-                    </a>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fa fa-check  fa-fw"></i>Save Changes
-                    </button>
+                <a class="btn btn-default" href="{% url 'aristotle:userHome' %}">
+                    <i class="fa fa-times fa-fw"></i>Cancel
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa fa-check  fa-fw"></i>Save Changes
+                </button>
             </form>
         {% else %}
         {% endif %}

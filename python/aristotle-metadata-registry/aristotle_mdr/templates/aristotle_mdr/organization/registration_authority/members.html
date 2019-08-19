@@ -26,17 +26,24 @@
             </thead>
             <tbody>
 
-            {% for member in item.members.all %}
+            {% for member in ra_members %}
                 <tr>
                     <td>
                         {% include "aristotle_mdr/users_management/helper/user_table_display.html" with user=member %}
                     </td>
                     <td>
-                        {% comment %}
-                        TODO: THIS IS SUPER INEFFICIENT AND USES 4 DATABASE CALLS BUT WORKS.
-                        PROFILE AND FIX IN THE FUTURE.
-                        {% endcomment %}
-                        {{ item|user_roles_for_group:member|join:", " }}
+                        <ul>
+                            {% if member.id in managers %}
+                                <li>
+                                    Manager
+                                </li>
+                            {% endif %}
+                            {% if member.id in registrars %}
+                                <li>
+                                    Registrar
+                                </li>
+                            {% endif %}
+                        </ul>
                     </td>
                     <td>
                         <div class="btn-group">
@@ -53,7 +60,9 @@
                                 <li role="separator" class="divider"></li>
                                 <li class="alert-danger">
                                     <a href="{% url 'aristotle:registrationauthority_member_remove' item.id  member.pk %}"
-                                       data-toggle="modal" data-target="#ra_page_modal">Remove from this group</a>
+                                       data-toggle="modal" data-target="#ra_page_modal">
+                                        Remove from this group
+                                    </a>
                                 </li>
                             </ul>
                         </div>

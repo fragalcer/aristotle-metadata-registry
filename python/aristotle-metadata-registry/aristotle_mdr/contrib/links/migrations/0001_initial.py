@@ -39,7 +39,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Relation',
             fields=[
-                ('_concept_ptr', models.OneToOneField(to='aristotle_mdr._concept', auto_created=True, parent_link=True, primary_key=True, serialize=False)),
+                ('_concept_ptr', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr._concept', auto_created=True, parent_link=True, primary_key=True, serialize=False)),
                 ('arity', models.PositiveIntegerField(validators=[django.core.validators.MinValueValidator(2)], help_text='number of elements in the relation')),
             ],
             options={
@@ -55,7 +55,7 @@ class Migration(migrations.Migration):
                 ('definition', models.TextField(verbose_name='definition', help_text='Representation of a concept by a descriptive statement which serves to differentiate it from related concepts. (3.2.39)')),
                 ('multiplicity', models.PositiveIntegerField(help_text='number of links which must (logically) be members of the source relation of this role, differing only by an end with this role as an end_role.')),
                 ('ordinal', models.PositiveIntegerField(help_text='order of the relation role among other relation roles in the relation.')),
-                ('relation', models.ForeignKey(to='aristotle_mdr_links.Relation')),
+                ('relation', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr_links.Relation')),
             ],
             options={
                 'abstract': False,
@@ -64,21 +64,21 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='linkend',
             name='concept',
-            field=models.ForeignKey(to='aristotle_mdr._concept'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr._concept'),
         ),
         migrations.AddField(
             model_name='linkend',
             name='link',
-            field=models.ForeignKey(to='aristotle_mdr_links.Link'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr_links.Link'),
         ),
         migrations.AddField(
             model_name='linkend',
             name='role',
-            field=models.ForeignKey(to='aristotle_mdr_links.RelationRole'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr_links.RelationRole'),
         ),
         migrations.AddField(
             model_name='link',
             name='relation',
-            field=models.ForeignKey(to='aristotle_mdr_links.Relation'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr_links.Relation'),
         ),
     ]

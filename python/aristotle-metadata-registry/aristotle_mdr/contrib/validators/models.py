@@ -14,7 +14,8 @@ class ValidationRules(models.Model):
 class RAValidationRules(ValidationRules):
     registration_authority = models.ForeignKey(
         RegistrationAuthority,
-        unique=True
+        unique=True,
+        on_delete=models.CASCADE
     )
 
     def can_view(self, user):

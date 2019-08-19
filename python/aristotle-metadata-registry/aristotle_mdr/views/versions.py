@@ -38,7 +38,7 @@ class VersionsMixin:
         """ Determine whether or not user can view the specific version """
 
         in_workgroup = metadata_item.workgroup and user in metadata_item.workgroup.member_list
-        authenticated_user = not user.is_anonymous()
+        authenticated_user = not user.is_anonymous
 
         if user.is_superuser:
             # Superusers can see everything

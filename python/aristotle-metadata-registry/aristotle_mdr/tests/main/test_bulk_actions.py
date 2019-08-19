@@ -554,10 +554,10 @@ class BulkWorkgroupActionsPage(BulkActionsTest, TestCase):
 
     @override_settings(ARISTOTLE_SETTINGS=dict(settings.ARISTOTLE_SETTINGS, WORKGROUP_CHANGES=['submitter']))
     def test_bulk_workgroup_change_with_all_from_workgroup_list(self):
-        # phew thats one hell of a test name
         from aristotle_mdr.utils.cached_querysets import register_queryset
 
-        self.new_workgroup = models.Workgroup.objects.create(name="new workgroup", stewardship_organisation=self.steward_org_1)
+        self.new_workgroup = models.Workgroup.objects.create(name="new workgroup",
+                                                             stewardship_organisation=self.steward_org_1)
         self.new_workgroup.giveRoleToUser('submitter', self.editor)
         self.login_editor()
 

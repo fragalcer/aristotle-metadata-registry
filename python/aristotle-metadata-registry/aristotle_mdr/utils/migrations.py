@@ -3,6 +3,7 @@ This file contains code required for the v1.3.x -> 1.4.x data migrations
 At some point, we will squash the entire migration path for <1.4 and remove this before we have too many users
 running this code.
 """
+import django.db.models
 from django.db import migrations, models
 from django.db.migrations.operations.base import Operation
 from django.conf import settings
@@ -270,7 +271,7 @@ class ConceptMigrationAddConceptFields(migrations.Migration):
         migrations.AddField(
             model_name='_concept',
             name='temp_col_superseded_by',
-            field=models.ForeignKey(related_name='supersedes', blank=True, to='aristotle_mdr._concept', null=True),
+            field=models.ForeignKey(related_name='supersedes', blank=True, on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr._concept', null=True),
         ),
         migrations.AddField(
             model_name='_concept',

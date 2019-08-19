@@ -1,20 +1,16 @@
 {% extends "aristotle_mdr/user/userHome.html" %}
 {% load i18n %}
 
-{% block collapse-link %}
-    <i class="fa fa-users fa-fw"></i> All Workgroups </a>
-{% endblock %}
-
 {% block sidebar %}
     {% include "aristotle_mdr/user/userSideBar.html" with activeTab='adminTools' %}
 {% endblock %}
 
 {% block page %}
-<h1>{% block title %}All Workgroups{% endblock %}</h1>
+    <h1>{% block title %}All Workgroups{% endblock %}</h1>
 
     <section id="workgroups">
         <a class="btn btn-default" href="{% url 'aristotle:workgroup_create'%}">Add New Workgroup</a>
-        
+
         {% include "aristotle_mdr/helpers/paginated_workgroup_list.html" with page=page show_all=True show_stewardship_organisations=True %}
-</section>
+    </section>
 {% endblock %}

@@ -6,7 +6,7 @@ from django.utils.html import mark_safe
 register = template.Library()
 
 
-@register.assignment_tag()
+@register.simple_tag()
 def user_has_role(group, user, role):
     try:
         return group.has_role(role=role, user=user)
@@ -14,7 +14,7 @@ def user_has_role(group, user, role):
         return False
 
 
-@register.assignment_tag()
+@register.simple_tag()
 def user_has_role_permission(group, user, role_perm):
     try:
         return group.user_has_permission(permission=role_perm, user=user)

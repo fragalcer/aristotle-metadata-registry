@@ -7,12 +7,10 @@ from django.test import TestCase, override_settings, tag, RequestFactory
 from django.urls import reverse
 from django.utils import timezone
 from django.contrib.auth.models import AnonymousUser
-from django.contrib.messages import get_messages
 
 import aristotle_mdr.models as models
 import aristotle_mdr.perms as perms
 import aristotle_mdr.contrib.identifiers.models as ident_models
-
 from aristotle_mdr.constants import visibility_permission_choices as permission_choices
 from aristotle_mdr.contrib.custom_fields.models import CustomField, CustomValue
 from aristotle_mdr.utils import url_slugify_concept
@@ -24,6 +22,7 @@ from aristotle_mdr.tests import utils
 from aristotle_mdr.views import ConceptRenderView
 from aristotle_mdr.utils.versions import VersionLinkField
 from aristotle_mdr.downloader import HTMLDownloader
+
 import datetime
 from unittest import mock, skip
 import reversion
@@ -40,7 +39,7 @@ class AnonymousUserViewingThePages(TestCase):
         self.assertEqual(response.status_code, 200)
         # Make sure notifications library isn't loaded for anon users as they'll never have notifications.
         self.assertNotContains(response, "notifications/notify.js")
-        # At some stage this might need a better test to check the 500 page doesn't show... after notifications is fixed.
+        # TODO: At some stage this might need a better test to check the 500 page doesn't show... after notifications is fixed.
 
     def test_sitemaps(self):
         response = self.client.get("/sitemap.xml")
@@ -199,7 +198,6 @@ class GeneralItemPageTestCase(utils.AristotleTestUtils, TestCase):
     @override_settings(CACHE_ITEM_PAGE=True)
     @skip('Cache mixin not currently used')
     def test_itempage_caches(self):
-
         # View in the future to avoid modified recently check
         # No flux capacitors required
         with mock.patch('aristotle_mdr.utils.utils.timezone.now') as mock_now:
@@ -219,7 +217,6 @@ class GeneralItemPageTestCase(utils.AristotleTestUtils, TestCase):
     @override_settings(CACHE_ITEM_PAGE=True)
     @skip('Cache mixin not currently used')
     def test_itempage_loaded_from_cache(self):
-
         # Load response into cache
         cache.set(self.cache_key, HttpResponse('wow'))
 
@@ -240,7 +237,6 @@ class GeneralItemPageTestCase(utils.AristotleTestUtils, TestCase):
     @override_settings(CACHE_ITEM_PAGE=True)
     @skip('Cache mixin not currently used')
     def test_itempage_not_loaded_from_cache_if_modified(self):
-
         # Load response into cache
         cache.set(self.cache_key, HttpResponse('wow'))
 
@@ -335,7 +331,6 @@ class GeneralItemPageTestCase(utils.AristotleTestUtils, TestCase):
 
     @tag('extrav')
     def test_no_extra_versions_created_adv_editor(self):
-
         oc = models.ObjectClass.objects.create(
             name='Test OC',
             definition='Just a test',
@@ -457,7 +452,6 @@ class GeneralItemPageTestCase(utils.AristotleTestUtils, TestCase):
 
     @tag('item_app_check')
     def test_viewing_item_with_disabled_app(self):
-
         enabled_apps = ['aristotle_dse']
         with mock.patch('aristotle_mdr.views.views.fetch_metadata_apps', return_value=enabled_apps):
             self.login_editor()
@@ -469,7 +463,6 @@ class GeneralItemPageTestCase(utils.AristotleTestUtils, TestCase):
 
     @tag('item_app_check')
     def test_viewing_item_with_enabled_app(self):
-
         enabled_apps = ['aristotle_mdr']
         with mock.patch('aristotle_mdr.views.views.fetch_metadata_apps', return_value=enabled_apps):
             self.login_editor()
@@ -481,7 +474,6 @@ class GeneralItemPageTestCase(utils.AristotleTestUtils, TestCase):
 
     @tag('version')
     def test_version_workgroup_lookup(self):
-
         with reversion.create_revision():
             self.item.save()
 
@@ -522,7 +514,6 @@ class GeneralItemPageTestCase(utils.AristotleTestUtils, TestCase):
 
     @tag('version')
     def test_view_non_concept_version(self):
-
         with reversion.create_revision():
             self.wg1.save()
 
@@ -537,7 +528,6 @@ class GeneralItemPageTestCase(utils.AristotleTestUtils, TestCase):
 
     @tag('version')
     def test_view_version_for_item_without_perm(self):
-
         with reversion.create_revision():
             item = models.ObjectClass.objects.create(
                 name='cant view',
@@ -730,7 +720,6 @@ class GeneralItemPageTestCase(utils.AristotleTestUtils, TestCase):
         )
         self.assertEqual(response.status_code, 404)
 
-    @skip('Concept comparator temporarily disabled')
     def test_comparator_with_bad_version_data(self):
         """Test that the comparator still works with garbled version data"""
         versions = self.create_versions()
@@ -753,12 +742,12 @@ class GeneralItemPageTestCase(utils.AristotleTestUtils, TestCase):
             reverse('aristotle:compare_concepts') + qparams
         )
         self.assertEqual(response.status_code, 200)
+        # Check that the cannot compare is set by bad version data, and that the page loads
+        self.assertEqual(response.context['cannot_compare'], True)
 
-        # TODO: seems like there should be more than just checking that the page loads
 
-
-# These are run by all item types
 class LoggedInViewConceptPages(utils.AristotleTestUtils):
+    """These are run by all item types"""
     defaults = {}
 
     def setUp(self):
@@ -788,7 +777,7 @@ class LoggedInViewConceptPages(utils.AristotleTestUtils):
 
     def loadHelp(self):
         from django.core.management import call_command
-        call_command('load_aristotle_help', verbosity=0, interactive=False)
+        call_command('load_aristotle_help', verbosity=0)
 
     def update_defn_with_versions(self, new_defn='brand new definition'):
         with reversion.create_revision():
@@ -900,13 +889,15 @@ class LoggedInViewConceptPages(utils.AristotleTestUtils):
         self.assertEqual(response.status_code, 403)
         response = self.client.get(reverse('aristotle:edit_item', args=[self.item2.id]))
         self.assertEqual(response.status_code, 403)
-        self.regular_item = self.itemType.objects.create(name="regular item", definition="my definition", submitter=self.regular, **self.defaults)
+        self.regular_item = self.itemType.objects.create(name="regular item", definition="my definition",
+                                                         submitter=self.regular, **self.defaults)
         response = self.client.get(reverse('aristotle:edit_item', args=[self.regular_item.id]))
         self.assertEqual(response.status_code, 200)
 
     def test_regular_can_save_via_edit_page(self):
         self.login_regular_user()
-        self.regular_item = self.itemType.objects.create(name="regular item", definition="my definition", submitter=self.regular, **self.defaults)
+        self.regular_item = self.itemType.objects.create(name="regular item", definition="my definition",
+                                                         submitter=self.regular, **self.defaults)
         response = self.client.get(reverse('aristotle:edit_item', args=[self.regular_item.id]))
         self.assertEqual(response.status_code, 200)
 
@@ -934,7 +925,8 @@ class LoggedInViewConceptPages(utils.AristotleTestUtils):
 
     def test_submitter_can_save_item_with_no_workgroup_via_edit_page(self):
         self.login_editor()
-        self.item1 = self.itemType.objects.create(name="Test Item 1 (visible to tested viewers)", submitter=self.editor, definition="my definition", **self.defaults)
+        self.item1 = self.itemType.objects.create(name="Test Item 1 (visible to tested viewers)", submitter=self.editor,
+                                                  definition="my definition", **self.defaults)
         response = self.client.get(reverse('aristotle:edit_item', args=[self.item1.id]))
         self.assertEqual(response.status_code, 200)
 
@@ -970,7 +962,6 @@ class LoggedInViewConceptPages(utils.AristotleTestUtils):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, change_comment)
-
 
         # Logout, and assert that the page is not displayed
         self.logout()
@@ -1105,7 +1096,8 @@ class LoggedInViewConceptPages(utils.AristotleTestUtils):
         self.assertEqual(response.status_code, 200)
 
         # fake that we fetched the page seconds before modification
-        updated_item = utils.model_to_dict_with_change_time(response.context['item'], fetch_time=modified - datetime.timedelta(seconds=5))
+        updated_item = utils.model_to_dict_with_change_time(response.context['item'],
+                                                            fetch_time=modified - datetime.timedelta(seconds=5))
         updated_name = updated_item['name'] + " updated!"
         updated_item['name'] = updated_name
         change_comment = "I changed this because I can"
@@ -1145,7 +1137,8 @@ class LoggedInViewConceptPages(utils.AristotleTestUtils):
     @override_settings(ARISTOTLE_SETTINGS=dict(settings.ARISTOTLE_SETTINGS, WORKGROUP_CHANGES=[]))
     def test_submitter_cannot_change_workgroup_via_edit_page(self):
         # based on the idea that 'submitter' is not set in ARISTOTLE_SETTINGS.WORKGROUP
-        self.wg_other = models.Workgroup.objects.create(name="Test WG to move to", stewardship_organisation=self.steward_org)
+        self.wg_other = models.Workgroup.objects.create(name="Test WG to move to",
+                                                        stewardship_organisation=self.steward_org)
         self.wg_other.giveRoleToUser('submitter', self.editor)
 
         self.login_editor()
@@ -1182,7 +1175,8 @@ class LoggedInViewConceptPages(utils.AristotleTestUtils):
     @override_settings(ARISTOTLE_SETTINGS=dict(settings.ARISTOTLE_SETTINGS, WORKGROUP_CHANGES=['submitter']))
     def test_submitter_can_change_workgroup_via_edit_page(self):
         # based on the idea that 'submitter' is set in ARISTOTLE_SETTINGS.WORKGROUP
-        self.wg_other = models.Workgroup.objects.create(name="Test WG to move to", stewardship_organisation=self.steward_org)
+        self.wg_other = models.Workgroup.objects.create(name="Test WG to move to",
+                                                        stewardship_organisation=self.steward_org)
 
         self.login_editor()
         response = self.client.get(reverse('aristotle:edit_item', args=[self.item1.id]))
@@ -1213,7 +1207,8 @@ class LoggedInViewConceptPages(utils.AristotleTestUtils):
     @override_settings(ARISTOTLE_SETTINGS=dict(settings.ARISTOTLE_SETTINGS, WORKGROUP_CHANGES=['admin']))
     def test_admin_can_change_workgroup_via_edit_page(self):
         # based on the idea that 'admin' is set in ARISTOTLE_SETTINGS.WORKGROUP
-        self.wg_other = models.Workgroup.objects.create(name="Test WG to move to", stewardship_organisation=self.steward_org)
+        self.wg_other = models.Workgroup.objects.create(name="Test WG to move to",
+                                                        stewardship_organisation=self.steward_org)
 
         self.login_superuser()
         response = self.client.get(reverse('aristotle:edit_item', args=[self.item1.id]))
@@ -1232,7 +1227,8 @@ class LoggedInViewConceptPages(utils.AristotleTestUtils):
     @override_settings(ARISTOTLE_SETTINGS=dict(settings.ARISTOTLE_SETTINGS, WORKGROUP_CHANGES=['manager']))
     def test_manager_of_two_workgroups_can_change_workgroup_via_edit_page(self):
         # based on the idea that 'manager' is set in ARISTOTLE_SETTINGS.WORKGROUP
-        self.wg_other = models.Workgroup.objects.create(name="Test WG to move to", stewardship_organisation=self.steward_org)
+        self.wg_other = models.Workgroup.objects.create(name="Test WG to move to",
+                                                        stewardship_organisation=self.steward_org)
         self.wg_other.giveRoleToUser('submitter', self.editor)
 
         self.login_editor()
@@ -1308,7 +1304,8 @@ class LoggedInViewConceptPages(utils.AristotleTestUtils):
     def test_submitter_can_save_via_clone_page(self):
         self.login_editor()
         import time
-        time.sleep(2)  # delays so there is a definite time difference between the first item and the clone on very fast test machines
+        time.sleep(
+            2)  # delays so there is a definite time difference between the first item and the clone on very fast test machines
         response = self.client.get(reverse('aristotle:clone_item', args=[self.item1.id]))
         self.assertEqual(response.status_code, 200)
         updated_item = self.get_updated_data_for_clone(response)
@@ -1329,11 +1326,9 @@ class LoggedInViewConceptPages(utils.AristotleTestUtils):
     @tag('clone_item')
     def test_submitter_can_save_via_clone_page_with_no_workgroup(self):
         self.login_editor()
-        # import time
-        # time.sleep(2) # delays so there is a definite time difference between the first item and the clone on very fast test machines
         response = self.client.get(reverse('aristotle:clone_item', args=[self.item1.id]))
         self.assertEqual(response.status_code, 200)
-        # updated_item = utils.model_to_dict(response.context['item'])
+
         updated_item = self.get_updated_data_for_clone(response)
         updated_name = "CLONE" + updated_item['name'] + " cloned with no WG!"
         updated_item['name'] = updated_name
@@ -1355,50 +1350,50 @@ class LoggedInViewConceptPages(utils.AristotleTestUtils):
         self.assertTrue('cloned with no WG' not in self.item1.name)
 
     def get_updated_data_for_clone(self, response):
-        # TODO: make this not suck
-        self.assertEqual(response.status_code, 200)
         item = response.context['item']
+
         updating_field = None
         default_fields = {}
+
         if not hasattr(item, 'serialize_weak_entities'):
+            # The model has no weak entities
             return utils.model_to_dict(item)
         else:
             weak_formsets = response.context['weak_formsets']
-            # print(response.context['weak_formsets'][0].initial)
 
             weak = item.serialize_weak_entities
+
+            # Serialize the on-field models
             data = utils.model_to_dict_with_change_time(item)
 
-            for entity in weak:
-
-                value_type = entity[1]
-                pre = entity[0]
-
-                # find associated formset
+            for pre, value_type in weak:
+                # Find associated formset
                 current_formset = None
                 for formset in weak_formsets:
                     if formset['formset'].prefix == pre:
                         current_formset = formset['formset']
 
-                # check that a formset with the correct prefix was rendered
+                # Check that a formset with the correct prefix was rendered
                 self.assertIsNotNone(current_formset)
 
-                num_vals = getattr(self.item1, value_type).all().count()
-                ordering_field = getattr(self.item1, value_type).model.ordering_field
+                num_vals = getattr(item, value_type).all().count()
+                ordering_field = getattr(item, value_type).model.ordering_field
 
-                # check to make sure the classes with weak entities added them on setUp below
-                # self.assertGreater(num_vals, 0)
-
+                # Check to make sure the classes with weak entities added them on setUp below
                 skipped_fields = ['id', 'ORDER', 'start_date', 'end_date', 'DELETE']
+
                 for i, v in enumerate(getattr(self.item1, value_type).all()):
-                    data.update({"%s-%d-id" % (pre, i): v.pk, "%s-%d-ORDER" % (pre, i): getattr(v, ordering_field)})
+                    data.update(
+                        {"%s-%d-id" % (pre, i): v.pk, "%s-%d-ORDER" % (pre, i): getattr(v, ordering_field)}
+                    )
+
                     data.pop("%s-%d-id" % (pre, i))
                     for field in current_formset[0].fields:
                         if hasattr(v, field) and field not in skipped_fields:
                             value = getattr(v, field)
                             if value is not None:
-                                if (updating_field is None):
-                                    # see if this is the field to update
+                                if updating_field is None:
+                                    # See if this is the field to update
                                     model_field = current_formset[0]._meta.model._meta.get_field(field)
 
                                     if isinstance(model_field, CharField) or isinstance(model_field, TextField):
@@ -1413,7 +1408,7 @@ class LoggedInViewConceptPages(utils.AristotleTestUtils):
                                         added_value = default_fields[field]
                                     else:
                                         data.update({"%s-%d-%s" % (pre, i, field): value})
-                                    if (i == num_vals - 1):
+                                    if i == num_vals - 1:
                                         # add a copy
                                         data.update({"%s-%d-%s" % (pre, i + 1, field): added_value})
                     data.pop("%s-%d-id" % (pre, i), None)
@@ -1421,7 +1416,6 @@ class LoggedInViewConceptPages(utils.AristotleTestUtils):
                 data.update({
                     "%s-TOTAL_FORMS" % pre: num_vals, "%s-INITIAL_FORMS" % 0: num_vals, "%s-MAX_NUM_FORMS" % pre: 1000,
                 })
-            # import pdb; pdb.set_trace()
             return data
 
     def test_help_page_exists(self):
@@ -1509,13 +1503,14 @@ class LoggedInViewConceptPages(utils.AristotleTestUtils):
                 response,
                 '%s is %s' % (self.item1.name, s.get_state_display())
             )
+
     @skip("We are no longer providing functionality for reverting items for the time being")
     def test_editor_can_revert_item_and_status_goes_back_too(self):
         self.login_editor()
 
         # REVISION 0
         import reversion
-        #from reversion import revisions as reversion
+        # from reversion import revisions as reversion
         with reversion.revisions.create_revision():
             self.item1.save()
         original_name = self.item1.name
@@ -1718,7 +1713,8 @@ class LoggedInViewConceptPages(utils.AristotleTestUtils):
                 'change_status_view-current_step': 'change_status',
             }
         )
-        self.assertFormError(response, 'form', 'state', 'Select a valid choice. Not a number is not one of the available choices.')
+        self.assertFormError(response, 'form', 'state',
+                             'Select a valid choice. Not a number is not one of the available choices.')
 
         response = self.client.post(
             reverse('aristotle:changeStatus', args=[self.item1.id]),
@@ -1731,7 +1727,8 @@ class LoggedInViewConceptPages(utils.AristotleTestUtils):
                 'change_status_view-current_step': 'change_status',
             }
         )
-        self.assertFormError(response, 'form', 'state', 'Select a valid choice. 343434 is not one of the available choices.')
+        self.assertFormError(response, 'form', 'state',
+                             'Select a valid choice. 343434 is not one of the available choices.')
 
     def registrar_can_change_status_with_review(self, cascade):
         # If not running cascade tests return
@@ -1823,7 +1820,8 @@ class LoggedInViewConceptPages(utils.AristotleTestUtils):
         self.logout()
 
         response = self.client.get(reverse('aristotle:changeStatus', args=[self.item1.id]))
-        self.assertRedirects(response, reverse('friendly_login') + "?next=" + reverse('aristotle:changeStatus', args=[self.item1.id]))
+        self.assertRedirects(response, reverse('friendly_login') + "?next=" + reverse('aristotle:changeStatus',
+                                                                                      args=[self.item1.id]))
 
     @tag('changestatus')
     def test_cascade_action(self):
@@ -1906,7 +1904,8 @@ class LoggedInViewConceptPages(utils.AristotleTestUtils):
                 # than text updates
 
                 i = 0
-                data.update({"%s-%d-DELETE" % (pre, i): 'checked', "%s-%d-%s" % (pre, i, updating_field): getattr(v, updating_field) + " - deleted"})  # delete the last one.
+                data.update({"%s-%d-DELETE" % (pre, i): 'checked', "%s-%d-%s" % (pre, i, updating_field): getattr(v,
+                                                                                                                  updating_field) + " - deleted"})  # delete the last one.
 
                 # add order and updating_value to newly added data
                 i = num_vals
@@ -1914,7 +1913,8 @@ class LoggedInViewConceptPages(utils.AristotleTestUtils):
 
                 # add management form
                 data.update({
-                    "%s-TOTAL_FORMS" % pre: num_vals + 1, "%s-INITIAL_FORMS" % pre: num_vals, "%s-MAX_NUM_FORMS" % pre: 1000,
+                    "%s-TOTAL_FORMS" % pre: num_vals + 1, "%s-INITIAL_FORMS" % pre: num_vals,
+                    "%s-MAX_NUM_FORMS" % pre: 1000,
                 })
 
                 response = self.client.post(reverse(value_url, args=[self.item1.id]), data)
@@ -1956,7 +1956,8 @@ class LoggedInViewConceptPages(utils.AristotleTestUtils):
         self.assertEqual(dfn_field.value, old_definition)
 
     @tag('download')
-    @override_settings(ARISTOTLE_SETTINGS={"DOWNLOAD_OPTIONS": {'DOWNLOADERS': ['aristotle_mdr.downloaders.HTMLDownloader']}})
+    @override_settings(
+        ARISTOTLE_SETTINGS={"DOWNLOAD_OPTIONS": {'DOWNLOADERS': ['aristotle_mdr.downloaders.HTMLDownloader']}})
     def test_download_content(self):
         downloader = HTMLDownloader([self.item1.id], self.editor.id, {})
         html = downloader.get_html().decode()
@@ -2118,9 +2119,11 @@ class ValueDomainViewPage(LoggedInViewConceptPages, TestCase):
 
         # now add two new values that are all blank
         i = i + 1
-        data.update({"%s_values-%d-ORDER" % (value_type, i): i, "%s_values-%d-value" % (value_type, i): '', "%s_values-%d-meaning" % (value_type, i): ""})
+        data.update({"%s_values-%d-ORDER" % (value_type, i): i, "%s_values-%d-value" % (value_type, i): '',
+                     "%s_values-%d-meaning" % (value_type, i): ""})
         i = i + 1
-        data.update({"%s_values-%d-ORDER" % (value_type, i): i, "%s_values-%d-value" % (value_type, i): '', "%s_values-%d-meaning" % (value_type, i): ""})
+        data.update({"%s_values-%d-ORDER" % (value_type, i): i, "%s_values-%d-value" % (value_type, i): '',
+                     "%s_values-%d-meaning" % (value_type, i): ""})
 
         data.update({
             "%s_values-TOTAL_FORMS" % (value_type): i + 1,
@@ -2382,7 +2385,6 @@ class ConceptualDomainViewPage(LoggedInViewConceptPages, TestCase):
 
     @tag('edit_formsets')
     def test_edit_formset_error_display(self):
-
         self.login_editor()
 
         edit_url = 'aristotle:edit_item'
@@ -2394,13 +2396,15 @@ class ConceptualDomainViewPage(LoggedInViewConceptPages, TestCase):
         # submit an item with a blank name
         valuemeaning_formset_data = [
             {'name': '', 'definition': 'test defn', 'start_date': '1999-01-01', 'end_date': '2090-01-01', 'ORDER': 0},
-            {'name': 'Test2', 'definition': 'test defn', 'start_date': '1999-01-01', 'end_date': '2090-01-01', 'ORDER': 1}
+            {'name': 'Test2', 'definition': 'test defn', 'start_date': '1999-01-01', 'end_date': '2090-01-01',
+             'ORDER': 1}
         ]
         data.update(self.get_formset_postdata(valuemeaning_formset_data, 'value_meaning', 0))
         response = self.client.post(reverse(edit_url, args=[self.item1.id]), data)
         self.assertEqual(response.status_code, 200)
 
-        self.assertEqual(response.context['weak_formsets'][0]['formset'].errors[0], {'name': ['This field is required.']})
+        self.assertEqual(response.context['weak_formsets'][0]['formset'].errors[0],
+                         {'name': ['This field is required.']})
         self.assertContains(response, 'This field is required.')
 
 
@@ -2471,7 +2475,8 @@ class DataElementConceptViewPage(LoggedInViewConceptPages, TestCase):
 
     def test_regular_cannot_save_a_property_they_cant_see_via_edit_page(self):
         self.login_regular_user()
-        self.regular_item = self.itemType.objects.create(name="regular item", definition="my definition", submitter=self.regular, **self.defaults)
+        self.regular_item = self.itemType.objects.create(name="regular item", definition="my definition",
+                                                         submitter=self.regular, **self.defaults)
         response = self.client.get(reverse('aristotle:edit_item', args=[self.regular_item.id]))
         self.assertEqual(response.status_code, 200)
 
@@ -2568,7 +2573,8 @@ class DataElementViewPage(LoggedInViewConceptPages, TestCase):
     def test_cascade_action(self):
         self.logout()
         check_url = reverse('aristotle:check_cascaded_states', args=[self.item1.pk])
-        self.dec1 = models.DataElementConcept.objects.create(name='DEC1 - visible', definition="my definition", workgroup=self.wg1)
+        self.dec1 = models.DataElementConcept.objects.create(name='DEC1 - visible', definition="my definition",
+                                                             workgroup=self.wg1)
         self.item1.dataElementConcept = self.dec1
         self.item1.save()
 
@@ -2582,7 +2588,6 @@ class DataElementViewPage(LoggedInViewConceptPages, TestCase):
 
     @tag('version')
     def test_version_display_components(self):
-
         self.add_dec(self.wg1)
         self.update_defn_with_versions()
 
@@ -2605,7 +2610,6 @@ class DataElementViewPage(LoggedInViewConceptPages, TestCase):
 
     @tag('version')
     def test_version_display_component_from_multi_revision(self):
-
         dec1 = models.DataElementConcept.objects.create(
             name='dec1',
             definition='just a test',
@@ -2679,22 +2683,32 @@ class DataElementDerivationViewPage(LoggedInViewConceptPages, TestCase):
         self.de1 = models.DataElement.objects.create(name='DE1 Name', definition="my definition", workgroup=self.wg1)
         self.de2 = models.DataElement.objects.create(name='DE2 Name', definition="my definition", workgroup=self.wg1)
         self.de3 = models.DataElement.objects.create(name='DE3 Name', definition="my definition", workgroup=self.wg1)
-        self.ded = models.DataElementDerivation.objects.create(name='DED Name', definition='my definition', workgroup=self.wg1)
+        self.ded = models.DataElementDerivation.objects.create(name='DED Name', definition='my definition',
+                                                               workgroup=self.wg1)
 
-        ded_derives_1 = models.DedDerivesThrough.objects.create(data_element_derivation=self.ded, data_element=self.de1, order=0)
-        ded_derives_2 = models.DedDerivesThrough.objects.create(data_element_derivation=self.ded, data_element=self.de2, order=1)
-        ded_derives_3 = models.DedDerivesThrough.objects.create(data_element_derivation=self.ded, data_element=self.de3, order=2)
+        ded_derives_1 = models.DedDerivesThrough.objects.create(data_element_derivation=self.ded, data_element=self.de1,
+                                                                order=0)
+        ded_derives_2 = models.DedDerivesThrough.objects.create(data_element_derivation=self.ded, data_element=self.de2,
+                                                                order=1)
+        ded_derives_3 = models.DedDerivesThrough.objects.create(data_element_derivation=self.ded, data_element=self.de3,
+                                                                order=2)
 
-        ded_inputs_1 = models.DedInputsThrough.objects.create(data_element_derivation=self.ded, data_element=self.de3, order=0)
-        ded_inputs_1 = models.DedInputsThrough.objects.create(data_element_derivation=self.ded, data_element=self.de2, order=1)
-        ded_inputs_1 = models.DedInputsThrough.objects.create(data_element_derivation=self.ded, data_element=self.de1, order=2)
+        ded_inputs_1 = models.DedInputsThrough.objects.create(data_element_derivation=self.ded, data_element=self.de3,
+                                                              order=0)
+        ded_inputs_1 = models.DedInputsThrough.objects.create(data_element_derivation=self.ded, data_element=self.de2,
+                                                              order=1)
+        ded_inputs_1 = models.DedInputsThrough.objects.create(data_element_derivation=self.ded, data_element=self.de1,
+                                                              order=2)
 
         return self.ded
 
     def derivation_m2m_concepts_save(self, url, attr):
-        self.de1 = models.DataElement.objects.create(name='DE1 - visible', definition="my definition", workgroup=self.wg1)
-        self.de2 = models.DataElement.objects.create(name='DE2 - not visible', definition="my definition", workgroup=self.wg2)
-        self.oc1 = models.ObjectClass.objects.create(name='OC - visible but wrong', definition="my definition", workgroup=self.wg1)
+        self.de1 = models.DataElement.objects.create(name='DE1 - visible', definition="my definition",
+                                                     workgroup=self.wg1)
+        self.de2 = models.DataElement.objects.create(name='DE2 - not visible', definition="my definition",
+                                                     workgroup=self.wg2)
+        self.oc1 = models.ObjectClass.objects.create(name='OC - visible but wrong', definition="my definition",
+                                                     workgroup=self.wg1)
 
         self.login_editor()
 
@@ -2715,7 +2729,7 @@ class DataElementDerivationViewPage(LoggedInViewConceptPages, TestCase):
         postdata = management_form.copy()
         postdata['form-0-item_to_add'] = self.de2.pk
         postdata['form-0-ORDER'] = 0
-        #postdata['form-TOTAL_FORMS'] = 2
+        # postdata['form-TOTAL_FORMS'] = 2
 
         response = self.client.post(
             reverse(url, args=[self.item1.pk]),
@@ -2772,11 +2786,15 @@ class DataElementDerivationViewPage(LoggedInViewConceptPages, TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, self.item1.get_absolute_url())
 
-    def derivation_m2m_formset(self, url, attr, prefix='form', item_add_field='item_to_add', add_itemdata=False, extra_postdata=None):
+    def derivation_m2m_formset(self, url, attr, prefix='form', item_add_field='item_to_add', add_itemdata=False,
+                               extra_postdata=None):
 
-        self.de1 = models.DataElement.objects.create(name='DE1 - visible', definition="my definition", workgroup=self.wg1)
-        self.de2 = models.DataElement.objects.create(name='DE2 - visible', definition="my definition", workgroup=self.wg1)
-        self.de3 = models.DataElement.objects.create(name='DE3 - visible', definition="my definition", workgroup=self.wg1)
+        self.de1 = models.DataElement.objects.create(name='DE1 - visible', definition="my definition",
+                                                     workgroup=self.wg1)
+        self.de2 = models.DataElement.objects.create(name='DE2 - visible', definition="my definition",
+                                                     workgroup=self.wg1)
+        self.de3 = models.DataElement.objects.create(name='DE3 - visible', definition="my definition",
+                                                     workgroup=self.wg1)
 
         self.login_editor()
 
@@ -2950,7 +2968,7 @@ class LoggedInViewManagedItemPages(utils.LoggedInViewPages):
 
     def test_help_page_exists(self):
         self.logout()
-        #response = self.client.get(self.get_help_page())
+        # response = self.client.get(self.get_help_page())
         # self.assertEqual(response.status_code,200)
 
     def test_item_page_exists(self):
@@ -3002,7 +3020,8 @@ class MeasureViewPage(LoggedInViewManagedItemPages, TestCase):
     def setUp(self):
         super().setUp()
 
-        self.item2 = models.UnitOfMeasure.objects.create(name="OC1", workgroup=self.wg1, measure=self.item1, **self.defaults)
+        self.item2 = models.UnitOfMeasure.objects.create(name="OC1", workgroup=self.wg1, measure=self.item1,
+                                                         **self.defaults)
 
 
 class RegistrationAuthorityViewPage(utils.LoggedInViewPages, TestCase):

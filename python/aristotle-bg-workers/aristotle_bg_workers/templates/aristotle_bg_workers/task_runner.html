@@ -2,55 +2,51 @@
 {% load i18n static %}
 {% load render_bundle from webpack_loader %}
 
-{% block collapse-link %}
-    <i class="fa fa-users fa-fw"></i> Task list </a>
-{% endblock %}
-
 {% block sidebar %}
     {% include "aristotle_mdr/user/userSideBar.html" with activeTab='adminTools' %}
 {% endblock %}
 
 {% block webpack_bundle %}
-  {% render_bundle 'task_runner' 'js' %}
+    {% render_bundle 'task_runner' 'js' %}
 {% endblock %}
 
 {% block page %}
-{# <script src="{% static "aristotle_bg_workers/task_runner.js" %}"></script> #}
-<h1><i class="fa fa-tasks"></i> {% trans "Task Runner" %}</h1>
+    {# <script src="{% static "aristotle_bg_workers/task_runner.js" %}"></script> #}
+    <h1><i class="fa fa-tasks"></i> {% trans "Task Runner" %}</h1>
 
-<div id="vue-container">
+    <div id="vue-container">
 
-<h2>Start Tasks</h2>
-{% for task in tasks %}
-<p>
-<task-button
-  @new-task-started="refreshTaskList"
-  task-url="{% url 'aristotle_bg_workers:starttask' task_name=task.task_name %}"
-  task-name="{{ task.task_name }}"
-  display-name="{{ task.display_name }}"
-  :running-tasks="currentRunningTasks"
-  ></task-button>
-</p>
-{% endfor %}
+        <h2>Start Tasks</h2>
+        {% for task in tasks %}
+            <p>
+                <task-button
+                        @new-task-started="refreshTaskList"
+                        task-url="{% url 'aristotle_bg_workers:starttask' task_name=task.task_name %}"
+                        task-name="{{ task.task_name }}"
+                        display-name="{{ task.display_name }}"
+                        :running-tasks="currentRunningTasks"
+                ></task-button>
+            </p>
+        {% endfor %}
 
-<h1>{% block title %}Recent task history{% endblock %}</h1>
+        <h1>{% block title %}Recent task history{% endblock %}</h1>
 
-<h3>Recent Tasks</h3>
-<a class="btn btn-primary" href="{%url 'aristotle_bg_workers:task_history' %}">See all task history</a>
-<refresh-tasks-button @refresh-tasks="refreshTaskList"></refresh-tasks-button>
+        <h3>Recent Tasks</h3>
+        <a class="btn btn-primary" href="{%url 'aristotle_bg_workers:task_history' %}">See all task history</a>
+        <refresh-tasks-button @refresh-tasks="refreshTaskList"></refresh-tasks-button>
 
 
-<task-runner-list 
-  task-list-url="{% url "aristotle_bg_workers:dbstatus" %}"
-  task-stop-url="{% url 'aristotle_bg_workers:stoptask' %}"
-  @refresh-completed="refreshTaskListComplete"
-  :refresh-list="refreshList"
-  ></task-runner-list>
+        <task-runner-list
+                task-list-url="{% url "aristotle_bg_workers:dbstatus" %}"
+                task-stop-url="{% url 'aristotle_bg_workers:stoptask' %}"
+                @refresh-completed="refreshTaskListComplete"
+                :refresh-list="refreshList"
+        ></task-runner-list>
 
-</div>
+    </div>
 
-<p>
-<a class="btn btn-default" href="{%url 'aristotle_mdr:smart_root' %}">{% trans "Home" %}</a>
-</p>
+    <p>
+        <a class="btn btn-default" href="{%url 'aristotle_mdr:smart_root' %}">{% trans "Home" %}</a>
+    </p>
 
 {% endblock %}

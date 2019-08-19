@@ -10,6 +10,7 @@ from wcag_zoo.validators import parade
 
 import subprocess
 import pprint
+import re
 
 
 # This wont run on test aristotle_mdr.test because it is not prefixed with test_
@@ -93,10 +94,13 @@ class TestWebPageAccessibilityBase(utils.LoggedInViewPages):
 class TestStaticPageAccessibility(TestWebPageAccessibilityBase, TestCase):
     def test_static_pages(self):
         from aristotle_mdr.urls.aristotle import urlpatterns
+
         pages = [
             reverse("aristotle:%s" % u.name) for u in urlpatterns
-            if hasattr(u, 'name') and u.name is not None and u.regex.groups == 0
+            if hasattr(u, 'name') and u.name is not None
+            and re.compile(u.pattern._regex).groups == 0  # Only get static pages that lack matching groups
         ]
+
 
         self.pages_tester(pages)
 

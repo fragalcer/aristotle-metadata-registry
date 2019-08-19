@@ -1,4 +1,4 @@
-import dill as pickle
+import pickle
 from django.core.cache import cache
 from django.db import models
 from django.db.models.fields import Field, _load_field, _empty
@@ -52,34 +52,24 @@ def pickle_abstract_field(field):
 
 def register_queryset(qs):
     import uuid
-    try:
-        import copy_reg as copyreg
-    except:
-        import copyreg
-
     from django.db.models.query import QuerySet
+
     assert(issubclass(type(qs), QuerySet))
 
-    copyreg.pickle(Field, pickle_abstract_field)
-    # Monkey patching is tragically required here
-    # https://github.com/django/django/pull/7280
-    # TODO: Is this still relevant?
-    Field.__reduce__ = pickle_abstract_field
-
     qs_uuid = str(uuid.uuid4())
-    pickle.dumps(qs.query)
     cache.set('aristotle_mdr_cache_qs__%s' % qs_uuid, pickle.dumps(qs.query), 360)
+
     return qs_uuid
 
 
-def get_queryset_from_uuid(qs_uuid, model):
-    # return queryset_uuid_map[qs_uuid]
-
+def get_queryset_from_uuid(qs_uuid, Model):
     if not qs_uuid:
-        return model.objects.none()
+        return Model.objects.none()
     if not cache.get('aristotle_mdr_cache_qs__%s' % qs_uuid):
-        return model.objects.none()
+        return Model.objects.none()
+
     query = pickle.loads(cache.get('aristotle_mdr_cache_qs__%s' % qs_uuid))
-    qs = model.objects.none()
+    qs = Model.objects.none()
     qs.query = query
+
     return qs

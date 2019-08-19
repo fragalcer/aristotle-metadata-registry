@@ -55,7 +55,7 @@ class RelationRole(MDR.aristotleComponent):  # 9.1.2.5
             'order of the relation role among other relation roles in the relation.'
         )
     )
-    relation = ConceptForeignKey(Relation)
+    relation = ConceptForeignKey(Relation, on_delete=models.CASCADE)
 
     ordering_field = 'ordinal'
 
@@ -78,8 +78,8 @@ class Link(TimeStampedModel):
     Link is a subclass of Assertion (9.1.2.3), and as such is included in one or more
     Concept_Systems (9.1.2.2) through the assertion_inclusion (9.1.3.5) association.
     """
-    relation = ConceptForeignKey(Relation)
-    root_item = ConceptForeignKey(MDR._concept, related_name='owned_links')
+    relation = ConceptForeignKey(Relation, on_delete=models.CASCADE)
+    root_item = ConceptForeignKey(MDR._concept, related_name='owned_links', on_delete=models.CASCADE)
 
     def concepts(self):
         return MDR._concept.objects.filter(linkend__link=self).all().distinct()
@@ -89,9 +89,9 @@ class Link(TimeStampedModel):
 
 
 class LinkEnd(TimeStampedModel):  # 9.1.2.7
-    link = models.ForeignKey(Link)
-    role = models.ForeignKey(RelationRole)
-    concept = ConceptForeignKey(MDR._concept)
+    link = models.ForeignKey(Link, on_delete=models.CASCADE)
+    role = models.ForeignKey(RelationRole, on_delete=models.CASCADE)
+    concept = ConceptForeignKey(MDR._concept, on_delete=models.CASCADE)
 
     def clean(self):
         if self.role.relation != self.link.relation:

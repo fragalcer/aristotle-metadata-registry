@@ -23,7 +23,7 @@
         {% if request.is_ajax %}
             <button type="button" class="btn btn-default" data-dismiss="modal">No, take me back</button>
         {% else %}
-            <a class="btn btn-default" href="{% url 'aristotle:item' item.id %}">No, take me back</a>
+            <a class="btn btn-default" href="{% url 'aristotle:workgroup' item.id item.slug %}">No, take me back</a>
         {% endif %}
         <button type="submit" class="btn btn-danger">
              <i class="fa fa-user-times"></i> Yes, I want to leave {{item.name}}

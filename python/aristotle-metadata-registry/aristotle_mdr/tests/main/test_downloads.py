@@ -162,6 +162,7 @@ class DownloadsTestCase(AristotleTestUtils, TestCase):
     @tag('bulk_download')
     def test_bulk_download_redirects(self):
         self.login_editor()
+
         response = self.client.post(
             reverse('aristotle:bulk_action'),
             {
@@ -178,7 +179,7 @@ class DownloadsTestCase(AristotleTestUtils, TestCase):
         self.assertEqual(response.url, expected_url)
 
 
-class DownloderTestCase(AristotleTestUtils, TestCase):
+class DownloaderTestCase(AristotleTestUtils, TestCase):
     """
     Testing functionality defined in the base downloader
     """

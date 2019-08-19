@@ -2,15 +2,15 @@
 {% load aristotle_tags %}
 <table class='table'>
     <thead>
-        <tr>
-            <th>Title <small class="visible-xs-inline">(and workgroup)</small></th>
-            {% if showWorkgroups %}
-                <th class="hidden-xs">Workgroup</th>
-            {% endif %}
-            <th>Author</th>
-            <th title="Number of comments"><i class="fa fa-comments-o"></i></th>
-            <th>Latest comment</th>
-        </tr>
+    <tr>
+        <th>Title <small class="visible-xs-inline">(and workgroup)</small></th>
+        {% if showWorkgroups %}
+            <th class="hidden-xs">Workgroup</th>
+        {% endif %}
+        <th>Author</th>
+        <th title="Number of comments"><i class="fa fa-comments-o"></i></th>
+        <th>Latest comment</th>
+    </tr>
     </thead>
     <tbody>
     {% for post in discussions %}
@@ -19,28 +19,26 @@
                 <a href="{% url 'aristotle:discussionsPost' post.id %}">{{ post.title }}</a>
                 <br><small>{{ post.created|naturaltime }}</small>
                 {% if showWorkgroups %}
-                <span class="visible-xs-block">
+                    <span class="visible-xs-block">
                     In <a href="{% url 'aristotle:discussionsWorkgroup' post.workgroup.id %}" title="View discussions for this workgroup only">{{ post.workgroup }}</a>
                 </span>
                 {% endif %}
             </td>
             {% if showWorkgroups %}
-            <td class="hidden-xs">
-                <a href="{% url 'aristotle:discussionsWorkgroup' post.workgroup.id %}" title="View discussions for this workgroup only">{{ post.workgroup }}</a>
-            </td>
+                <td class="hidden-xs">
+                    <a href="{% url 'aristotle:discussionsWorkgroup' post.workgroup.id %}" title="View discussions for this workgroup only">{{ post.workgroup }}</a>
+                </td>
             {% endif %}
             <td>
-                {#TODO: We need to implement how users name is displayed:#}
-                {{ post.author.full_name }}
-                ({{ post.author }})
+                {{ post.author.display_name }}
             </td>
             <td>
-                    {{ post.comments.count }}
+                {{ post.comments.count }}
             </td>
             <td>
                 {% if post.comments.last %}
                     <a href="{% url 'aristotle:discussionsPost' post.id %}#comment_{{post.comments.last.id}}"
-                        title="Jump to last comment">
+                       title="Jump to last comment">
                         {{ post.comments.last.author }}, {{ post.comments.last.created|naturaltime }}</a>
                 {% else %}
                     -

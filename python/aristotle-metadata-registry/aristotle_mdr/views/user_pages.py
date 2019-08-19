@@ -1,12 +1,27 @@
-from typing import List
+import copy
 import datetime
+import json
+import logging
+import random
+from typing import List
+
+from aristotle_bg_workers.tasks import send_sandbox_notification_emails
+from aristotle_mdr import forms as MDRForms
+from aristotle_mdr import models as MDR
+from aristotle_mdr.utils import fetch_metadata_apps
+from aristotle_mdr.utils import get_aristotle_url
+from aristotle_mdr.views.utils import (paginated_registration_authority_list,
+                                       GenericListWorkgroup,
+                                       AjaxFormMixin)
+from aristotle_mdr.views.views import ConceptRenderView
+
 from django.apps import apps
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.core.cache import cache
-from django.conf import settings
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.db.models import Q
 from django.http import HttpResponseRedirect
@@ -16,7 +31,6 @@ from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.cache import never_cache
-from django.views.generic.edit import FormMixin
 from django.views.generic import (
     ListView,
     UpdateView,
@@ -24,26 +38,8 @@ from django.views.generic import (
     TemplateView,
     View
 )
+from django.views.generic.edit import FormMixin
 
-from aristotle_mdr import forms as MDRForms
-from aristotle_mdr import models as MDR
-from aristotle_mdr.views.utils import (paginated_list,
-                                       paginated_workgroup_list,
-                                       paginated_registration_authority_list,
-                                       GenericListWorkgroup,
-                                       AjaxFormMixin)
-from aristotle_mdr.views.views import ConceptRenderView, get_app_config_list
-from aristotle_mdr.utils import fetch_metadata_apps
-from aristotle_mdr.utils import get_aristotle_url
-from aristotle_bg_workers.tasks import send_sandbox_notification_emails
-
-import json
-import random
-import ast
-
-import copy
-
-import logging
 logger = logging.getLogger(__name__)
 
 
@@ -254,7 +250,7 @@ class InboxViewAll(LoginRequiredMixin, ListView):
 
 @login_required
 def admin_tools(request):
-    if request.user.is_anonymous():
+    if request.user.is_anonymous:
         return redirect(reverse('friendly_login') + '?next=%s' % request.path)
     elif not request.user.has_perm("aristotle_mdr.access_aristotle_dashboard"):
         raise PermissionDenied
@@ -295,7 +291,7 @@ def admin_tools(request):
 
 @login_required
 def admin_stats(request):
-    if request.user.is_anonymous():
+    if request.user.is_anonymous:
         return redirect(reverse('friendly_login') + '?next=%s' % request.path)
     elif not request.user.has_perm("aristotle_mdr.access_aristotle_dashboard"):
         raise PermissionDenied

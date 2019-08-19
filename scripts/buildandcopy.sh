@@ -34,24 +34,23 @@ for i in $@; do
     esac
 done
 
+# Move to top of repo
+TOP="$(git rev-parse --show-toplevel)"
+cd $TOP
+
 # Check environment is set correctly
-if ! [[ -z "$DISABLE_COLLECTSTATIC" ]]; then
+if [[ "$DISABLE_COLLECTSTATIC" ]]; then
     echo "Collectstatic disabled"
     exit 0
 fi
 
-if [[ -z $ASSET_PATH ]]; then
-    echo "ASSET_PATH must be set"
+if [[ -z $ASSET_ENDPOINT ]]; then
+    echo "ASSET_ENDPOINT must be set"
     exit 1
 fi
 
 if [[ -z $STORAGE_BUCKET_NAME ]]; then
     echo "STORAGE_BUCKET_NAME must be set"
-    exit 1
-fi
-
-if ! [[ "$PWD" =~ .*aristotle-metadata-registry$ ]]; then
-    echo "Must be run from root of repo"
     exit 1
 fi
 
@@ -79,7 +78,7 @@ if [[ $SKIP_WEBPACK_BUILD -ne 1 ]]; then
     fi
     npm install
     # Export asset path to be used by build
-    export ASSET_PATH="$ASSET_PATH"
+    export ASSET_PATH="https://$ASSET_ENDPOINT/bundles/"
     npm run build
     echo "Webpack build complete!"
 fi
@@ -93,19 +92,19 @@ fi
 
 echo "Collecting bundle static..."
 
+COPY_ARGS="./assets/dist/bundles s3://$STORAGE_BUCKET_NAME/bundles --recursive"
 if [[ $DRY -eq 1 ]]; then
-    aws s3 cp ./assets/dist/bundles s3://$STORAGE_BUCKET_NAME/bundles --recursive --dryrun
-else
-    aws s3 cp ./assets/dist/bundles s3://$STORAGE_BUCKET_NAME/bundles --recursive
+    COPY_ARGS="$COPY_ARGS --dryrun"
 fi
+aws s3 cp $COPY_ARGS
 
 cp ./assets/dist/webpack-stats.json ./python/aristotle-metadata-registry/aristotle_mdr/manifests
 
 if [[ $MANUAL -eq 1 ]]; then
     echo "Doing a manual deploy to s3..."
     # Check manual bucket set
-    if [[ -z $MANUAL_BUCKET ]]; then
-        echo "MANUAL_BUCKET not set"
+    if [[ -z $MANUAL_BUCKET_NAME ]]; then
+        echo "MANUAL_BUCKET_NAME not set"
         exit 1
     fi
     # Clean dist if exists
@@ -115,11 +114,11 @@ if [[ $MANUAL -eq 1 ]]; then
     # Run setup
     $PYTHON_CMD setup.py bdist_wheel
     # Push to s3
+    COPY_ARGS="./dist s3://$MANUAL_BUCKET_NAME --recursive --acl public-read"
     if [[ $DRY -eq 1 ]]; then
-        aws s3 cp ./dist $MANUAL_BUCKET --recursive --acl public-read --dry
-    else
-        aws s3 cp ./dist $MANUAL_BUCKET --recursive --acl public-read
+        COPY_ARGS="$COPY_ARGS --dryrun"
     fi
+    aws s3 cp $COPY_ARGS
 fi
 
 echo "Done!"

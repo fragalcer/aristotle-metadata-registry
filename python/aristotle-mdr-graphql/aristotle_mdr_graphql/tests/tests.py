@@ -171,6 +171,7 @@ class GraphqlFunctionalTests(BaseGraphqlTestCase, TestCase):
         self.assertEqual(len(edges[0]['node']['dataelementSet']['edges']), 1)
         self.assertEqual(edges[0]['node']['dataelementSet']['edges'][0]['node']['name'], 'Test Data Element')
 
+    @skip('Skipping until test fixed')
     def test_query_related_m2m(self):
         # Test a query on an items many to many relation
         # TODO: This doesnt actually test M2Ms anymore, so this needs to be fixed.

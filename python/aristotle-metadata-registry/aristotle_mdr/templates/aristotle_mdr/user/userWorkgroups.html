@@ -1,10 +1,6 @@
 {% extends "aristotle_mdr/user/userHome.html" %}
 {% load i18n %}
 
-{% block collapse-link %}
-    <i class="fa fa-users fa-fw"></i> My Workgroups
-{% endblock %}
-
 {% block sidebar %}
     {% include "aristotle_mdr/user/userSideBar.html" with activeTab='workgroups' %}
 {% endblock %}

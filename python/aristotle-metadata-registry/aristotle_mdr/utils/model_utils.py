@@ -115,6 +115,7 @@ class ManagedItem(baseAristotleObject):
     stewardship_organisation = models.ForeignKey(
         'aristotle_mdr.StewardOrganisation', to_field="uuid",
         null=False,
+        on_delete=models.CASCADE,
     )
     # workgroup = models.ForeignKey('aristotle_mdr.Workgroup', null=True, blank=True)
     list_details_template = "aristotle_mdr/manageditems/helpers/list_details.html"
@@ -183,7 +184,8 @@ class discussionAbstract(TimeStampedModel):
     body = models.TextField()
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        null=True
+        null=True,
+        on_delete=models.PROTECT,
     )
 
     class Meta:
@@ -214,6 +216,7 @@ class AbstractValue(aristotleComponent):
         'ValueMeaning',
         blank=True,
         null=True,
+        on_delete=models.SET_NULL,
         help_text=_('A reference to the value meaning that this designation relates to')
     )
     # Below will generate exactly the same related name as django, but reversion-compare
@@ -222,7 +225,8 @@ class AbstractValue(aristotleComponent):
         'ValueDomain',
         related_name="%(class)s_set",
         help_text=_("Enumerated Value Domain that this value meaning relates to"),
-        verbose_name='Value Domain'
+        verbose_name='Value Domain',
+        on_delete=models.CASCADE,
     )
     order = models.PositiveSmallIntegerField("Position")
     start_date = models.DateField(

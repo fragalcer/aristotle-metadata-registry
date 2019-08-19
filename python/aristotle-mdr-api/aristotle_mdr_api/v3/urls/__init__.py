@@ -12,5 +12,5 @@ machine-readable interface.
 
 urlpatterns = [
     url(r'^docs/', include_docs_urls(title=API_TITLE, description=API_DESCRIPTION)),
-    url(r'^', include('aristotle_mdr_api.v3.urls.api', namespace="aristotle_mdr_api.v3")),
+    url(r'^', include(('aristotle_mdr_api.v3.urls.api','aristotle_mdr_api.v3'), namespace="aristotle_mdr_api.v3")),
 ]

@@ -27,9 +27,9 @@ storing files or configuring your webapp. These are all prefixed with ``aristotl
     
         Absolute filesystem path to the directory that will hold user-uploaded files.
 
-``ARISTOTLE_ASYNC_SIGNALS``
-    Default: True
-    Configures if redis async signals should be used.
+``ARISTOTLE_DISABLE_ASYNC_SIGNALS``
+    Default: False
+    Disables asynchronous signal processing
 
 ``ARISTOTLE_SETTINGS``
 ----------------------

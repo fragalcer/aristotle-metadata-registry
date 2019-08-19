@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
                 ('created', model_utils.fields.AutoCreatedField(default=django.utils.timezone.now, verbose_name='created', editable=False)),
                 ('modified', model_utils.fields.AutoLastModifiedField(default=django.utils.timezone.now, verbose_name='modified', editable=False)),
                 ('shorthand_prefix', models.CharField(help_text='prefix conventionally used as shorthand for a namespace, for greater readability, in text for human consumption.', max_length=512)),
-                ('naming_authority', models.ForeignKey(to='aristotle_mdr.Organization')),
+                ('naming_authority', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr.Organization')),
             ],
             options={
                 'abstract': False,
@@ -34,8 +34,8 @@ class Migration(migrations.Migration):
                 ('modified', model_utils.fields.AutoLastModifiedField(default=django.utils.timezone.now, verbose_name='modified', editable=False)),
                 ('identifier', models.CharField(help_text='String used to unambiguously denote an Item within the scope of a specified Namespace.', max_length=512)),
                 ('version', models.CharField(default=b'', help_text='unique version identifier of the Scoped_Identifier which identifies an Item', max_length=512, blank=True)),
-                ('concept', models.ForeignKey(related_name='identifiers', to='aristotle_mdr._concept')),
-                ('namespace', models.ForeignKey(to='aristotle_mdr_identifiers.Namespace')),
+                ('concept', models.ForeignKey(related_name='identifiers', on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr._concept')),
+                ('namespace', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr_identifiers.Namespace')),
             ],
         ),
         migrations.AlterUniqueTogether(

@@ -16,6 +16,7 @@ from organizations.backends.defaults import BaseBackend
 from organizations.backends.tokens import RegistrationTokenGenerator
 
 from aristotle_mdr.utils.utils import fetch_aristotle_settings
+from aristotle_mdr.views.utils import ObjectLevelPermissionRequiredMixin
 from aristotle_mdr.views.user_pages import (
     EditView as EditUserView,
     ProfileView
@@ -27,10 +28,9 @@ class AristotlePasswordResetView(PasswordResetView):
     from_email = settings.ARISTOTLE_EMAIL_ACCOUNT_RECOVERY
 
 
-class AnotherUserMixin(LoginRequiredMixin, PermissionRequiredMixin):
+class AnotherUserMixin(LoginRequiredMixin, ObjectLevelPermissionRequiredMixin):
     raise_exception = True
     redirect_unauthenticated_users = True
-    object_level_permissions = True
     permission_required = "aristotle_mdr.view_other_users_account"
 
     def get_success_url(self):

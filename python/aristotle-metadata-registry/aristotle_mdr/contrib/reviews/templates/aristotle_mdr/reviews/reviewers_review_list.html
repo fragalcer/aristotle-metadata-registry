@@ -1,31 +1,26 @@
 {% extends "aristotle_mdr/user/userHome.html" %}
 {% load aristotle_tags %}
 
-
-{% block collapse-link %}
-    <i class="fa fa-institution fa-fw"></i> Registrar tools </a>
-{% endblock %}
-
 {% block sidebar %}
     {% include "aristotle_mdr/user/userSideBar.html" with activeTab='registrarTools' %}
 {% endblock %}
 
 {% block page %}
-<h1>{% block title %}Registration request review list{% endblock %}</h1>
-<p>
-    The following review requests have been submitted to Registration Authorities
-    that you are a registrar of,
-    and contain metadata items that are ready to begin the standarisation process.
-</p>
-{% if page %}
-    <form action="{% url 'aristotle:bulk_action' %}?next={{ request.path }}" method="POST">
-    {% csrf_token %}
-    {% include "aristotle_mdr/helpers/paginated_review_list.html" with page=page actions='reviewer' %}
-    </form>
-{% else %}
-    <strong>You currently have no items to review.</strong>
-{% endif %}
+    <h1>{% block title %}Registration request review list{% endblock %}</h1>
+    <p>
+        The following review requests have been submitted to Registration Authorities
+        that you are a registrar of,
+        and contain metadata items that are ready to begin the standarisation process.
+    </p>
+    {% if page %}
+        <form action="{% url 'aristotle:bulk_action' %}?next={{ request.path }}" method="POST">
+            {% csrf_token %}
+            {% include "aristotle_mdr/helpers/paginated_review_list.html" with page=page actions='reviewer' %}
+        </form>
+    {% else %}
+        <strong>You currently have no items to review.</strong>
+    {% endif %}
 
-{% bootstrap_modal "review_box" size='lg' %}
+    {% bootstrap_modal "review_box" size='lg' %}
 
 {% endblock %}

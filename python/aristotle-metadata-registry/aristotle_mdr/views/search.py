@@ -63,7 +63,7 @@ class PermissionSearchView(FacetedSearchView):
         recently_viewed = {}
         favourites_list = []
         last_month = now() - timedelta(days=31)
-        if not self.request.user.is_anonymous():
+        if not self.request.user.is_anonymous:
             from django.db.models import Count, Max
             favourites_list = self.request.user.profile.favourite_item_pks
             recently_viewed = dict(

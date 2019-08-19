@@ -2,35 +2,35 @@
 {% load group_tags %}
 
 {% block group_content %}
-<h1>
-    {{object.name}}
-</h1>
-[ <a href="{%url view.manager.namespace|add:":update" object.slug %}">Edit</a> ]
+    <h1>
+        {{object.name}}
+    </h1>
+    [ <a href="{%url view.manager.namespace|add:":update" object.slug %}">Edit</a> ]
 
-<div>
-    {{object.description}}
-</div>
+    <div>
+        {{object.description}}
+    </div>
 
-<h2>Members</h2>
-<a href="{%url view.manager.namespace|add:":member_list" object.slug %}">Edit roles</a>
-<a href="{%url view.manager.namespace|add:":member_add" object.slug %}">Add member</a>
+    <h2>Members</h2>
+    <a href="{%url view.manager.namespace|add:":member_list" object.slug %}">Edit roles</a>
+    <a href="{%url view.manager.namespace|add:":member_add" object.slug %}">Add member</a>
 
-<ul>
-    {% regroup object.members.all by user as member_list %}
-    {% for member in member_list %}
-    {% with member_user=member.grouper %}
-    <li>
-        <a href="">{{ member_user.display_name }}</a>
-        <small>{{ member_user.censored_email }}</small>
+    <ul>
+        {% regroup object.members.all by user as member_list %}
+        {% for member in member_list %}
+            {% with member_user=member.grouper %}
+                <li>
+                    <a href="">{{ member_user.display_name }}</a>
+                    <small>{{ member_user.censored_email }}</small>
 
-        {% user_has_role group=object user=member_user role="owner" as is_owner %}
-        
-        {% if is_owner %}
-        <small>Owner</small>
-        {% endif %}
-        
-    </li>
-    {% endwith %}
-    {% endfor %}
-</ul>
+                    {% user_has_role group=object user=member_user role="owner" as is_owner %}
+
+                    {% if is_owner %}
+                        <small>Owner</small>
+                    {% endif %}
+
+                </li>
+            {% endwith %}
+        {% endfor %}
+    </ul>
 {% endblock %}

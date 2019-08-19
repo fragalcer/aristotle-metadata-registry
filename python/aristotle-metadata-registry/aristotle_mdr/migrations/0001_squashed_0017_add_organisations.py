@@ -65,7 +65,7 @@ class Migration(migrations.Migration):
                 ('created', model_utils.fields.AutoCreatedField(verbose_name='created', editable=False, default=django.utils.timezone.now)),
                 ('modified', model_utils.fields.AutoLastModifiedField(verbose_name='modified', editable=False, default=django.utils.timezone.now)),
                 ('body', models.TextField()),
-                ('author', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+                ('author', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'ordering': ['created'],
@@ -80,7 +80,7 @@ class Migration(migrations.Migration):
                 ('body', models.TextField()),
                 ('title', models.CharField(max_length=256)),
                 ('closed', models.BooleanField(default=False)),
-                ('author', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+                ('author', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'ordering': ['-modified'],
@@ -213,7 +213,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ConceptualDomain',
             fields=[
-                ('_concept_ptr', models.OneToOneField(parent_link=True, to='aristotle_mdr._concept', serialize=False, auto_created=True, primary_key=True)),
+                ('_concept_ptr', models.OneToOneField(parent_link=True, on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr._concept', serialize=False, auto_created=True, primary_key=True)),
                 ('description', models.TextField(verbose_name='description', blank=True, help_text='Description or specification of a rule, reference, or range for a set of all value meanings for a Conceptual Domain')),
             ],
             options={
@@ -224,7 +224,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='DataElement',
             fields=[
-                ('_concept_ptr', models.OneToOneField(parent_link=True, to='aristotle_mdr._concept', serialize=False, auto_created=True, primary_key=True)),
+                ('_concept_ptr', models.OneToOneField(parent_link=True, on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr._concept', serialize=False, auto_created=True, primary_key=True)),
             ],
             options={
                 'abstract': False,
@@ -234,8 +234,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='DataElementConcept',
             fields=[
-                ('_concept_ptr', models.OneToOneField(parent_link=True, to='aristotle_mdr._concept', serialize=False, auto_created=True, primary_key=True)),
-                ('conceptualDomain', models.ForeignKey(to='aristotle_mdr.ConceptualDomain', blank=True, help_text='references a Conceptual_Domain that is part of the specification of the Data_Element_Concept', null=True)),
+                ('_concept_ptr', models.OneToOneField(parent_link=True, on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr._concept', serialize=False, auto_created=True, primary_key=True)),
+                ('conceptualDomain', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr.ConceptualDomain', blank=True, help_text='references a Conceptual_Domain that is part of the specification of the Data_Element_Concept', null=True)),
             ],
             options={
                 'abstract': False,
@@ -245,9 +245,9 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='DataElementDerivation',
             fields=[
-                ('_concept_ptr', models.OneToOneField(parent_link=True, to='aristotle_mdr._concept', serialize=False, auto_created=True, primary_key=True)),
+                ('_concept_ptr', models.OneToOneField(parent_link=True, on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr._concept', serialize=False, auto_created=True, primary_key=True)),
                 ('derivation_rule', models.TextField(blank=True, help_text='text of a specification of a data element Derivation_Rule')),
-                ('derives', models.ForeignKey(to='aristotle_mdr.DataElement', blank=True, related_name='derived_from', help_text='binds with one or more output Data_Elements that are the result of the application of the Data_Element_Derivation.', null=True)),
+                ('derives', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr.DataElement', blank=True, related_name='derived_from', help_text='binds with one or more output Data_Elements that are the result of the application of the Data_Element_Derivation.', null=True)),
                 ('inputs', models.ManyToManyField(related_name='input_to_derivation', blank=True, to='aristotle_mdr.DataElement', help_text='binds one or more input Data_Element(s) with a Data_Element_Derivation.')),
             ],
             options={
@@ -258,7 +258,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='DataType',
             fields=[
-                ('_concept_ptr', models.OneToOneField(parent_link=True, to='aristotle_mdr._concept', serialize=False, auto_created=True, primary_key=True)),
+                ('_concept_ptr', models.OneToOneField(parent_link=True, on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr._concept', serialize=False, auto_created=True, primary_key=True)),
             ],
             options={
                 'abstract': False,
@@ -268,7 +268,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ObjectClass',
             fields=[
-                ('_concept_ptr', models.OneToOneField(parent_link=True, to='aristotle_mdr._concept', serialize=False, auto_created=True, primary_key=True)),
+                ('_concept_ptr', models.OneToOneField(parent_link=True, on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr._concept', serialize=False, auto_created=True, primary_key=True)),
             ],
             options={
                 'verbose_name_plural': 'Object Classes',
@@ -278,7 +278,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Property',
             fields=[
-                ('_concept_ptr', models.OneToOneField(parent_link=True, to='aristotle_mdr._concept', serialize=False, auto_created=True, primary_key=True)),
+                ('_concept_ptr', models.OneToOneField(parent_link=True, on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr._concept', serialize=False, auto_created=True, primary_key=True)),
             ],
             options={
                 'verbose_name_plural': 'Properties',
@@ -288,7 +288,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='RegistrationAuthority',
             fields=[
-                ('organization_ptr', models.OneToOneField(parent_link=True, to='aristotle_mdr.Organization', serialize=False, auto_created=True, primary_key=True)),
+                ('organization_ptr', models.OneToOneField(parent_link=True, on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr.Organization', serialize=False, auto_created=True, primary_key=True)),
                 ('locked_state', models.IntegerField(choices=[(0, 'Not Progressed'), (1, 'Incomplete'), (2, 'Candidate'), (3, 'Recorded'), (4, 'Qualified'), (5, 'Standard'), (6, 'Preferred Standard'), (7, 'Superseded'), (8, 'Retired')], default=2)),
                 ('public_state', models.IntegerField(choices=[(0, 'Not Progressed'), (1, 'Incomplete'), (2, 'Candidate'), (3, 'Recorded'), (4, 'Qualified'), (5, 'Standard'), (6, 'Preferred Standard'), (7, 'Superseded'), (8, 'Retired')], default=3)),
                 ('notprogressed', models.TextField(blank=True)),
@@ -312,9 +312,9 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='UnitOfMeasure',
             fields=[
-                ('_concept_ptr', models.OneToOneField(parent_link=True, to='aristotle_mdr._concept', serialize=False, auto_created=True, primary_key=True)),
+                ('_concept_ptr', models.OneToOneField(parent_link=True, on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr._concept', serialize=False, auto_created=True, primary_key=True)),
                 ('symbol', models.CharField(max_length=20, blank=True)),
-                ('measure', models.ForeignKey(to='aristotle_mdr.Measure', blank=True, null=True)),
+                ('measure', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr.Measure', blank=True, null=True)),
             ],
             options={
                 'verbose_name_plural': 'Units Of Measure',
@@ -324,13 +324,13 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ValueDomain',
             fields=[
-                ('_concept_ptr', models.OneToOneField(parent_link=True, to='aristotle_mdr._concept', serialize=False, auto_created=True, primary_key=True)),
+                ('_concept_ptr', models.OneToOneField(parent_link=True, on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr._concept', serialize=False, auto_created=True, primary_key=True)),
                 ('format', models.CharField(max_length=100, blank=True, null=True, help_text='template for the structure of the presentation of the value(s)')),
                 ('maximum_length', models.PositiveIntegerField(blank=True, null=True, help_text='maximum number of characters available to represent the Data Element value')),
                 ('description', models.TextField(verbose_name='description', blank=True, help_text='Description or specification of a rule, reference, or range for a set of all values for a Value Domain.')),
-                ('conceptual_domain', models.ForeignKey(to='aristotle_mdr.ConceptualDomain', blank=True, help_text='The Conceptual Domain that this Value Domain which provides representation.', null=True)),
-                ('data_type', models.ForeignKey(to='aristotle_mdr.DataType', blank=True, help_text='Datatype used in a Value Domain', null=True)),
-                ('unit_of_measure', models.ForeignKey(to='aristotle_mdr.UnitOfMeasure', blank=True, help_text='Unit of Measure used in a Value Domain', null=True)),
+                ('conceptual_domain', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr.ConceptualDomain', blank=True, help_text='The Conceptual Domain that this Value Domain which provides representation.', null=True)),
+                ('data_type', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr.DataType', blank=True, help_text='Datatype used in a Value Domain', null=True)),
+                ('unit_of_measure', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr.UnitOfMeasure', blank=True, help_text='Unit of Measure used in a Value Domain', null=True)),
             ],
             options={
                 'abstract': False,
@@ -340,12 +340,12 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='supplementaryvalue',
             name='value_meaning',
-            field=models.ForeignKey(to='aristotle_mdr.ValueMeaning', blank=True, help_text='A reference to the value meaning that this designation relates to', null=True),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr.ValueMeaning', blank=True, help_text='A reference to the value meaning that this designation relates to', null=True),
         ),
         migrations.AddField(
             model_name='status',
             name='concept',
-            field=models.ForeignKey(related_name='statuses', to='aristotle_mdr._concept'),
+            field=models.ForeignKey(related_name='statuses', on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr._concept'),
         ),
         migrations.AddField(
             model_name='reviewrequest',
@@ -355,12 +355,12 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='reviewrequest',
             name='requester',
-            field=models.ForeignKey(to=settings.AUTH_USER_MODEL, related_name='requested_reviews', help_text='The user requesting a review'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, related_name='requested_reviews', help_text='The user requesting a review'),
         ),
         migrations.AddField(
             model_name='reviewrequest',
             name='reviewer',
-            field=models.ForeignKey(to=settings.AUTH_USER_MODEL, related_name='reviewed_requests', help_text='The user performing a review', null=True),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, related_name='reviewed_requests', help_text='The user performing a review', null=True),
         ),
         migrations.AddField(
             model_name='possumprofile',
@@ -370,17 +370,17 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='possumprofile',
             name='savedActiveWorkgroup',
-            field=models.ForeignKey(to='aristotle_mdr.Workgroup', blank=True, null=True),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr.Workgroup', blank=True, null=True),
         ),
         migrations.AddField(
             model_name='possumprofile',
             name='user',
-            field=models.OneToOneField(to=settings.AUTH_USER_MODEL, related_name='profile'),
+            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, related_name='profile'),
         ),
         migrations.AddField(
             model_name='permissiblevalue',
             name='value_meaning',
-            field=models.ForeignKey(to='aristotle_mdr.ValueMeaning', blank=True, help_text='A reference to the value meaning that this designation relates to', null=True),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr.ValueMeaning', blank=True, help_text='A reference to the value meaning that this designation relates to', null=True),
         ),
         migrations.AddField(
             model_name='organization',
@@ -395,71 +395,71 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='discussionpost',
             name='workgroup',
-            field=models.ForeignKey(related_name='discussions', to='aristotle_mdr.Workgroup'),
+            field=models.ForeignKey(related_name='discussions', on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr.Workgroup'),
         ),
         migrations.AddField(
             model_name='discussioncomment',
             name='post',
-            field=models.ForeignKey(related_name='comments', to='aristotle_mdr.DiscussionPost'),
+            field=models.ForeignKey(related_name='comments', on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr.DiscussionPost'),
         ),
         migrations.AddField(
             model_name='_concept',
             name='submitter',
-            field=models.ForeignKey(to=settings.AUTH_USER_MODEL, blank=True, related_name='created_items', help_text='This is the person who first created an item. Users can always see items they made.', null=True),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, blank=True, related_name='created_items', help_text='This is the person who first created an item. Users can always see items they made.', null=True),
         ),
         migrations.AddField(
             model_name='_concept',
             name='superseded_by',
-            field=models.ForeignKey(to='aristotle_mdr._concept', blank=True, null=True, related_name='supersedes'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr._concept', blank=True, null=True, related_name='supersedes'),
         ),
         migrations.AddField(
             model_name='_concept',
             name='workgroup',
-            field=models.ForeignKey(to='aristotle_mdr.Workgroup', blank=True, null=True, related_name='items'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr.Workgroup', blank=True, null=True, related_name='items'),
         ),
         migrations.AddField(
             model_name='valuemeaning',
             name='conceptual_domain',
-            field=models.ForeignKey(to='aristotle_mdr.ConceptualDomain'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr.ConceptualDomain'),
         ),
         migrations.AddField(
             model_name='supplementaryvalue',
             name='valueDomain',
-            field=models.ForeignKey(to='aristotle_mdr.ValueDomain', related_name='supplementaryvalue_set', help_text='Enumerated Value Domain that this value meaning relates to'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr.ValueDomain', related_name='supplementaryvalue_set', help_text='Enumerated Value Domain that this value meaning relates to'),
         ),
         migrations.AddField(
             model_name='status',
             name='registrationAuthority',
-            field=models.ForeignKey(to='aristotle_mdr.RegistrationAuthority'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr.RegistrationAuthority'),
         ),
         migrations.AddField(
             model_name='reviewrequest',
             name='registration_authority',
-            field=models.ForeignKey(to='aristotle_mdr.RegistrationAuthority', help_text='The registration authority the requester wishes to endorse the metadata item'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr.RegistrationAuthority', help_text='The registration authority the requester wishes to endorse the metadata item'),
         ),
         migrations.AddField(
             model_name='permissiblevalue',
             name='valueDomain',
-            field=models.ForeignKey(to='aristotle_mdr.ValueDomain', related_name='permissiblevalue_set', help_text='Enumerated Value Domain that this value meaning relates to'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr.ValueDomain', related_name='permissiblevalue_set', help_text='Enumerated Value Domain that this value meaning relates to'),
         ),
         migrations.AddField(
             model_name='dataelementconcept',
             name='objectClass',
-            field=models.ForeignKey(to='aristotle_mdr.ObjectClass', blank=True, help_text='references an Object_Class that is part of the specification of the Data_Element_Concept', null=True),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr.ObjectClass', blank=True, help_text='references an Object_Class that is part of the specification of the Data_Element_Concept', null=True),
         ),
         migrations.AddField(
             model_name='dataelementconcept',
             name='property',
-            field=models.ForeignKey(to='aristotle_mdr.Property', blank=True, help_text='references a Property that is part of the specification of the Data_Element_Concept', null=True),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr.Property', blank=True, help_text='references a Property that is part of the specification of the Data_Element_Concept', null=True),
         ),
         migrations.AddField(
             model_name='dataelement',
             name='dataElementConcept',
-            field=models.ForeignKey(to='aristotle_mdr.DataElementConcept', verbose_name='Data Element Concept', blank=True, help_text='binds with a Value_Domain that describes a set of possible values that may be recorded in an instance of the Data_Element', null=True),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr.DataElementConcept', verbose_name='Data Element Concept', blank=True, help_text='binds with a Value_Domain that describes a set of possible values that may be recorded in an instance of the Data_Element', null=True),
         ),
         migrations.AddField(
             model_name='dataelement',
             name='valueDomain',
-            field=models.ForeignKey(to='aristotle_mdr.ValueDomain', verbose_name='Value Domain', blank=True, help_text='binds with a Data_Element_Concept that provides the meaning for the Data_Element', null=True),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr.ValueDomain', verbose_name='Value Domain', blank=True, help_text='binds with a Data_Element_Concept that provides the meaning for the Data_Element', null=True),
         ),
     ]

@@ -11,7 +11,7 @@ class NameSuggestInput(TextInput):
         self.separator = kwargs.pop('separator', '-')
         super().__init__(*args, **kwargs)
 
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, renderer=None):
         out = super().render(name, value, attrs)
         if self.suggest_fields:
             button = "<button class=\"btn btn-default\" type='button' data-separator='{}' data-suggest-fields='{}'>Suggest</button>".format(self.separator, ",".join(self.suggest_fields))
@@ -21,7 +21,7 @@ class NameSuggestInput(TextInput):
 
 # Thanks http://stackoverflow.com/questions/6727372/
 class RegistrationAuthoritySelect(forms.Select):
-    def render(self, name, value, **kwargs):
+    def render(self, name, value, renderer=None, **kwargs):
         attrs = kwargs.get('attrs', None)
         if value is not None:
             attrs['disabled']='disabled'
@@ -34,7 +34,7 @@ class RegistrationAuthoritySelect(forms.Select):
             rendered = super().render(name, value, **kwargs)
             return mark_safe(rendered + hidden_input_with_value)
         else:
-            return super().render(name, value, **kwargs)
+            return super().render(name, value, renderer=None, **kwargs)
 
 
 class TableCheckboxSelect(CheckboxSelectMultiple):

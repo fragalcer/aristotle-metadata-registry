@@ -29,19 +29,6 @@ class GlossaryItem(MDR.concept):
         return rels
 
 
-@reversion.register()
-class GlossaryAdditionalDefinition(MDR.aristotleComponent):
-    glossaryItem = models.ForeignKey(GlossaryItem, related_name="alternate_definitions")
-    registrationAuthority = models.ForeignKey(MDR.RegistrationAuthority)
-    definition = models.TextField()
-    @property
-    def parentItem(self):
-        return self.glossaryItem
-
-    class Meta:
-        unique_together = ('glossaryItem', 'registrationAuthority',)
-
-
 @receiver(post_save)
 def add_concepts_to_glossary_index(sender, instance, created, **kwargs):
     if not issubclass(sender, MDR._concept):

@@ -63,7 +63,7 @@ class GenericWithItemURLView(View):
                 all([perm(request.user, self.item) for perm in self.permission_checks]) and
                 all([perm(request.user) for perm in self.user_checks])
         ):
-            if request.user.is_anonymous():
+            if request.user.is_anonymous:
                 return redirect(reverse('friendly_login') + '?next=%s' % request.path)
             else:
                 raise PermissionDenied
@@ -240,7 +240,9 @@ class GenericAlterManyToManyView(GenericAlterManyToSomethingFormView):
             return self.form_invalid(form)
 
     def form_valid(self, form):
-        self.item.__setattr__(self.model_base_field, form.cleaned_data['items_to_add'])
+        m2m_field = getattr(self.item, self.model_base_field)
+        m2m_field.set(form.cleaned_data['items_to_add'])
+
         self.item.save()
         return HttpResponseRedirect(self.get_success_url())
 

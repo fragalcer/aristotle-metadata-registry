@@ -1,4 +1,6 @@
 from django.test import TestCase
+from django.urls import reverse
+
 from aristotle_mdr.tests.utils import AristotleTestUtils
 from aristotle_mdr import models as mdr_models
 from aristotle_mdr.contrib.issues import models
@@ -210,19 +212,35 @@ class LabelTests(BaseStewardOrgsTestCase, AristotleTestUtils, TestCase):
         response = self.reverse_get('aristotle_issues:admin_labels_create', status_code=403)
         response = self.reverse_get('aristotle_issues:admin_issue_label_list', status_code=403)
 
-    def test_public_label_permissions(self):
+    def test_updating_public_label_permissions(self):
+        """Tests that updating a label"""
         self.logout()
 
         response = self.reverse_get(
             'aristotle_issues:admin_labels_update',
             reverse_args=[self.rw_label.id],
-            status_code=302  # TODO: Check this redirects to login
+            status_code=302
         )
+        # Assert that updating a registry wide label redirects to login
+        redirect_url = reverse('friendly_login') + '?next=' + reverse('aristotle_issues:admin_labels_update',
+                                                                      args=[self.rw_label.id])
+        self.assertRedirects(response, redirect_url)
 
+        # Assert that updating a stewardship organisation only label redirects to login
         response = self.reverse_get(
             'aristotle_issues:admin_labels_update',
             reverse_args=[self.so_label.id],
-            status_code=302  # TODO: Check this redirects to login
+            status_code=302
         )
+        redirect_url = reverse('friendly_login') + '?next=' + reverse('aristotle_issues:admin_labels_update',
+                                                                      args=[self.so_label.id])
+
+        self.assertRedirects(response, redirect_url)
+
+    def test_creating_public_label_redirects_to_login(self):
+        self.logout()
         response = self.reverse_get('aristotle_issues:admin_labels_create', status_code=302)
+
+    def test_listing_labels_redirects_to_login(self):
+        self.logout()
         response = self.reverse_get('aristotle_issues:admin_issue_label_list', status_code=302)

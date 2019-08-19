@@ -11,7 +11,7 @@ from comet import models
 
 def setUpModule():
     from django.core.management import call_command
-    call_command('load_aristotle_help', verbosity=0, interactive=False)
+    call_command('load_aristotle_help', verbosity=0)
 
 
 class IndicatorVisibility(ManagedObjectVisibility, TestCase):

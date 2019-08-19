@@ -84,7 +84,9 @@ class New(LoginRequiredMixin, ObjectLevelPermissionRequiredMixin, FormView):
                 author=request.user,
             )
             new.save()
-            new.relatedItems = form.cleaned_data['relatedItems']
+
+            new.relatedItems.set(form.cleaned_data['relatedItems'])
+
             return HttpResponseRedirect(reverse("aristotle:discussionsPost", args=[new.pk]))
 
         return render(request, "aristotle_mdr/discussions/new.html", {"form": form})
@@ -238,7 +240,7 @@ class EditPost(LoginRequiredMixin, ObjectLevelPermissionRequiredMixin, PostMixin
             post.title = form.cleaned_data['title']
             post.body = form.cleaned_data['body']
             post.save()
-            post.relatedItems = form.cleaned_data['relatedItems']
+            post.relatedItems.set(form.cleaned_data['relatedItems'])
 
             return HttpResponseRedirect(reverse("aristotle:discussionsPost", args=[post.pk]))
 

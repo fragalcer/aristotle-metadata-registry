@@ -33,11 +33,13 @@ class Issue(TimeStampedModel):
     description = models.TextField(blank=True)
     item = ConceptForeignKey(
         _concept,
-        related_name='issues'
+        related_name='issues',
+        on_delete=models.CASCADE
     )
     submitter = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        related_name='issues'
+        related_name='issues',
+        on_delete=models.PROTECT
     )
     isopen = models.BooleanField(default=True)
     proposal_field = models.TextField(
@@ -108,12 +110,15 @@ class Issue(TimeStampedModel):
 
 class IssueComment(TimeStampedModel):
 
-    issue = models.ForeignKey(Issue,
-                              related_name='comments'
-                              )
+    issue = models.ForeignKey(
+        Issue,
+        related_name='comments',
+        on_delete=models.CASCADE
+    )
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        related_name='issue_comments'
+        related_name='issue_comments',
+        on_delete=models.PROTECT
     )
     body = models.TextField()
 

@@ -4,6 +4,8 @@ from django.test.utils import override_settings
 from django.core.management import call_command
 from django.utils.six import StringIO
 
+# TODO: do we stil need this
+
 
 class CheckChecks(TestCase):
 
@@ -11,7 +13,6 @@ class CheckChecks(TestCase):
         def run_check():
             out = StringIO()
             call_command('check',
-                interactive=False,
                 verbosity=2,
                 stdout=out,
                 stderr=out,

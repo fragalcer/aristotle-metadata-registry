@@ -1,9 +1,9 @@
 {% load humanize %}
 
 {% if page.has_other_pages %}
-Showing {{ page.start_index }} - {{ page.end_index }} of {{ page.paginator.count }} results.
+    Showing {{ page.start_index }} - {{ page.end_index }} of {{ page.paginator.count }} results.
 {% else %}
-Showing {{ page.paginator.count }} results.
+    Showing {{ page.paginator.count }} results.
 {% endif %}
 
 {% include "aristotle_bg_workers/task_list.html" with page_obj=page %}

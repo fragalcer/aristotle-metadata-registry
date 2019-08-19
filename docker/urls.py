@@ -5,14 +5,14 @@ from django.conf.urls import include, url
 urlpatterns = [
     url(r'^alias/', include('impersonate.urls')),
     url(r'^api/', include('aristotle_mdr_api.urls')),
-    url(r'^', include('aristotle_dse.urls',app_name="aristotle_dse",namespace="aristotle_dse")),
-    url(r'^', include('aristotle_mdr.contrib.links.urls', app_name="aristotle_mdr_links", namespace="aristotle_mdr_links")),
-    url(r'^', include('aristotle_mdr.contrib.slots.urls', app_name="aristotle_slots", namespace="aristotle_slots")),
-    url(r'^', include('aristotle_mdr.contrib.identifiers.urls', app_name="aristotle_mdr_identifiers", namespace="aristotle_identifiers")),
+    url(r'^', include(('aristotle_dse.urls', "aristotle_dse"), namespace="aristotle_dse")),
+    url(r'^', include(('aristotle_mdr.contrib.links.urls', "aristotle_mdr_links"), namespace="aristotle_mdr_links")),
+    url(r'^', include(('aristotle_mdr.contrib.slots.urls', "aristotle_slots"), namespace="aristotle_slots")),
+    url(r'^', include(('aristotle_mdr.contrib.identifiers.urls', "aristotle_mdr_identifiers"), namespace="aristotle_identifiers")),
     url(r'^', include('aristotle_mdr.urls')),
-    url(r'^', include('aristotle_mdr.contrib.links.urls', namespace="aristotle_mdr_links")),
-    url(r'^comet/', include('comet.urls', namespace='comet')),
-    url(r'^glossary/', include('aristotle_glossary.urls',app_name="aristotle_glossary",namespace="aristotle_glossary")),
+    url(r'^', include(('aristotle_mdr.contrib.links.urls', 'aristotle_mdr_links'), namespace="aristotle_mdr_links")),
+    url(r'^comet/', include(('comet.urls', 'comet'), namespace='comet')),
+    url(r'^glossary/', include(('aristotle_glossary.urls', "aristotle_glossary"), namespace="aristotle_glossary"))
 ]
 
 

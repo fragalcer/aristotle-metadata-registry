@@ -1,34 +1,26 @@
+import json
+import logging
 from typing import Any
 from django.apps import apps
 from django.contrib.contenttypes.models import ContentType
 from django.conf import settings
-from django.core.exceptions import PermissionDenied, FieldDoesNotExist, ObjectDoesNotExist
+from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.urls import reverse
-from django.db import transaction
 from django.db.models.query import QuerySet
-from django.http import HttpResponseRedirect, HttpResponseForbidden, Http404, HttpResponse
+from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render, redirect, get_object_or_404
-from django.utils.translation import ugettext_lazy as _
 from django.views.generic import TemplateView, RedirectView, DeleteView, UpdateView
 from django.utils.module_loading import import_string
 from django.utils.functional import SimpleLazyObject
 from django.utils import timezone
 from formtools.wizard.views import SessionWizardView
 
-import json
-
-import reversion
-
 from aristotle_mdr.perms import (
     user_can_view, user_can_edit,
-    user_can_add_status,
     user_can_publish_object,
     user_can_supersede,
-    user_can_add_status
+    user_can_add_status,
 )
-from aristotle_mdr import perms
-from aristotle_mdr.utils import url_slugify_concept
-from aristotle_mdr.forms import EditStatusForm
 from aristotle_mdr import forms as MDRForms
 from aristotle_mdr import models as MDR
 from aristotle_mdr.utils import (
@@ -36,11 +28,11 @@ from aristotle_mdr.utils import (
     get_concepts_for_apps,
     fetch_aristotle_settings,
     fetch_aristotle_downloaders,
-    fetch_metadata_apps
+    fetch_metadata_apps,
+    url_slugify_concept,
 )
 from aristotle_mdr.views.utils import (
     generate_visibility_matrix,
-    CachePerItemUserMixin,
     TagsMixin
 )
 from aristotle_mdr.contrib.slots.models import Slot
@@ -50,9 +42,6 @@ from aristotle_bg_workers.tasks import register_items
 from aristotle_bg_workers.utils import run_task_on_commit
 
 from reversion.models import Version
-
-
-import logging
 
 logger = logging.getLogger(__name__)
 logger.debug("Logging started for " + __name__)
@@ -65,7 +54,7 @@ class SmartRoot(RedirectView):
     authenticated_pattern = None
 
     def get_redirect_url(self, *args, **kwargs):
-        if self.request.user.is_authenticated():
+        if self.request.user.is_authenticated:
             self.pattern_name = self.authenticated_pattern
         else:
             self.pattern_name = self.unauthenticated_pattern
@@ -98,27 +87,46 @@ def concept_by_uuid(request, uuid):
     return redirect(url_slugify_concept(item))
 
 
-def measure(request, iid, model_slug, name_slug):
-    return managed_item(request, "measure", iid)
+class ManagedItemView(TemplateView):
+    def get_item(self):
+        item_id = self.kwargs.pop('iid')
+        model_slug = self.kwargs.pop('model_slug')
+
+        model_class = get_object_or_404(ContentType, model=model_slug).model_class()
+        item = get_object_or_404(model_class, pk=item_id).item
+
+        return item
+
+    def get_template_names(self):
+        if self.template_name:
+            return [self.template_name]
+        # Fall back to fallback template
+        return [getattr(self.managed_item, 'template', 'aristotle_mdr/manageditems/fallback.html')]
+
+    def dispatch(self, request, *args, **kwargs):
+        self.managed_item = self.get_item()
+
+        if not user_can_view(request.user, self.managed_item):
+            raise PermissionDenied
+
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+
+        context.update(
+            {'item': self.managed_item,
+             'group': self.managed_item.stewardship_organisation,
+             'model_name': self.managed_item.meta().model_name,
+             'activetab': 'item'
+             }
+        )
+
+        return context
 
 
-# TODO: Switch to CBV
-def managed_item(request, model_slug, iid):
-    model_class = get_object_or_404(ContentType, model=model_slug).model_class()
-    item = get_object_or_404(model_class, pk=iid).item
-
-    if not user_can_view(request.user, item):
-        raise PermissionDenied
-
-    return render(
-        request, [getattr(item, 'template', "aristotle_mdr/manageditems/fallback.html")],
-        {
-            'item': item,
-            'group': item.stewardship_organisation,
-            'model_name': item.meta().model_name,
-            "activetab": "item",
-        }
-    )
+class MeasureView(ManagedItemView):
+    template_name = 'aristotle_mdr/manageditems/measure.html'
 
 
 class ConceptRenderView(TagsMixin, TemplateView):
@@ -225,7 +233,7 @@ class ConceptRenderView(TagsMixin, TemplateView):
 
         result = self.check_item(self.item)
         if not result:
-            if self.request.user.is_anonymous():
+            if self.request.user.is_anonymous:
                 redirect_url = '{}?next={}'.format(
                     reverse('friendly_login'),
                     self.request.path
@@ -263,7 +271,7 @@ class ConceptRenderView(TagsMixin, TemplateView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
 
-        if self.request.user.is_anonymous():
+        if self.request.user.is_anonymous:
             context['isFavourite'] = False
         else:
             context['isFavourite'] = self.request.user.profile.is_favourite(self.item)
@@ -367,7 +375,7 @@ class DataElementView(ConceptRenderView):
 def registrationHistory(request, iid):
     item = get_if_user_can_view(MDR._concept, request.user, iid)
     if not item:
-        if request.user.is_anonymous():
+        if request.user.is_anonymous:
             return redirect(reverse('friendly_login') + '?next=%s' % request.path)
         else:
             raise PermissionDenied
@@ -384,26 +392,24 @@ def registrationHistory(request, iid):
 
 
 def unauthorised(request, path=''):
-    if request.user.is_anonymous():
+    if request.user.is_anonymous:
         return render(request, "401.html", {"path": path, "anon": True, }, status=401)
     else:
         return render(request, "403.html", {"path": path, "anon": True, }, status=403)
 
 
 def not_found(request, path):
-    context = {'anon': request.user.is_anonymous(), 'path': path}
+    context = {'anon': request.user.is_anonymous, 'path': path}
     return render(request, "404.html", context)
 
 
-def handler500(request, *args, **argv):
+def handler500(request):
     return render(request, '500.html')
 
 
 def create_list(request):
-    if request.user.is_anonymous():
+    if not request.user.is_authenticated:
         return redirect(reverse('friendly_login') + '?next=%s' % request.path)
-    if not perms.user_is_editor(request.user):
-        raise PermissionDenied
 
     aristotle_apps = fetch_aristotle_settings().get('CONTENT_EXTENSIONS', [])
     aristotle_apps += ["aristotle_mdr"]
@@ -624,7 +630,7 @@ class ChangeStatusView(ReviewChangesView):
         self.item = get_object_or_404(MDR._concept, pk=kwargs['iid']).item
 
         if not user_can_add_status(request.user, self.item):
-            if request.user.is_anonymous():
+            if request.user.is_anonymous:
                 return redirect(reverse('friendly_login') + '?next=%s' % request.path)
             else:
                 raise PermissionDenied
@@ -676,7 +682,7 @@ class DeleteStatus(DeleteView):
 
 class EditStatus(UpdateView):
     template_name = 'aristotle_mdr/status_edit.html'
-    form_class = EditStatusForm
+    form_class = MDRForms.EditStatusForm
     model = MDR.Status
 
     def get_object(self, queryset=None):

@@ -192,7 +192,7 @@ class ConceptViewSet(
             with transaction.atomic():
                 for s in Deserializer(manifest):
 
-                    if perms.user_can_submit_to_workgroup(request.user, s.object.workgroup):
+                    if s.object.workgroup is None or perms.user_can_submit_to_workgroup(request.user, s.object.workgroup):
                         with reversion.create_revision():
                             created.append({
                                 'uuid': s.object.uuid,

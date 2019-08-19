@@ -758,7 +758,7 @@ class ReviewRequestActionsPage(utils.AristotleTestUtils, TestCase):
             target_registration_state=ra.public_state,
             registration_date=datetime.date(2010, 1, 1)
         )
-        review.concepts = items
+        review.concepts.set(items)
         review.save()
         return review
 

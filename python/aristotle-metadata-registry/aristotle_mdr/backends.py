@@ -1,21 +1,19 @@
 from django.contrib.auth.backends import ModelBackend
-
 from aristotle_mdr import perms
 from aristotle_mdr.utils import fetch_aristotle_settings
 
 
 class AristotleBackend(ModelBackend):
+
     def has_module_perms(self, user_obj, app_label):
         """
         Returns True if the requested app is an aristotle extension.
         Actual permissions to edit/change content are covered in aristotle_mdr.admin
         Otherwise, it returns as per Django permissions
         """
-        if not user_obj.is_active:
-            return False
         extensions = fetch_aristotle_settings().get('CONTENT_EXTENSIONS', [])
         if app_label in extensions + ["aristotle_mdr"]:
-            return perms.user_is_editor(user_obj)
+            return perms.user_is_authenticated_and_active(user_obj)
         return super().has_module_perms(user_obj, app_label)
 
     def has_perm(self, user_obj, perm, obj=None):
@@ -55,7 +53,7 @@ class AristotleBackend(ModelBackend):
                 perm_name.startswith('add_')
             ):
                 if obj is None:
-                    return perms.user_is_editor(user_obj)
+                    return perms.user_is_authenticated_and_active(user_obj)
                 else:
                     return perms.user_can_edit(user_obj, obj)
 
@@ -64,9 +62,9 @@ class AristotleBackend(ModelBackend):
                 return obj is None or perms.user_can_edit(user_obj, obj)
 
         if perm == "aristotle_mdr.can_create_metadata":
-            return perms.user_is_editor(user_obj)
+            return perms.user_is_authenticated_and_active(user_obj)
 
-        if perm == "aristotle_mdr.view_workgroup":
+        if perm == "aristotle_mdr.can_view_workgroup":
             return perms.user_can_view_workgroup(user_obj, obj)
         if perm == "aristotle_mdr.can_leave_workgroup":
             return perms.user_in_workgroup(user_obj, obj)

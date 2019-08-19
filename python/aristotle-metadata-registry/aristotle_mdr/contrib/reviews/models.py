@@ -34,18 +34,21 @@ class ReviewRequest(StatusMixin, TimeStampedModel):
     registration_authority = models.ForeignKey(
         MDR.RegistrationAuthority,
         help_text=_("The registration authority the requester wishes to endorse the metadata item"),
-        related_name='rr_requested_reviews'
+        related_name='rr_requested_reviews',
+        on_delete=models.CASCADE
     )
     requester = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         help_text=_("The user requesting a review"),
-        related_name='rr_requested_reviews'
+        related_name='rr_requested_reviews',
+        on_delete=models.PROTECT
     )
     workgroup = models.ForeignKey(
         MDR.Workgroup,
         help_text=_("A workgroup associated with this review"),
         related_name='rr_workgroup_reviews',
-        null=True
+        null=True,
+        on_delete=models.SET_NULL
     )
     title = models.TextField(blank=True, null=True, help_text=_("An optional message accompanying a request, this will accompany the approved registration status"))
     status = models.IntegerField(
@@ -127,10 +130,11 @@ class ReviewComment(TimeStampedModel):
 
     timeline_type = "comment"
 
-    request = models.ForeignKey(ReviewRequest, related_name='comments')
+    request = models.ForeignKey(ReviewRequest, related_name='comments', on_delete=models.CASCADE)
     body = models.TextField()
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT
     )
 
     @property
@@ -150,7 +154,7 @@ class ReviewStatusChangeTimeline(StatusMixin, TimeStampedModel):
 
     timeline_type = "status_change"
 
-    request = models.ForeignKey(ReviewRequest, related_name='state_changes')
+    request = models.ForeignKey(ReviewRequest, related_name='state_changes', on_delete=models.CASCADE)
     status = models.IntegerField(
         choices=REVIEW_STATES,
         default=REVIEW_STATES.open,
@@ -158,7 +162,7 @@ class ReviewStatusChangeTimeline(StatusMixin, TimeStampedModel):
     )
     actor = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        null=True
+        null=True, on_delete=models.PROTECT
     )
 
     def can_view(self, user):
@@ -174,14 +178,14 @@ class ReviewEndorsementTimeline(TimeStampedModel):
 
     timeline_type = "endorsement"
 
-    request = models.ForeignKey(ReviewRequest, related_name='endorsements')
+    request = models.ForeignKey(ReviewRequest, related_name='endorsements', on_delete=models.CASCADE)
     registration_state = models.IntegerField(
         choices=MDR.STATES,
         help_text=_("The state at which a user wishes a metadata item to be endorsed")
     )
     actor = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        null=True
+        null=True, on_delete=models.PROTECT
     )
 
     def can_view(self, user):

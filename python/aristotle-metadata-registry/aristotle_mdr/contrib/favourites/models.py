@@ -13,7 +13,8 @@ class Tag(models.Model):
 
     profile = models.ForeignKey(
         PossumProfile,
-        related_name='tags'
+        related_name='tags',
+        on_delete=models.PROTECT
     )
     name = models.CharField(
         max_length=200,
@@ -48,11 +49,11 @@ class Favourite(models.Model):
 
     tag = models.ForeignKey(
         Tag,
-        related_name='favourites'
+        related_name='favourites', on_delete=models.CASCADE
     )
     item = models.ForeignKey(
         _concept,
-        related_name='favourites'
+        related_name='favourites', on_delete=models.CASCADE
     )
     created = models.DateTimeField(
         auto_now_add=True

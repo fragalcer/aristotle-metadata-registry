@@ -2,37 +2,34 @@
 {% load bootstrap3 static %}
 
 {% block title %}Edit site-wide permissions for {% firstof object.short_name object.full_name object.email %}{% endblock %}
-{% block collapse-link%}<i class="fa fa-user fa-fw"></i> Edit account details for <em>{% firstof object.short_name object.full_name object.email %}</em></a>{% endblock %}
 {% block sidebar %}
     {% include "aristotle_mdr/user/userSideBar.html" with activeTab='edit' %}
 {% endblock %}
 
 {% block outerpage %}
     <div class="col-md-8">
-      <h1>
-      <i class="fa fa-user fa-fw"></i> Edit site-wide permissions for <em>{% firstof object.short_name object.full_name object.email %}</em></a>
-      </h1>
-      <div class="alert alert-danger">
-          Woah! You are about to change the site-wide permissions for <em>{% firstof object.short_name object.full_name object.email %}</em>.
-          This may mean they are able to view more, or all content, in the registry.
-      </div>
-      <form enctype="multipart/form-data" method="post">{% csrf_token %}
-        {% bootstrap_form form %}
+        <h1>
+            <i class="fa fa-user fa-fw"></i> Edit site-wide permissions for <em>{% firstof object.short_name object.full_name object.email %}</em>
+        </h1>
+        <div class="alert alert-danger">
+            Woah! You are about to change the site-wide permissions for <em>{% firstof object.short_name object.full_name object.email %}</em>.
+            This may mean they are able to view more, or all content, in the registry.
+        </div>
+        <form enctype="multipart/form-data" method="post">{% csrf_token %}
+            {% bootstrap_form form %}
 
-        {% buttons %}
-          <a class="btn btn-default" href="{% url 'aristotle-user:registry_user_list' %}">
-            <i class="fa fa-times fa-fw"></i> Cancel
-          </a>
-          <button type="submit" class="btn btn-primary">
-              <i class="fa fa-check fa-fw"></i> Save Changes
-          </button>
-        {% endbuttons %}
+            {% buttons %}
+                <a class="btn btn-default" href="{% url 'aristotle-user:registry_user_list' %}">
+                    <i class="fa fa-times fa-fw"></i> Cancel
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa fa-check fa-fw"></i> Save Changes
+                </button>
+            {% endbuttons %}
+        </form>
     </div>
-
-    </form>
-
 {% endblock %}
 
 {% block after_bundle %}
-  <script src="{% static 'constrainedfilefield/js/file_checker.js' %}"></script>
+    <script src="{% static 'constrainedfilefield/js/file_checker.js' %}"></script>
 {% endblock %}

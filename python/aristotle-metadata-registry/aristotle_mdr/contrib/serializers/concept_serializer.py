@@ -242,7 +242,6 @@ class ConceptSerializerFactory():
         return Serializer
 
     def _generate_serializer_class(self, concept_class):
-
         universal_fields = ('slots', 'customvalue_set', 'org_records', 'identifiers', 'stewardship_organisation',
                             'workgroup', 'submitter')
 
@@ -264,6 +263,7 @@ class ConceptSerializerFactory():
                 serializer_attrs[field_name] = serializer
 
         serializer_attrs['Meta'] = Meta
+
         # Generate serializer dynamically
         Serializer = type('Serializer', (BaseSerializer,), serializer_attrs)
         return Serializer

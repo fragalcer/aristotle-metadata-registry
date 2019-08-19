@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import dj_database_url
 from typing import List, Tuple
 import os
 
@@ -21,12 +22,10 @@ FILE_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10 Megabytes (used for profile picture
 
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 # This provides for quick easy set up, but should be changed to a production
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'pos.db3'),
-    }
-}
+DEFAULT_DB_PATH = os.path.join(BASE_DIR, 'pos.db3')
+db_from_env = dj_database_url.config(conn_max_age=500, default=f'sqlite:///{DEFAULT_DB_PATH}')
+DATABASES = {'default': db_from_env}
+
 
 CACHES = {
     'default': {
@@ -88,7 +87,10 @@ ALLOWED_HOSTS: list = []
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 # Use asynchronous processing of signals
-ARISTOTLE_ASYNC_SIGNALS = os.getenv('ARISTOTLE_ASYNC_SIGNALS', False) == "True"
+ARISTOTLE_ASYNC_SIGNALS = True
+if os.getenv("ARISTOTLE_DISABLE_ASYNC_SIGNALS", "False") == "True":
+    ARISTOTLE_ASYNC_SIGNALS = False
+
 # Always register items synchronously (without celery)
 ALWAYS_SYNC_REGISTER = os.getenv('ARISTOTLE_SYNC_REGISTER', False) == "True"
 
@@ -149,7 +151,7 @@ INSTALLED_APPS = (
     'django_filters',
 
     'django_jsonforms',
-    'missing',
+    'aristotle_mdr.vendor.missing',
     'mptt',
 
 )
@@ -159,7 +161,7 @@ USE_TZ = True
 USE_I18N = True
 
 MIDDLEWARE = [
-    'user_sessions.middleware.SessionMiddleware',
+    'aristotle_mdr.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',

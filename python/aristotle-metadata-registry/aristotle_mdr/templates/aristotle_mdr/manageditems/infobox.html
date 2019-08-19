@@ -4,74 +4,71 @@
 
 <aside id="infobox-wrap" class="col-xs-12 col-sm-4 pull-right navbar navbar-default">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#infobox">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a href="#" class="navbar-brand visible-xs" style="float:none;">
-        {% block collapse-link %}
-        <i class="fa fa-info-circle fa-fw"></i>More details...
-        {% endblock %}
-      </a>
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#infobox">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <a href="#" class="navbar-brand visible-xs" style="float:none;">
+         </a>
     </div>
     <div id="infobox" class="collapse navbar-collapse" >
         <header class="hidden-xs">{{ item.name }}</header>
         <dl>
             {% block infobox_list %}
-            <dt>{% trans 'Type' context "Object Type" %}</dt>
-            <dd>
-                <a href="{% url 'aristotle_help:concept_help' item.meta.app_label item.meta.model_name %}"
-                    title="{% trans 'Learn about this metadata type' %}"
-                    data-toggle="modal" data-target="#infobox_modal"
-                >{{ item.get_verbose_name }}</a> (Managed Item)
-            </dd>
-            <!-- dt>Aristotle ID</dt><dd>{{ item.id }}</dd -->
-            <dt>Identifiers</dt>
-            <dd>UUID - <span title='{{ item.uuid }}'>{{ item.uuid }}</span></dd>
+                <dt>{% trans 'Type' context "Object Type" %}</dt>
+                <dd>
+                    <a href="{% url 'aristotle_help:concept_help' item.meta.app_label item.meta.model_name %}"
+                       title="{% trans 'Learn about this metadata type' %}"
+                       data-toggle="modal" data-target="#infobox_modal"
+                    >{{ item.get_verbose_name }}</a> (Managed Item)
+                </dd>
+                <!-- dt>Aristotle ID</dt><dd>{{ item.id }}</dd -->
+                <dt>Identifiers</dt>
+                <dd>UUID - <span title='{{ item.uuid }}'>{{ item.uuid }}</span></dd>
 
-            {% if item.version %}
-            <dt class="visible-xs">{% trans 'Version'%}</dt><dd class="visible-xs">{{ item.version }}</dd>
-            {% endif %}
+                {% if item.version %}
+                    <dt class="visible-xs">{% trans 'Version'%}</dt><dd class="visible-xs">{{ item.version }}</dd>
+                {% endif %}
 
-            <dt class="large">{% trans 'Stewardship Organisation'%}</dt>
-            <dd class="">{{ item.stewardship_organisation }}</dd>
+                <dt class="large">{% trans 'Stewardship Organisation'%}</dt>
+                <dd class="">{{ item.stewardship_organisation }}</dd>
 
-            {% if item.publication_details.exists %}
-                {% include "aristotle_mdr/publish/infobox/publication_details.html" with item=item %}
-            {% endif %}
+                {% if item.publication_details.exists %}
+                    {% include "aristotle_mdr/publish/infobox/publication_details.html" with item=item %}
+                {% endif %}
 
-            <dt>{% trans 'Last updated'%}</dt>
-            <dd>
-                {% if request.user.is_authenticated %}
-                    {% if request.user.is_superuser or request.user.is_staff and item.workgroup in request.user.workgroups %}
-                        <time title="{{ item.modified|date:'o-m-d H:i e' }}" datetime="{{ item.modified|isotime }}" data-time-from="true">
-                        </time>
-                    {% elif item.workgroup in request.user.workgroups or item.submitter == request.user %}
-                        <time title="{{ item.modified|date:'o-m-d H:i e' }}" datetime="{{ item.modified|isotime }}" data-time-from="true">
+                <dt>{% trans 'Last updated'%}</dt>
+                <dd>
+                    {% if request.user.is_authenticated %}
+                        {% if request.user.is_superuser or request.user.is_staff and item.workgroup in request.user.workgroups %}
+                            <time title="{{ item.modified|date:'o-m-d H:i e' }}" datetime="{{ item.modified|isotime }}" data-time-from="true">
+                            </time>
+                        {% elif item.workgroup in request.user.workgroups or item.submitter == request.user %}
+                            <time title="{{ item.modified|date:'o-m-d H:i e' }}" datetime="{{ item.modified|isotime }}" data-time-from="true">
+                            </time>
+                        {% endif %}
+                    {% else %}
+                        <time title="{{ item.modified|date:'o-m-d H:i e' }}" datetime="{{ item.modified|isotime }}">
+                            {{ item.modified|naturaltime }}
                         </time>
                     {% endif %}
-                {% else %}
-                    <time title="{{ item.modified|date:'o-m-d H:i e' }}" datetime="{{ item.modified|isotime }}">
-                        {{ item.modified|naturaltime }}
-                    </time>
-                {% endif %}
-                {% if request.user.is_superuser or request.user.is_active and item.workgroup in request.user.workgroups %}
-                <span style="display:inline-block">By
-                    {% with editing_user=last_edit.revision.user %}
-                        {% if editing_user %}
-                            {% firstof editing_user.short_name editing_user.full_name editing_user.email %}
-                        {% else %}<em title="{% trans 'This may have been added during an import.'%}">{% trans 'Unknown' context "Unknown import user"%}</em>
-                        {% endif %}
-                    {% endwith %}
+                    {% if request.user.is_superuser or request.user.is_active and item.workgroup in request.user.workgroups %}
+                        <span style="display:inline-block">By
+                            {% with editing_user=last_edit.revision.user %}
+                                {% if editing_user %}
+                                    {% firstof editing_user.short_name editing_user.full_name editing_user.email %}
+                                {% else %}<em title="{% trans 'This may have been added during an import.'%}">{% trans 'Unknown' context "Unknown import user"%}</em>
+                                {% endif %}
+                            {% endwith %}
                 </span>
-                {% endif %}
-            </dd>
-            <dt>{% trans 'Created'%}</dt>
-            <dd><time title="{{ item.created|date:'o-m-d' }}" datetime="{{ item.created|isotime }}">{{ item.created|date:'o-m-d' }}</time></dd>
+                    {% endif %}
+                </dd>
+                <dt>{% trans 'Created'%}</dt>
+                <dd><time title="{{ item.created|date:'o-m-d' }}" datetime="{{ item.created|isotime }}">{{ item.created|date:'o-m-d' }}</time></dd>
 
-        {% endblock %}
+            {% endblock %}
         </dl>
         {% bootstrap_modal "infobox_modal" size='lg' %}
     </div>

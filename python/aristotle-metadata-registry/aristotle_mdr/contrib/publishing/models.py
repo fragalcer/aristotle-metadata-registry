@@ -70,7 +70,8 @@ class PublicationRecord(TimeStampedModel):
     content_object = GenericForeignKey('content_type', 'object_id', for_concrete_model=False)
     publisher = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        related_name="published_content"
+        related_name="published_content",
+        on_delete=models.PROTECT
     )
     permission = models.IntegerField(
         choices=VISIBILITY_PERMISSION_CHOICES,

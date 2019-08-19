@@ -21,6 +21,7 @@ class User(AbstractUser):
     def last_name(self):
         return self.full_name
 
+    @property
     def display_name(self):
         if self.short_name:
             return self.short_name
