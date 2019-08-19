@@ -404,8 +404,8 @@ class DateFilterView(FilterView, MainPageMixin):
     template_name = 'aristotle_mdr/organization/registration_authority/data_dictionary.html'
     paginate_by = 50
 
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
 
         context.update(self.get_tab_context())
 

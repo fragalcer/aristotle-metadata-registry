@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.conf.urls import include, url
 
-
+app_name = 'aristotle_dse'
 urlpatterns = [
     url(r'^alias/', include('impersonate.urls')),
     url(r'^api/', include('aristotle_mdr_api.urls')),
@@ -10,9 +10,9 @@ urlpatterns = [
     url(r'^', include(('aristotle_mdr.contrib.slots.urls', "aristotle_slots"), namespace="aristotle_slots")),
     url(r'^', include(('aristotle_mdr.contrib.identifiers.urls', "aristotle_mdr_identifiers"), namespace="aristotle_identifiers")),
     url(r'^', include('aristotle_mdr.urls')),
-    url(r'^', include(('aristotle_mdr.contrib.links.urls', 'aristotle_mdr_links'), namespace="aristotle_mdr_links")),
-    url(r'^comet/', include(('comet.urls', 'comet'), namespace='comet')),
-    url(r'^glossary/', include(('aristotle_glossary.urls', "aristotle_glossary"), namespace="aristotle_glossary"))
+    url(r'^', include(('aristotle_mdr.contrib.links.urls', "aristotle_mdr_links"), namespace="aristotle_mdr_links")),
+    url(r'^comet/', include(('comet.urls', "comet"), namespace='comet')),
+    url(r'^glossary/', include(('aristotle_glossary.urls', "aristotle_glossary"), namespace="aristotle_glossary")),
 ]
 
 

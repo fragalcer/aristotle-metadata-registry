@@ -13,7 +13,7 @@ class Question(aristotle_mdr.models.concept):
         related_name="questions",
         null=True,
         blank=True,
-        on_delete=models.deletion.CASCADE
+        on_delete=models.deletion.CASCADE,
     )
 
 
