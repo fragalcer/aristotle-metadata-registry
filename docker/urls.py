@@ -1,7 +1,6 @@
 from django.conf import settings
 from django.conf.urls import include, url
 
-app_name = 'aristotle_dse'
 urlpatterns = [
     url(r'^alias/', include('impersonate.urls')),
     url(r'^api/', include('aristotle_mdr_api.urls')),
