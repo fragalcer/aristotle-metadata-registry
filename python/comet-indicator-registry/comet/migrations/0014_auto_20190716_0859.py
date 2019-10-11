@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
         ('comet', '0013_auto_20190711_0117'),
     ]
 
-    operations = [
+    database_operations = [
         migrations.AlterField(
             model_name='frameworkdimension',
             name='level',
@@ -27,4 +27,28 @@ class Migration(migrations.Migration):
             name='rght',
             field=models.PositiveIntegerField(db_index=True, editable=False),
         ),
+    ]
+
+    state_operations = [
+        migrations.AlterField(
+            model_name='frameworkdimension',
+            name='level',
+            field=models.PositiveIntegerField(editable=False),
+        ),
+        migrations.AlterField(
+            model_name='frameworkdimension',
+            name='lft',
+            field=models.PositiveIntegerField(editable=False),
+        ),
+        migrations.AlterField(
+            model_name='frameworkdimension',
+            name='rght',
+            field=models.PositiveIntegerField(editable=False),
+        ),
+    ]
+    operations = [
+        migrations.SeparateDatabaseAndState(
+            database_operations=database_operations,
+            state_operations=state_operations
+        )
     ]
