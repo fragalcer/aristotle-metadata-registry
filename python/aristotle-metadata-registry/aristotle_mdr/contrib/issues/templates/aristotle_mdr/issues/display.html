@@ -19,102 +19,104 @@
                 All issues for this item
             </a>
             <h1>
-                <open-close :is-open="isOpen"></open-close>
-                <span v-pre>{{ object.name }}</span>
+            <open-close :is-open="isOpen"></open-close>
+                <span v-pre>{{ object.name }} <span> <em class="text-muted">#{{ object.id }}</em></span></span>
                 {% if own_issue %}
-                  <button class="btn btn-default btn-sm" @click="openIssueModal">Edit</button>
+                    <button class="btn btn-default btn-sm" @click="openIssueModal">Edit</button>
                 {% endif %}
             </h1>
 
+            <span>Opened {{ object.created|timesince }} ago by {{ object.submitter.display_name }}</span>
+
             <div v-pre class="margin-below">
-              <ul class="taggle_inline_list">
-                {% for label in object.labels.all %}
-                <li class="taggle">{{ label.label }}</li>
-                {% endfor %}
-              </ul>
-              <span>Opened {{ object.created|timesince }} ago by {{ object.submitter.display_name }}</span>
+                <ul class="taggle_inline_list">
+                    {% for label in object.labels.all %}
+                        <li class="taggle">{{ label.label }}</li>
+                    {% endfor %}
+                </ul>
+
             </div>
 
             <div v-pre class="panel panel-default">
-              <div class="panel-heading"><strong>Description</strong></div>
-              <div class="panel-body">
-                {{ object.description }}
-              </div>
+                <div class="panel-heading"><strong>Description</strong></div>
+                <div class="panel-body">
+                    {{ object.description }}
+                </div>
             </div>
             {% if has_proposed_changes and object.isopen %}
-              <issue-panel
-                :hide-panel="!isOpen"
-                field-name="{{ object.proposal_field }}"
-                {% if can_approve %}can-approve{% endif %}
-                {% if item_changed %}item-changed{% endif %}
-                approve-url="{% url 'api_v4:issues:approve' object.id %}"
-                @set_open="setIsOpen"
-              >
-                <div v-pre>
-                  <ul class="nav nav-tabs" role="tablist">
-                      <li role="presentation" class="active">
-                        <a href="#new" aria-controls="new" role="tab" data-toggle="tab">New Content</a>
-                      </li>
-                      <li role="presentation">
-                        <a href="#diff" aria-controls="diff" role="tab" data-toggle="tab">Differences</a>
-                      </li>
-                  </ul>
+                <issue-panel
+                        :hide-panel="!isOpen"
+                        field-name="{{ object.proposal_field }}"
+                        {% if can_approve %}can-approve{% endif %}
+                        {% if item_changed %}item-changed{% endif %}
+                        approve-url="{% url 'api_v4:issues:approve' object.id %}"
+                        @set_open="setIsOpen"
+                >
+                    <div v-pre>
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" class="active">
+                                <a href="#new" aria-controls="new" role="tab" data-toggle="tab">New Content</a>
+                            </li>
+                            <li role="presentation">
+                                <a href="#diff" aria-controls="diff" role="tab" data-toggle="tab">Differences</a>
+                            </li>
+                        </ul>
 
-                  <div class="tab-content border-tab-content">
-                      <div role="tabpanel" class="tab-pane active" id="new">
-                          {{ object.proposal_value|bleach }}
-                      </div>
-                      <div role="tabpanel" class="tab-pane" id="diff">
-                          {{ diff_table|safe }}
-                      </div>
-                  </div>
-                </div>
-              </issue-panel>
+                        <div class="tab-content border-tab-content">
+                            <div role="tabpanel" class="tab-pane active" id="new">
+                                {{ object.proposal_value|bleach }}
+                            </div>
+                            <div role="tabpanel" class="tab-pane" id="diff">
+                                {{ diff_table|safe }}
+                            </div>
+                        </div>
+                    </div>
+                </issue-panel>
             {% endif %}
         </div>
     </div>
 
     {% for comment in comments %}
         <comment
-            pic="{{ comment.author.profile.profile_picture_url }}"
-            name="{{ comment.author.display_name }}"
-            created="{{ comment.created|date:"c" }}"
-            body="{{ comment.body }}">
+                pic="{{ comment.author.profile.profile_picture_url }}"
+                name="{{ comment.author.display_name }}"
+                created="{{ comment.created|date:"c" }}"
+                body="{{ comment.body }}">
         </comment>
     {% endfor %}
 
     <comment
-        v-for="comment in new_comments"
-        :key="comment.id"
-        :pic="comment.pic"
-        :name="comment.name"
-        :created="comment.created"
-        :body="comment.body">
+            v-for="comment in new_comments"
+            :key="comment.id"
+            :pic="comment.pic"
+            :name="comment.name"
+            :created="comment.created"
+            :body="comment.body">
     </comment>
 
     <issue-comment
-        pic="{{ user.profile.profile_picture_url }}"
-        user-id="{{ user.id }}"
-        user-name="{{ user.get_short_name }}"
-        issue-id="{{ object.id }}"
-        {% if object.isopen %}is-open{% endif %}
-        {% if can_open_close %}can-open-close{% endif %}
-        comment-url="{% url 'api_v4:issues:comment' %}"
-        open-close-url="{% url 'api_v4:issues:update_and_comment' object.id %}"
-        @set_open="setIsOpen"
-        @created="addComment">
+            pic="{{ user.profile.profile_picture_url }}"
+            user-id="{{ user.id }}"
+            user-name="{{ user.get_short_name }}"
+            issue-id="{{ object.id }}"
+            {% if object.isopen %}is-open{% endif %}
+            {% if can_open_close %}can-open-close{% endif %}
+            comment-url="{% url 'api_v4:issues:comment' %}"
+            open-close-url="{% url 'api_v4:issues:update_and_comment' object.id %}"
+            @set_open="setIsOpen"
+            @created="addComment">
     </issue-comment>
 
 
     <issue-modal
-        edit
-        v-model="issueModalOpen"
-        iid="{{ item.id }}"
-        url="{% url 'api_v4:issues:issue' object.id %}"
-        propose-fields="{{ fields }}"
-        initial="{{ initial }}"
-        html-editor-config="{{ config }}"
-        all-labels-json="{{ allLabels }}"
+            edit
+            v-model="issueModalOpen"
+            iid="{{ item.id }}"
+            url="{% url 'api_v4:issues:issue' object.id %}"
+            propose-fields="{{ fields }}"
+            initial="{{ initial }}"
+            html-editor-config="{{ config }}"
+            all-labels-json="{{ allLabels }}"
     >
     </issue-modal>
 {% endblock %}
