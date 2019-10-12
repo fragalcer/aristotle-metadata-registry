@@ -6,11 +6,11 @@
                     <i class="text-{{ context_class }} fa fa-exclamation-circle"></i>
                     {{ issue.name }} <em class="text-muted">#{{ issue.id }}</em>
                     <small>
-                      <ul class="taggle_inline_list">
-                        {% for label in issue.labels.all %}
-                        <li class="taggle">{{ label.label }}</li>
-                        {% endfor %}
-                      </ul>
+                        <ul class="taggle_inline_list">
+                            {% for label in issue.labels.all %}
+                                <li class="taggle">{{ label.label }}</li>
+                            {% endfor %}
+                        </ul>
                     </small>
                 </div>
                 <div class="list-group-item-text">
