@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 import django.db.models
 from django.db import migrations, models
 import ckeditor_uploader.fields
@@ -11,7 +9,7 @@ class Migration(migrations.Migration):
     replaces = [('aristotle_dse', '0001_initial'), ('aristotle_dse', '0002_auto_20150510_0249'), ('aristotle_dse', '0003_add_clusters_improve_names'), ('aristotle_dse', '0004_auto_20160103_0200'), ('aristotle_dse', '0005_improve_inculsion_help_text'), ('aristotle_dse', '0006_auto_20160103_1855'), ('aristotle_dse', '0007_add_ordering_to_inclusions'), ('aristotle_dse', '0008_auto_20160318_2335'), ('aristotle_dse', '0009_auto_20160725_1958'), ('aristotle_dse', '0010_datasource_specification'), ('aristotle_dse', '0011_auto_20160726_2015'), ('aristotle_dse', '0012_fix_concept_fields'), ('aristotle_dse', '0013_now_with_dcat')]
 
     dependencies = [
-        ('aristotle_mdr_identifiers', '0001_initial'),
+        # ('aristotle_mdr_identifiers', '0001_initial'),
         ('aristotle_mdr', '0001_squashed_0017_add_organisations'),
     ]
 

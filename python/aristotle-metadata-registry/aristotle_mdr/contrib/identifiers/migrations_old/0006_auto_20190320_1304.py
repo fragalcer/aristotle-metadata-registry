@@ -23,7 +23,7 @@ def populate_names(apps, schema_migration):
 class Migration(StewardMigration):
 
     dependencies = [
-        ('aristotle_mdr', '0056_auto_20190313_2144'),
+        # ('aristotle_mdr', '0056_auto_20190313_2144'),
         ('aristotle_mdr_identifiers', '0005_auto_20180624_2049'),
     ]
     # stewardorganisation = None

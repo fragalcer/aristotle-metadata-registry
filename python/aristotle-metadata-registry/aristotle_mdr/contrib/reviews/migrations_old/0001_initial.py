@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('aristotle_mdr', '0045__concept_superseded_by_items'),
+        # ('aristotle_mdr', '0045__concept_superseded_by_items'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 

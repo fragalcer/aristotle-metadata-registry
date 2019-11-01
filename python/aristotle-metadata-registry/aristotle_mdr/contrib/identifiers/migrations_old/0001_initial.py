@@ -9,7 +9,7 @@ import model_utils.fields
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('aristotle_mdr', '0017_add_organisations'),
+        # ('aristotle_mdr', '0017_add_organisations'),
     ]
 
     operations = [
