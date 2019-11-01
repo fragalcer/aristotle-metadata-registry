@@ -279,7 +279,7 @@ class GenericAlterManyToManyOrderView(GenericAlterManyToManyView):
 
         return context
 
-    def get_form(self):
+    def get_form(self, form_class=None):
         return None
 
     def dispatch(self, request, *args, **kwargs):

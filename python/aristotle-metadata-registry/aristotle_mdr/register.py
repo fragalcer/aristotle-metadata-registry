@@ -32,14 +32,14 @@ logger.debug("Logging started for " + __name__)
 
 
 def register_concept(concept_class, *args, **kwargs):
-    """ A handler for third-party apps to make registering
-    extension models based on ``aristotle_mdr.models.concept`` easier.
+    """
+    A handler for third-party apps to make registering extension models based on `aristotle_mdr.models.concept` easier.
 
     Sets up the version controls, search indexes, django administrator page
     and autocomplete handlers.
-    All ``args`` and ``kwargs`` are passed to the called methods. For examples of
+    All `args` and `kwargs` are passed to the called methods. For examples of
     what can be passed into this method review the other methods in
-    ``aristotle_mdr.register``.
+    `aristotle_mdr.register`.
 
     Example usage (based on the models in the extensions test suite):
 
@@ -52,11 +52,16 @@ def register_concept(concept_class, *args, **kwargs):
 
 
 def register_concept_reversions(concept_class, *args, **kwargs):
+    """
+    Registers the concept with reversion
+    :param concept_class:
+    :param args:
+    :param kwargs:
+    """
     from reversion import revisions as reversion
 
     follows = kwargs.get('reversion', {}).get('follow', [])
-    # Register the concept with reversion
-    reversion.register(concept_class, follow=follows, format='aristotle_mdr_json')
+    reversion.register(concept_class, follow=follows, format='aristotle_mdr_json_uuid_compatible')
 
     follow_classes = kwargs.get('reversion', {}).get('follow_classes', [])
     for cls in follow_classes:
@@ -67,10 +72,11 @@ def register_concept_reversions(concept_class, *args, **kwargs):
 
 
 def register_concept_search_index(concept_class, *args, **kwargs):
-    """ Registers the given ``concept`` with a Haystack search index that conforms
+    """
+    Registers the given `concept` with a Haystack search index that conforms
     to Aristotle permissions. If the concept to be registered does not have a
     template for serving a search document, a basic document with just the basic
-    fields from ``aristotle_mdr.models._concept`` will be used when indexing items.
+    fields from `aristotle_mdr.models._concept` will be used when indexing items.
 
     :param concept concept_class: The model that is to be registered for searching.
     """
@@ -86,8 +92,6 @@ def register_concept_search_index(concept_class, *args, **kwargs):
 
 
 def create(cls, set_search_category=None):
-    from aristotle_mdr.search_indexes import SEARCH_CATEGORIES
-
     if hasattr(settings, 'HAYSTACK_BASE_INDEX_CLASS'):
         base_index_class = import_string(settings.HAYSTACK_BASE_INDEX_CLASS)
     else:
@@ -105,10 +109,8 @@ def create(cls, set_search_category=None):
 def register_concept_admin(concept_class, *args, **kwargs):
     """Registers the given ``concept`` with the Django admin backend based on the default
     ``aristotle_mdr.admin.ConceptAdmin``.
-
     Additional parameters are only required if a model has additional fields or
     references to other models.
-
     :param boolean auto_fieldsets: If no extra_fieldsets, when set to true this generates a list of fields for the admin page as "Extra fields for [class]"
     :param concept concept_class: The model that is to be registered
     :param list extra_fieldsets: Model-specific `fieldsets <https://docs.djangoproject.com/en/1.8/ref/contrib/admin/#django.contrib.admin.ModelAdmin.fieldsets>`_ to be displayed. Fields in the tuples given should be those *not* defined by the base ``aristotle_mdr.models._concept`` class.
@@ -145,8 +147,8 @@ def register_concept_admin(concept_class, *args, **kwargs):
             extra_fieldsets = [(extra_fieldsets_name, {'fields': auto_fieldset})]
         for inline_field in auto_inlines:
             class AutoInline(admin.TabularInline):
-                model=inline_field.related_model
-                extra=0
+                model = inline_field.related_model
+                extra = 0
             extra_inlines.append(AutoInline)
 
     class SubclassedConceptAdmin(ConceptAdmin):
@@ -157,6 +159,3 @@ def register_concept_admin(concept_class, *args, **kwargs):
         inlines = ConceptAdmin.inlines + extra_inlines
 
     admin.site.register(concept_class, SubclassedConceptAdmin)
-
-# def _register_concept_(concept_class, *args, **kwargs):
-#    pass

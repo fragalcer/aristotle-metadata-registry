@@ -29,8 +29,13 @@ VERY_RECENTLY_SECONDS = 15
 
 class baseAristotleObject(TimeStampedModel):
     uuid = models.UUIDField(
-        help_text=_("Universally-unique Identifier. Uses UUID1 as this improves uniqueness and tracking between registries"),
-        unique=True, default=uuid.uuid1, editable=False, null=False
+        help_text=_(
+            "Universally-unique Identifier. Uses UUID1 as this improves uniqueness and tracking between registries"
+        ),
+        unique=True,
+        default=uuid.uuid1,
+        editable=False,
+        null=False,
     )
     name = ShortTextField(
         help_text=_("The primary name used for human identification purposes.")
@@ -123,7 +128,9 @@ class unmanagedObject(baseAristotleObject):
 
 
 class ManagedItem(baseAristotleObject):
-    """Managed items can be published, but not registered"""
+    """
+    Managed items can be published, but not registered
+    """
     class Meta:
         abstract = True
 
@@ -161,14 +168,25 @@ class ManagedItem(baseAristotleObject):
 
 
 class aristotleComponent(models.Model):
-    class Meta:
-        abstract = True
+
+    uuid = models.UUIDField(
+        help_text=_(
+            "Universally-unique Identifier. Uses UUID1 as this improves uniqueness and tracking between registries"
+        ),
+        unique=True,
+        default=uuid.uuid1,
+        editable=False,
+        null=False
+    )
 
     objects = UtilsManager()
     ordering_field = 'order'
 
     # Parent is the parent item of the component
     parent_field_name: str = ''
+
+    class Meta:
+        abstract = True
 
     @property
     def parentItem(self):
@@ -220,9 +238,6 @@ class AbstractValue(aristotleComponent):
     Implementation note: Not the best name, but there will be times to
     subclass a "value" when its not just a permissible value.
     """
-    class Meta:
-        abstract = True
-        ordering = ['order']
 
     value = ShortTextField(  # 11.3.2.7.2.1 - Renamed from permitted value for abstracts
         help_text=_("the actual value of the Value")
@@ -260,6 +275,10 @@ class AbstractValue(aristotleComponent):
     )
 
     parent_field_name = 'valueDomain'
+
+    class Meta:
+        abstract = True
+        ordering = ['order']
 
     def __str__(self):
         return "%s: %s - %s" % (

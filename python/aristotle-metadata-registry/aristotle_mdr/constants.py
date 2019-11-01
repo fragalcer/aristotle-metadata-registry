@@ -12,7 +12,8 @@ FILE_FORMAT = {
 
 REVERSION_FORMATS = {
     'json': 'Legacy Version',
-    'aristotle_mdr_json': 'New Version'
+    'aristotle_mdr_json': 'New Version',
+    'aristotle_mdr_json_uuid_compatible': 'UUID Compatible version',
 }
 
 visibility_permission_choices = Choices(

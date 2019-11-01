@@ -1,4 +1,4 @@
-from rest_framework import generics
+from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
@@ -15,24 +15,24 @@ from . import serializers
 
 class ReviewCommentCreateView(generics.CreateAPIView):
     """Create a comment against a review"""
-    permission_classes=(AuthCanViewEdit,)
-    permission_key='metadata'
-    serializer_class=serializers.ReviewCommentSerializer
+    permission_classes = (AuthCanViewEdit,)
+    permission_key = 'metadata'
+    serializer_class = serializers.ReviewCommentSerializer
 
 
 class ReviewCommentRetrieveView(generics.RetrieveAPIView):
-    permission_classes=(AuthCanViewEdit,)
-    permission_key='metadata'
-    serializer_class=serializers.ReviewCommentSerializer
-    queryset=ReviewComment.objects.all()
+    permission_classes = (AuthCanViewEdit,)
+    permission_key = 'metadata'
+    serializer_class = serializers.ReviewCommentSerializer
+    queryset = ReviewComment.objects.all()
 
 
 class ReviewUpdateAndCommentView(generics.UpdateAPIView):
     """Open or close a review, with optional comment"""
-    permission_classes=(AuthCanViewEdit,)
-    permission_key='metadata'
-    serializer_class=serializers.ReviewUpdateAndCommentSerializer
-    pk_url_kwarg='pk'
+    permission_classes = (AuthCanViewEdit,)
+    permission_key = 'metadata'
+    serializer_class = serializers.ReviewUpdateAndCommentSerializer
+    pk_url_kwarg = 'pk'
 
     http_method_names = ['patch']
 
@@ -60,11 +60,11 @@ class AlterItemInReviewView(APIView):
 
         if self.operation_flag == 'add':
             review_request.concepts.add(MDR._concept.objects.get(pk=concept_id))
-            return Response({"concept_id": concept_id}, 200)
+            return Response(data={"concept_id": concept_id}, status=status.HTTP_200_OK)
 
         elif self.operation_flag == 'remove':
             review_request.concepts.remove(MDR._concept.objects.get(pk=concept_id))
-            return Response({"concept_id": concept_id}, 200)
+            return Response(data={"concept_id": concept_id}, status=status.HTTP_200_OK)
 
         else:
             raise AssertionError("Flag must be set to either add or remove")
@@ -76,5 +76,3 @@ class PromoteImpactedItemToReviewItemsView(AlterItemInReviewView):
 
 class RemoveItemFromReviewItemsView(AlterItemInReviewView):
     operation_flag = 'remove'
-
-

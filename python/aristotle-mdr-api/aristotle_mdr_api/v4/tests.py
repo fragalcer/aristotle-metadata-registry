@@ -68,6 +68,9 @@ class BaseAPITestCase(TestCase):
             submitter=submitter,
         )
 
+    def logout(self):
+        self.client.post(reverse('logout'), {})
+
 
 class IssueEndpointsTestCase(BaseAPITestCase):
     def setUp(self):

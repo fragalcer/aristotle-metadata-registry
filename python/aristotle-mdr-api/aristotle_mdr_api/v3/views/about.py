@@ -22,7 +22,7 @@ class About(APIView):
             'description': settings['SITE_DESCRIPTION'],
             'version': "1.6",
             'installed_apps': [],
-            'aristotle_mdr' : {
+            'aristotle_mdr': {
                 'version': import_string("aristotle_mdr.__version__"),
             }
         }

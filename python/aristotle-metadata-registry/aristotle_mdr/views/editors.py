@@ -1,9 +1,9 @@
+import reversion
+import uuid
 from django.http import HttpResponseRedirect
 from django.views.generic import UpdateView, FormView
 from django.views.generic.detail import SingleObjectMixin
 from django.db import transaction
-
-import reversion
 from reversion.models import Version
 
 from aristotle_mdr.utils import (
@@ -32,7 +32,7 @@ logger.debug("Logging started for " + __name__)
 
 class ConceptEditFormView(ObjectLevelPermissionRequiredMixin):
     """
-    Base class for editing concepts
+    Base class for editing concepts.
     """
     raise_exception = True
     redirect_unauthenticated_users = True
@@ -200,11 +200,13 @@ class EditItemView(ExtraFormsetMixin, ConceptEditFormView, UpdateView):
         extra_formsets = self.get_extra_formsets(self.item, request.POST)
 
         self.object = self.item
+        item = None
+        change_comments = None
 
         if form.is_valid():
             # Actualize the model, but don't save just yet
             item = form.save(commit=False)
-            change_comments = form.data.get('change_comments', None)
+            change_comments = form.data.get('change_comments')
             form_invalid = False
         else:
             form_invalid = True
@@ -297,10 +299,13 @@ class CloneItemView(ExtraFormsetMixin, ConceptEditFormView, SingleObjectMixin, F
         form = self.get_form()
         extra_formsets = self.get_extra_formsets(self.model, request.POST)
 
+        item = None
+        change_comments = None
+
         if form.is_valid():
             item = form.save(commit=False)
             item.submitter = request.user
-            change_comments = form.data.get('change_comments', None)
+            change_comments = form.data.get('change_comments')
             form_invalid = False
         else:
             form_invalid = True
@@ -338,27 +343,6 @@ class CloneItemView(ExtraFormsetMixin, ConceptEditFormView, SingleObjectMixin, F
                 item.save()
 
             return HttpResponseRedirect(url_slugify_concept(item))
-
-    def clone_components(self, clone):
-        original = self.item
-        fields = getattr(self.model, 'clone_fields', [])
-        for field_name in fields:
-            field = self.model._meta.get_field(field_name)
-            remote_field_name = field.remote_field.name
-            manager = getattr(original, field.get_accessor_name(), None)
-            if manager is None:
-                components = []
-            else:
-                components = manager.all()
-
-            new_components = []
-            for component in components:
-                # Set pk to none so we insert instead of update
-                component.pk = None
-                # Set the remote field to the clone
-                setattr(component, remote_field_name, clone)
-                new_components.append(component)
-            field.related_model.objects.bulk_create(new_components)
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)

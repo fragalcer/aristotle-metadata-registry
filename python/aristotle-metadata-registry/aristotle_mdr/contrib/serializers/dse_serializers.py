@@ -1,6 +1,10 @@
-from rest_framework import serializers
-from aristotle_mdr.contrib.serializers.concept_serializer import SubSerializer
-from aristotle_dse.models import DSSClusterInclusion, DSSDEInclusion, DSSGrouping, DistributionDataElementPath
+from aristotle_mdr.contrib.serializers.utils import SubSerializer
+from aristotle_dse.models import (
+    DSSClusterInclusion,
+    DSSDEInclusion,
+    DSSGrouping,
+    DistributionDataElementPath,
+)
 
 excluded_fields = ('dss',)
 
@@ -24,7 +28,6 @@ class DSSGroupingSerializer(SubSerializer):
 
 
 class DistributionDataElementPathSerializer(SubSerializer):
-
     class Meta:
         model = DistributionDataElementPath
         exclude = ('distribution',)

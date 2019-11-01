@@ -99,7 +99,6 @@ class ConceptAPITestCase(BaseAPITestCase):
 
         self.assertEqual(response.status_code, 401)
 
-
     def test_unauth_user_can_view_graph_representation_public_concept(self):
         response = self.client.get(
             reverse('api_v4:item:item_general_graphical', args=[self.public_concept.id]),
@@ -114,7 +113,6 @@ class ConceptAPITestCase(BaseAPITestCase):
         )
 
         self.assertEqual(response.status_code, 403)
-
 
     def test_unauth_user_can_view_links_representation_public_concept(self):
         response = self.client.get(

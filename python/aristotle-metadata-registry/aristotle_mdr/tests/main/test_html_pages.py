@@ -2024,7 +2024,7 @@ class ValueDomainViewPage(LoggedInViewConceptPages, TestCase):
         self.item3.conceptual_domain = cd
         self.item3.save()
 
-    def test_weak_editing_in_advanced_editor_dynamic(self):
+    def test_weak_editing_in_advanced_editor_dynamic(self, updating_field=None, default_fields={}):
         super().test_weak_editing_in_advanced_editor_dynamic(updating_field='value')
 
     def submitter_user_can_use_value_edit_page(self, value_type):
@@ -2573,8 +2573,10 @@ class DataElementViewPage(LoggedInViewConceptPages, TestCase):
     def test_cascade_action(self):
         self.logout()
         check_url = reverse('aristotle:check_cascaded_states', args=[self.item1.pk])
-        self.dec1 = models.DataElementConcept.objects.create(name='DEC1 - visible', definition="my definition",
-                                                             workgroup=self.wg1)
+        self.dec1 = models.DataElementConcept.objects.create(
+            name='DEC1 - visible', definition="my definition",
+            workgroup=self.wg1
+        )
         self.item1.dataElementConcept = self.dec1
         self.item1.save()
 
@@ -2606,7 +2608,7 @@ class DataElementViewPage(LoggedInViewConceptPages, TestCase):
 
         self.assertTrue(cfield.is_link)
         self.assertEqual(cfield.obj_name, self.item1.dataElementConcept.name)
-        self.assertEqual(cfield.id, self.item1.dataElementConcept.id)
+        self.assertEqual(cfield.identifier, self.item1.dataElementConcept.uuid)
 
     @tag('version')
     def test_version_display_component_from_multi_revision(self):
@@ -2629,22 +2631,22 @@ class DataElementViewPage(LoggedInViewConceptPages, TestCase):
             self.item1.save()
             self.item2.save()
 
-        latest = reversion.models.Version.objects.get_for_object(self.item1).first()
+        latest_version = reversion.models.Version.objects.get_for_object(self.item1).first()
 
         self.login_editor()
         response = self.reverse_get(
             'aristotle:item_version',
-            reverse_args=[latest.id],
+            reverse_args=[latest_version.id],
             status_code=200
         )
 
         fields = {f.heading: f for f in response.context['item']['item_fields']}
         self.assertTrue('Data Element Concept' in fields)
-        cfield = fields['Data Element Concept']
+        dec_version_link_field = fields['Data Element Concept']
 
-        self.assertTrue(cfield.is_link)
-        self.assertEqual(cfield.obj_name, self.item1.dataElementConcept.name)
-        self.assertEqual(cfield.id, self.item1.dataElementConcept.id)
+        self.assertTrue(dec_version_link_field.is_link)
+        self.assertEqual(dec_version_link_field.obj_name, self.item1.dataElementConcept.name)
+        self.assertEqual(dec_version_link_field.identifier, self.item1.dataElementConcept.uuid)
 
     @tag('version')
     def test_version_display_component_permission(self):
@@ -2665,7 +2667,7 @@ class DataElementViewPage(LoggedInViewConceptPages, TestCase):
         cfield = fields['Data Element Concept']
 
         self.assertTrue(cfield.is_link)
-        self.assertEqual(cfield.id, self.item1.dataElementConcept.id)
+        self.assertEqual(cfield.identifier, self.item1.dataElementConcept.uuid)
         self.assertEqual(str(cfield), VersionLinkField.perm_message)
 
 
@@ -2673,7 +2675,7 @@ class DataElementDerivationViewPage(LoggedInViewConceptPages, TestCase):
     url_name = 'dataelementderivation'
     itemType = models.DataElementDerivation
 
-    def test_weak_editing_in_advanced_editor_dynamic(self):
+    def test_weak_editing_in_advanced_editor_dynamic(self, updating_field=None, default_fields={}):
         self.item1 = self.create_linked_ded()
         # TODO: fix this test
         # super().test_weak_editing_in_advanced_editor_dynamic()

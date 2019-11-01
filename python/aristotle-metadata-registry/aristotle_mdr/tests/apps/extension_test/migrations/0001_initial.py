@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 import django.db.models
 from django.db import migrations, models
+import uuid
 
 
 class Migration(migrations.Migration):
@@ -43,6 +44,14 @@ class Migration(migrations.Migration):
                 ('rationale', models.TextField(null=True, blank=True)),
                 ('questionnaire', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='extension_test.Questionnaire')),
                 ('respondent_class', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr.ObjectClass')),
+                ('uuid',
+                 models.UUIDField(
+                    default=uuid.uuid1,
+                    editable=False,
+                    help_text='Universally-unique Identifier. Uses UUID1 as this improves uniqueness and tracking between registries',
+                    unique=True
+                 ),
+                 )
             ],
             options={
                 'abstract': False,

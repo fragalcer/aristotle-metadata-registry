@@ -11,17 +11,22 @@ def gen_uuid(apps, schema_editor, model):
         row.uuid = uuid.uuid1()
         row.save()
 
+
 def gen_concept_uuid(apps, schema_editor):
     gen_uuid(apps, schema_editor, '_concept')
+
 
 def gen_measure_uuid(apps, schema_editor):
     gen_uuid(apps, schema_editor, 'measure')
 
+
 def gen_organization_uuid(apps, schema_editor):
     gen_uuid(apps, schema_editor, 'organization')
 
+
 def gen_workgroup_uuid(apps, schema_editor):
     gen_uuid(apps, schema_editor, 'workgroup')
+
 
 class Migration(migrations.Migration):
 

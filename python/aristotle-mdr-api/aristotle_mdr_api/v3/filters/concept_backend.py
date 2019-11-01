@@ -15,7 +15,7 @@ class SupersedeRelationshipFilter(django_filters.rest_framework.FilterSet):
     class Meta:
         model = MDR.SupersedeRelationship
         fields: dict = {}
-        
+
         # TODO: Enable below through view, or remove v3 API
         # strict = django_filters.STRICTNESS.RAISE_VALIDATION_ERROR
 
@@ -117,7 +117,7 @@ class ConceptFilter(django_filters.rest_framework.FilterSet):
 
     def queryset_filter(self, queryset, name, value):
         # construct the full lookup expression.
-        f,v = value.split(':', 1)
+        f, v = value.split(':', 1)
 
         if self.has_forbidden_join(queryset.model()._meta.model, f):
             raise PermissionDenied(detail="Joining on that field is not allowed")

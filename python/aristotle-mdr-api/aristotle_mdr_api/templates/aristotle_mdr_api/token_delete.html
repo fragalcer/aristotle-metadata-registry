@@ -1,12 +1,12 @@
 {% extends 'aristotle_mdr_api/base.html' %}
 
 {% block api_content %}
-<form method="post">
-    {% csrf_token %}
-    <div class="alert alert-danger">
-    <p>Are you sure you want to delete "{{ object.name }}"?</p>
-    </div>
-    <input class="btn btn-primary" type="submit" value="Confirm" />
-    <a class="btn btn-default" href="{% url 'token_auth:token_list' %}">Back</a>
-</form>
+    <form method="post">
+        {% csrf_token %}
+        <div class="alert alert-danger">
+            <p>Are you sure you want to delete "{{ object.name }}"?</p>
+        </div>
+        <input class="btn btn-primary" type="submit" value="Confirm" />
+        <a class="btn btn-default" href="{% url 'token_auth:token_list' %}">Back</a>
+    </form>
 {% endblock %}

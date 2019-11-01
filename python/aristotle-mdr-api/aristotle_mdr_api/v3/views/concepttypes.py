@@ -15,36 +15,41 @@ from .utils import (
     aristotle_apps
 )
 
+
 class ConceptTypeSerializer(serializers.ModelSerializer):
     documentation = serializers.SerializerMethodField()
     fields = serializers.SerializerMethodField('get_extra_fields')
+
     class Meta:
         model = ContentType
-        fields = ('name','app_label','model','documentation','fields')
-    def get_documentation(self,instance):
+        fields = ('name', 'app_label', 'model', 'documentation', 'fields')
+
+    def get_documentation(self, instance):
         return instance.model_class().__doc__.strip()
-    def get_extra_fields(self,instance):
+
+    def get_extra_fields(self, instance):
         field_names = instance.model_class()._meta.get_fields()
         for field in get_api_fields(instance):
             if hasattr(field, 'help_text'):
-                yield {'name':field.name, "help_text":field.help_text}
+                yield {'name': field.name, "help_text": field.help_text}
             else:
-                yield {'name':field.name}
+                yield {'name': field.name}
 
         for field in field_names:
             if field.name not in api_excluded_fields:
                 f = field
-                if f.auto_created == False: #, because the new get_field() API will find "reverse" relations), and:
-                    if True: #f.is_relation and f.related_model is None: #, because the new get_field() API will find GenericForeignKey relations;
+                if not f.auto_created:  # because the new get_field() API will find "reverse" relations), and:
+                    if True:  # f.is_relation and f.related_model is None: #, because the new get_field() API will find GenericForeignKey relations;
                         if hasattr(field, 'name'):
                             # yield field.name
                             if hasattr(field, 'help_text'):
-                                yield {'name':field.name, "help_text":field.help_text}
+                                yield {'name': field.name, "help_text": field.help_text}
                             else:
-                                yield {'name':field.name}
+                                yield {'name': field.name}
 
-        #return [field.field_name for field in field_names if field not in api_excluded_fields]
-        #return [{'name':field,"help_text":""} for field in field_names if field not in api_excluded_fields]
+        # return [field.field_name for field in field_names if field not in api_excluded_fields]
+        # return [{'name':field,"help_text":""} for field in field_names if field not in api_excluded_fields]
+
 
 class ConceptTypeViewSet(viewsets.ReadOnlyModelViewSet):
     """

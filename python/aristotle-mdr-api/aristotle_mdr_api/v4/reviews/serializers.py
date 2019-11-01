@@ -9,7 +9,6 @@ from aristotle_mdr.perms import user_can_view
 
 import logging
 
-
 logger = logging.getLogger(__name__)
 logger.debug("Logging started for " + __name__)
 
@@ -33,11 +32,10 @@ class StatusField(serializers.Field):
         return self.choices._identifier_map[data]
 
     def to_representation(self, data):
-        return {y: x for x,y in self.choices._identifier_map.items()}[data]
+        return {y: x for x, y in self.choices._identifier_map.items()}[data]
 
 
 class ReviewSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = ReviewRequest
         fields = ('message', 'status', 'requester', 'registration_authority')
@@ -67,6 +65,7 @@ class ReviewTimelineMixin:
 
 class ReviewCommentSerializer(ReviewTimelineMixin, serializers.ModelSerializer):
     """ A comment """
+
     class Meta:
         model = ReviewComment
         fields = ('body', 'author', 'request', 'created')
@@ -82,6 +81,7 @@ class ReviewCommentSerializer(ReviewTimelineMixin, serializers.ModelSerializer):
 
 class ReviewStatusChangeSerializer(ReviewTimelineMixin, serializers.ModelSerializer):
     """ A comment """
+
     class Meta:
         model = ReviewStatusChangeTimeline
         fields = ('status', 'request', 'created', 'actor')
@@ -106,7 +106,7 @@ class ReviewUpdateAndCommentSerializer(ReviewSerializer):
     def update(self, instance, validated_data):
         comment = validated_data.pop('comment', None)
 
-        review = super().update(instance, validated_data) #ReviewRequest.objects.update(**validated_data)
+        review = super().update(instance, validated_data)  # ReviewRequest.objects.update(**validated_data)
         try:
             user = self.context.get("request", {}).user
         except:

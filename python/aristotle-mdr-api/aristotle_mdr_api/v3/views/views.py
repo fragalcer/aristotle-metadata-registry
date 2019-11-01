@@ -11,40 +11,39 @@ from .concepts import ConceptListSerializer
 from rest_framework import viewsets
 
 from .utils import (
-    DescriptionStubSerializerMixin,
-    MultiSerializerViewSetMixin,
     ConceptResultsPagination,
     UUIDLookupModelMixin
 )
 
 
-#class PermissionSearchForm
+# class PermissionSearchForm
 class ConceptSearchSerializer(serializers.Serializer):
     name = serializers.CharField()
     object = serializers.SerializerMethodField()
-    def __init__(self,*args,**kwargs):
-        self.request = kwargs.pop('request',None)
-        super(ConceptSearchSerializer,self).__init__(*args,**kwargs)
-    def get_object(self,instance):
-        return ConceptListSerializer(instance.object,context={'request': self.request}).data
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
+        super(ConceptSearchSerializer, self).__init__(*args, **kwargs)
+
+    def get_object(self, instance):
+        return ConceptListSerializer(instance.object, context={'request': self.request}).data
 
 
-#class SearchList(APIView):
+# class SearchList(APIView):
 class SearchViewSet(viewsets.GenericViewSet):
-    "Search."
+    """Search."""
 
     serializer_class = ConceptSearchSerializer
     pagination_class = ConceptResultsPagination
-    base_name="search"
+    base_name = "search"
 
     permission_key = 'search'
     permission_classes = (AuthAndTokenOrRO,)
     queryset = "None"
 
-
     def list(self, request):
         if 'q' not in self.request.query_params:
-            return Response({'search_options':'q models state ra'.split()})
+            return Response({'search_options': 'q models state ra'.split()})
 
         items = PermissionSearchQuerySet().auto_query(self.request.query_params['q'])
         if self.request.query_params.get('models') is not None:
@@ -53,9 +52,9 @@ class SearchViewSet(viewsets.GenericViewSet):
             if type(models) != list:
                 models = [models]
             for mod in models:
-                if len(mod.split('.',1)) == 2:
-                    app_label,model=mod.split('.',1)
-                    i = ContentType.objects.get(app_label=app_label,model=model)
+                if len(mod.split('.', 1)) == 2:
+                    app_label, model = mod.split('.', 1)
+                    i = ContentType.objects.get(app_label=app_label, model=model)
                 else:
                     i = ContentType.objects.get(model=mod)
                 search_models.append(i.model_class())
@@ -69,10 +68,12 @@ class SearchViewSet(viewsets.GenericViewSet):
 
 class RegistrationAuthoritySerializer(serializers.ModelSerializer):
     state_meanings = serializers.SerializerMethodField()
+
     class Meta:
         model = models.RegistrationAuthority
-        fields = ('uuid','name','definition','locked_state','public_state','state_meanings')
-    def get_state_meanings(self,instance):
+        fields = ('uuid', 'name', 'definition', 'locked_state', 'public_state', 'state_meanings')
+
+    def get_state_meanings(self, instance):
         return instance.statusDescriptions()
 
 
@@ -80,11 +81,11 @@ class RegistrationAuthorityViewSet(UUIDLookupModelMixin, viewsets.ReadOnlyModelV
     __doc__ = """
     Provides access to a list of registration authorities with the fields:
 
-        %s
+        {}
 
-    """%(RegistrationAuthoritySerializer.Meta.fields,)
+    """.format((RegistrationAuthoritySerializer.Meta.fields,))
 
-    queryset = models.RegistrationAuthority.objects.filter(active__in=[0,1])
+    queryset = models.RegistrationAuthority.objects.filter(active__in=[0, 1])
     serializer_class = RegistrationAuthoritySerializer
 
     permission_key = 'ra'
@@ -95,16 +96,16 @@ class OrganizationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Organization
-        fields = ('uuid','name','definition')
+        fields = ('uuid', 'name', 'definition')
 
 
 class OrganizationViewSet(UUIDLookupModelMixin, viewsets.ReadOnlyModelViewSet):
     __doc__ = """
     Provides access to a list of organizations with the fields:
 
-        %s
+        {}
 
-    """%(OrganizationSerializer.Meta.fields,)
+    """.format((OrganizationSerializer.Meta.fields,))
 
     queryset = models.Organization.objects.all()
     serializer_class = OrganizationSerializer

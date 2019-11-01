@@ -205,7 +205,7 @@ class DistributionDataElementPath(aristotle.models.aristotleComponent):
 
 
 class DataSetSpecification(aristotle.models.concept):
-    """
+    r"""
     A collection of :model:`aristotle_mdr.DataElement`\s
     specifying the order and fields required for a standardised
     :model:`aristotle_dse.DataSource`.
@@ -537,4 +537,4 @@ class DSSClusterInclusion(DSSInclusion):
         return "Cluster '{}'".format(self.child.name)
 
     def __str__(self):
-        return "Cluster {cls} at position {pos}".format(cls=self.child_id, pos=self.order)
+        return self.inline_editor_description()

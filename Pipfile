@@ -20,6 +20,7 @@ kombu = "~=4.3.0"
 drf-yasg = "==1.16.0"
 # Pinning this until drf-yasg updates
 djangorestframework = "<3.10"
+drf-writable-nested = "*"  # Nested `write` serializer for the API.
 django-filter = "~=2.2.0"
 
 pypandoc = {ref = "master",git = "https://github.com/harrywhite4/pypandoc",editable = true}

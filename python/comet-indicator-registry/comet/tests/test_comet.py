@@ -23,12 +23,12 @@ class IndicatorVisibility(ManagedObjectVisibility, TestCase):
 
 
 class IndicatorAdmin(AdminPageForConcept, TestCase):
-    itemType=models.Indicator
+    itemType = models.Indicator
 
 
 class IndicatorViewPage(LoggedInViewConceptPages, TestCase):
-    url_name='indicator'
-    itemType=models.Indicator
+    url_name = 'indicator'
+    itemType = models.Indicator
 
     @tag('perms')
     def test_component_permsission_checks(self):
@@ -54,8 +54,7 @@ class IndicatorViewPage(LoggedInViewConceptPages, TestCase):
         self.assertNotContains(response, invis.name)
         self.assertContains(response, 'You don\'t have permission', count=1)
 
-
-    def test_weak_editing_in_advanced_editor_dynamic(self):
+    def test_weak_editing_in_advanced_editor_dynamic(self, updating_field=None, default_fields={}):
         de = MDR.DataElement.objects.create(
             name="test name",
             definition="test definition",
@@ -75,4 +74,5 @@ class IndicatorViewPage(LoggedInViewConceptPages, TestCase):
             'data_element': de.id,
         }
 
-        super().test_weak_editing_in_advanced_editor_dynamic(updating_field='description', default_fields=default_fields)
+        super().test_weak_editing_in_advanced_editor_dynamic(updating_field='description',
+                                                             default_fields=default_fields)

@@ -27,21 +27,22 @@ from aristotle_mdr_api.v4.views import ObjectAPIView
 from aristotle_mdr import perms
 
 import logging
+
 logger = logging.getLogger(__name__)
 
 
 class ConceptView(generics.RetrieveAPIView):
-    permission_classes=(UnAuthenticatedUserCanView,)
+    permission_classes = (UnAuthenticatedUserCanView,)
 
-    permission_key='metadata'
+    permission_key = 'metadata'
 
-    serializer_class=serializers.ConceptSerializer
-    queryset=_concept.objects.all()
+    serializer_class = serializers.ConceptSerializer
+    queryset = _concept.objects.all()
 
 
 class SupersedesGraphicalConceptView(ObjectAPIView):
     """Retrieve a Graphical Representation of the Supersedes Relationships"""
-    permission_classes=(AuthCanViewEdit,)
+    permission_classes = (AuthCanViewEdit,)
     permission_key = 'metadata'
 
     def get(self, request, pk, format=None):
@@ -125,7 +126,8 @@ class GeneralGraphicalConceptView(ObjectAPIView):
                     if perms.user_can_view(self.request.user, rel_attr):
                         serialised_rel_attr = ConceptSerializer(rel_attr).data
                         serialised_rel_attr["type"] = self.camel_case_split(rel_attr.__class__.__name__)
-                        if serialised_rel_attr["id"] not in seen_items_ids and len(nodes) < settings.MAXIMUM_NUMBER_OF_NODES_IN_GENERAL_GRAPHICAL_REPRESENTATION:
+                        if serialised_rel_attr["id"] not in seen_items_ids and len(
+                                nodes) < settings.MAXIMUM_NUMBER_OF_NODES_IN_GENERAL_GRAPHICAL_REPRESENTATION:
                             nodes.append(serialised_rel_attr)
                             edges.append(({"from": serialised_rel_attr["id"], "to": item.id}))
                             seen_items_ids.add(serialised_rel_attr["id"])
@@ -137,21 +139,25 @@ class GeneralGraphicalConceptView(ObjectAPIView):
                     if perms.user_can_view(self.request.user, related_concept_instance):
                         serialised_concept = ConceptSerializer(related_concept_instance).data
                         serialised_concept["type"] = self.camel_case_split(related_concept_instance.__class__.__name__)
-                        if serialised_concept["id"] not in seen_items_ids and len(nodes) < settings.MAXIMUM_NUMBER_OF_NODES_IN_GENERAL_GRAPHICAL_REPRESENTATION:
+                        if serialised_concept["id"] not in seen_items_ids and len(
+                                nodes) < settings.MAXIMUM_NUMBER_OF_NODES_IN_GENERAL_GRAPHICAL_REPRESENTATION:
                             nodes.append(serialised_concept)
                             edges.append({"from": item.id, "to": serialised_concept["id"]})
                             seen_items_ids.add(serialised_concept["id"])
             if field.is_relation and field.one_to_many and issubclass(field.related_model, aristotleComponent):
                 for aris_comp_field in field.related_model._meta.get_fields():
-                    if aris_comp_field.is_relation and aris_comp_field.many_to_one and\
-                            issubclass(aris_comp_field.related_model, concept) and aris_comp_field.related_model != type(item):
+                    if aris_comp_field.is_relation and aris_comp_field.many_to_one and \
+                            issubclass(aris_comp_field.related_model,
+                                       concept) and aris_comp_field.related_model != type(item):
                         queryset = getattr(item, field.get_accessor_name()).all()
                         for component in queryset:
                             component_instance = getattr(component, aris_comp_field.name)
                             if component_instance is not None:
                                 serialised_concept_instance = ConceptSerializer(component_instance).data
-                                serialised_concept_instance["type"] = self.camel_case_split(component_instance.__class__.__name__)
-                                if serialised_concept_instance["id"] not in seen_items_ids and len(nodes) < settings.MAXIMUM_NUMBER_OF_NODES_IN_GENERAL_GRAPHICAL_REPRESENTATION:
+                                serialised_concept_instance["type"] = self.camel_case_split(
+                                    component_instance.__class__.__name__)
+                                if serialised_concept_instance["id"] not in seen_items_ids and len(
+                                        nodes) < settings.MAXIMUM_NUMBER_OF_NODES_IN_GENERAL_GRAPHICAL_REPRESENTATION:
                                     nodes.append(serialised_concept_instance)
                                     edges.append({"from": serialised_concept_instance["id"], "to": item.id})
                                     seen_items_ids.add(serialised_concept_instance["id"])
@@ -228,7 +234,8 @@ class ListVersionsView(ObjectAPIView):
 
 
 class ListVersionsPermissionsView(ObjectAPIView):
-    " List the version permissions of an item "
+
+    """List the version permissions of an item"""
 
     def get(self, request, *args, **kwargs):
         metadata_item = self.get_object()
@@ -238,8 +245,8 @@ class ListVersionsPermissionsView(ObjectAPIView):
         # Lookup all the respective versions
         permissions = []
         for version in versions:
-                version_permission = VersionPermissions.objects.get_object_or_none(version=version)
-                permissions.append(version_permission)
+            version_permission = VersionPermissions.objects.get_object_or_none(version=version)
+            permissions.append(version_permission)
 
         serializer = serializers.VersionPermissionsSerializer(permissions, many=True)
 
@@ -314,7 +321,3 @@ class GetVersionsPermissionsView(ObjectAPIView):
         version_permission = VersionPermissions.objects.get_object_or_none(version=version)
 
         return Response(version_permission.visibility, status.HTTP_200_OK)
-
-
-
-

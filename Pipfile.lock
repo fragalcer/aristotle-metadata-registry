@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "e837cd594ca95e803dce065a4f2e05d5f91937ceeed8405312de7a7b344210ba"
+            "sha256": "d5931603939f8191d3ad5f166ba69c3c5c02016ef1f93db74b389eb475e1184f"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -198,6 +198,12 @@
             ],
             "index": "pypi",
             "version": "==2.2.6"
+                "sha256:148a4a2d1a85b23883b0a4e99ab7718f518a83675e4485e44dc0c1d36988c5fa",
+                "sha256:deb70aa038e59b58593673b15e9a711d1e5ccd941b5973b30750d5d026abfd56"
+            ],
+            "index": "pypi",
+            "markers": "python_version >= '3.4'",
+            "version": "==2.2.5"
         },
         "django-autocomplete-light": {
             "hashes": [
@@ -353,6 +359,7 @@
         },
         "django-reversion-compare": {
             "hashes": [
+                "sha256:989e9d3937446c6e9b6200dc5d8562f75140b0fce4ecd4c24bc472f6b3f80528",
                 "sha256:a0e77925d8f373f7536c6749aa197a136a55246765ac2c1b456244fdd8b086bb",
                 "sha256:c7b08298b5ce93ccd07a639c6506842649e5f4efd8ffd53317a08323456add15"
             ],
@@ -394,6 +401,13 @@
                 "sha256:a2aeea129088da402665e92e0b25b04b073c04b2dce4ab65caaa38b7ce2e1a99"
             ],
             "version": "==0.15.2"
+        },
+        "drf-writable-nested": {
+            "hashes": [
+                "sha256:5c54eca93d74dc22014fb7ea54b6dbd559a058587596feba4d79078e32a83e16"
+            ],
+            "index": "pypi",
+            "version": "==0.5.1"
         },
         "drf-yasg": {
             "hashes": [
@@ -594,6 +608,7 @@
             "hashes": [
                 "sha256:05f1c631e8d9ab877886955da825e48b459e097886a21448ab17b34c60cfd66c",
                 "sha256:6a866c9659e62a81abd72cdb32b400762d76085b964beb0b15106d573a539677",
+                "sha256:a315a665c266db28fb751891d0661fe5e750ced812cb4eadb3ce63afba9a7475",
                 "sha256:ef1da35b78d534197e7ce4a604a4a190e9aa769e56634957535f3479a50d8cd1"
             ],
             "version": "==0.6.1"
@@ -685,7 +700,7 @@
         "pypandoc": {
             "editable": true,
             "git": "https://github.com/harrywhite4/pypandoc",
-            "ref": "2a17a9eedd30732ad5a05bbc130a3d46f8ac9c62"
+            "ref": "master"
         },
         "pypdf2": {
             "hashes": [

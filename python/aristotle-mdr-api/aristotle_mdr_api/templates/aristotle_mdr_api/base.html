@@ -5,77 +5,78 @@
 {% block extra_block_scripts %}
 {% endblock %}
 
-<!--{% block title %}Aristotle API{% endblock %}-->
+{#{% block title %}Aristotle API{% endblock %}#}
 
 {% block content %}
-<div class="jumbotron">
-  <div class="container">
-    <p class="text-center">
-    The Aristotle Metadata API provides direct access to metadata using a versioned REST API.
-    </p>
-  </div>
-</div>
+    <div class="jumbotron">
+        <div class="container">
+            <p class="text-center">
+                The Aristotle Metadata API provides direct access to metadata using a versioned REST API.
+            </p>
+        </div>
+    </div>
 
-{% block api_content %}
+    {% block api_content %}
 
-<h3>The following versions of the API are available on this server:</h3>
-<ul class="list-group">
-  {% comment %}
-  <li class="list-group-item">
-    <strong><a href='{% url "aristotle_api_root" %}v3'>API v3</a></strong>
-    <p>
-      About Version 3:
-      <ul>
-      <li>
-        To maintain compatibility, metadata item <code>superseded_by</code> attribute returns the UUID of only the first superseding metadata item.
-        To fetch all superseded_by relationships for an item use the <code>superseded_by</code> endpoint.
-      </li>
-      <li>replaced database identifiers with UUIDs as the primary method for
-        identifying metadata.
-      </li>
-      <li>Added the <code>/about/</code> route to give basic public details about the registry</li>
-      </ul>
-    </p>
-  </li>
-  {% endcomment %}
-  <li class="list-group-item">
-    <strong><a href="{% url 'api_v4:schema' %}">API v4</a></strong>
-    <p>
-      About Version 4:
-      <ul>
-        <li>Current stable version of the Aristotle REST API</li>
-        <li>See <a href="{% url 'api_v4:schema' %}">Schema</a> for more information</li>
-      </ul>
-    </p>
-  </li>
-  {% if graphql_enabled %}
-  <li class="list-group-item">
-    <strong><a href='{% url 'aristotle_graphql:graphql_explorer' %}'>Graphql</a></strong>
-    <p>
-      About Graphql:
-      <ul>
-        <li>Provides a dynamic way of querying data</li>
-        <li>See <a href="https://graphql.org/">Graphql.org</a> for more information</li>
-      </ul>
-    </p>
-  {% endif %}
-</ul>
+        <h3>The following versions of the API are available on this server:</h3>
+        <ul class="list-group">
+            {% comment %}
+            <li class="list-group-item">
+                <strong><a href='{% url "aristotle_api_root" %}v3'>API v3</a></strong>
+                <p>
+                    About Version 3:
+                </p>
+                <ul>
+                    <li>
+                        To maintain compatibility, metadata item <code>superseded_by</code> attribute returns the UUID of only the first superseding metadata item.
+                        To fetch all superseded_by relationships for an item use the <code>superseded_by</code> endpoint.
+                    </li>
+                    <li>replaced database identifiers with UUIDs as the primary method for
+                        identifying metadata.
+                    </li>
+                    <li>Added the <code>/about/</code> route to give basic public details about the registry</li>
+                </ul>
+            </li>
+            {% endcomment %}
+            <li class="list-group-item">
+                <strong><a href="{% url 'api_v4:schema' %}">API v4</a></strong>
+                <p>
+                    About Version 4:
+                </p>
+                <ul>
+                    <li>Current stable version of the Aristotle REST API</li>
+                    <li>See <a href="{% url 'api_v4:schema' %}">Schema</a> for more information</li>
+                </ul>
+            </li>
+            {% if graphql_enabled %}
+                <li class="list-group-item">
+                    <strong><a href='{% url 'aristotle_graphql:graphql_explorer' %}'>Graphql</a></strong>
+                    <p>
+                        About Graphql:
+                    </p>
+                    <ul>
+                        <li>Provides a dynamic way of querying data</li>
+                        <li>See <a href="https://graphql.org/">Graphql.org</a> for more information</li>
+                    </ul>
+                </li>
+            {% endif %}
+        </ul>
 
 
-<h3>Authentication</h3>
-<ul class="list-group">
-  <li class="list-group-item">
-    <a href="{% url 'token_auth:token_list' %}">Token Management Page</a>
-    <p>Create and manage API access tokens</p>
-    <p>This will be required to access the API from external applications</p>
-  </li>
-  <li class="list-group-item">
-    <a href="{% url 'friendly_login' %}">Login</a>
-    <p>Login to an account for session authentication</p>
-  </li>
-</ul>
+        <h3>Authentication</h3>
+        <ul class="list-group">
+            <li class="list-group-item">
+                <a href="{% url 'token_auth:token_list' %}">Token Management Page</a>
+                <p>Create and manage API access tokens</p>
+                <p>This will be required to access the API from external applications</p>
+            </li>
+            <li class="list-group-item">
+                <a href="{% url 'friendly_login' %}">Login</a>
+                <p>Login to an account for session authentication</p>
+            </li>
+        </ul>
 
-{% endblock %}
+    {% endblock %}
 
 
 {% endblock %}

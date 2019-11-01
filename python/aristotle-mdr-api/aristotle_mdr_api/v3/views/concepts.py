@@ -22,10 +22,12 @@ from ..views.utils import (
 )
 
 import logging
+
 logger = logging.getLogger(__name__)
 
+standard_fields = ('uuid', 'concept_type', 'visibility_status',)
 
-standard_fields = ('uuid', 'concept_type','visibility_status',)
+
 class ConceptSerializerBase(serializers.ModelSerializer):
     concept_type = serializers.SerializerMethodField()
     visibility_status = serializers.SerializerMethodField()
@@ -33,18 +35,22 @@ class ConceptSerializerBase(serializers.ModelSerializer):
     class Meta:
         model = models._concept
         fields = standard_fields
-    def get_concept_type(self,instance):
+
+    def get_concept_type(self, instance):
         item = instance.item
-        out = {"app":item._meta.app_label,'model':item._meta.model_name}
-        return out
-    def get_visibility_status(self,instance):
-        out = {"public":instance.is_public(),'locked':instance.is_locked()}
+        out = {"app": item._meta.app_label, 'model': item._meta.model_name}
         return out
 
-class ConceptListSerializer(DescriptionStubSerializerMixin,ConceptSerializerBase):
+    def get_visibility_status(self, instance):
+        out = {"public": instance.is_public(), 'locked': instance.is_locked()}
+        return out
+
+
+class ConceptListSerializer(DescriptionStubSerializerMixin, ConceptSerializerBase):
     class Meta:
         model = models._concept
         fields = standard_fields + ('definition', 'name')
+
 
 class ConceptDetailSerializer(ConceptSerializerBase):
     fields = serializers.SerializerMethodField('get_extra_fields')
@@ -62,13 +68,13 @@ class ConceptDetailSerializer(ConceptSerializerBase):
 
     class Meta:
         model = models._concept
-        fields = standard_fields+('fields','statuses','ids','slots', 'links')
+        fields = standard_fields + ('fields', 'statuses', 'ids', 'slots', 'links')
 
     def get_extra_fields(self, instance):
-        return self.get_serialized_object(instance).get('fields',[])
+        return self.get_serialized_object(instance).get('fields', [])
 
     def get_identifiers(self, instance):
-        return self.get_serialized_object(instance).get('identifiers',[])
+        return self.get_serialized_object(instance).get('identifiers', [])
 
     def get_slots(self, instance):
         return self.get_serialized_object(instance).get('slots', [])
@@ -77,17 +83,17 @@ class ConceptDetailSerializer(ConceptSerializerBase):
         return self.get_serialized_object(instance).get('links', [])
 
     def get_statuses(self, instance):
-        return self.get_serialized_object(instance).get('statuses',[])
+        return self.get_serialized_object(instance).get('statuses', [])
 
 
 class ConceptViewSet(
     MultiSerializerViewSetMixin,
     mixins.CreateModelMixin,
     UUIDLookupModelMixin,
-    #mixins.RetrieveModelMixin,
-                    #mixins.UpdateModelMixin,
+    # mixins.RetrieveModelMixin,
+    # mixins.UpdateModelMixin,
 
-                    #viewsets.ModelViewSet):
+    # viewsets.ModelViewSet):
     viewsets.ReadOnlyModelViewSet):
     """
     retrieve:
@@ -113,7 +119,6 @@ class ConceptViewSet(
         'list': ConceptListSerializer
     }
 
-
     def get_queryset(self):
         """
         Possible arguments include:
@@ -123,7 +128,7 @@ class ConceptViewSet(
         """
         self.queryset = self.get_content_type_for_request().objects.all()
 
-        queryset = super(ConceptViewSet,self).get_queryset()
+        queryset = super(ConceptViewSet, self).get_queryset()
         if self.request:
             locked = self.request.query_params.get('is_locked', None)
             public = self.request.query_params.get('is_public', None)
@@ -134,10 +139,10 @@ class ConceptViewSet(
             queryset = queryset.public()
 
         if locked is not None:
-            locked = locked not in ["False","0","F"]
+            locked = locked not in ["False", "0", "F"]
             queryset = queryset.filter(_is_locked=locked)
         if public is not None:
-            public = public not in ["False","0","F"]
+            public = public not in ["False", "0", "F"]
             queryset = queryset.filter(_is_public=public)
 
         return queryset
@@ -147,10 +152,10 @@ class ConceptViewSet(
         concepttype = self.request.query_params.get('type', None)
 
         if concepttype is not None:
-            ct = concepttype.lower().split(":",1)
+            ct = concepttype.lower().split(":", 1)
             if len(ct) == 2:
-                app,model = ct
-                content_type = ContentType.objects.get(app_label=app,model=model).model_class()
+                app, model = ct
+                content_type = ContentType.objects.get(app_label=app, model=model).model_class()
             else:
                 model = concepttype
                 content_type = ContentType.objects.get(model=model).model_class()
@@ -171,7 +176,7 @@ class ConceptViewSet(
             return obj
 
     def get_object(self):
-        item = super(ConceptViewSet,self).get_object().item
+        item = super(ConceptViewSet, self).get_object().item
         if not perms.user_can_view(self.request.user, item):
             raise PermissionDenied
         else:
@@ -182,7 +187,7 @@ class ConceptViewSet(
         data = request.data
         if 'concept_type' in request.data.keys():
             # We've been passed a single object
-            manifest = {'metadata':[data]}
+            manifest = {'metadata': [data]}
         else:
             manifest = data
 
@@ -192,7 +197,8 @@ class ConceptViewSet(
             with transaction.atomic():
                 for s in Deserializer(manifest):
 
-                    if s.object.workgroup is None or perms.user_can_submit_to_workgroup(request.user, s.object.workgroup):
+                    if s.object.workgroup is None or perms.user_can_submit_to_workgroup(request.user,
+                                                                                        s.object.workgroup):
                         with reversion.create_revision():
                             created.append({
                                 'uuid': s.object.uuid,
@@ -208,10 +214,11 @@ class ConceptViewSet(
                             s.save()
                     else:
                         errors.append({
-                            'message': 'You don\'t have permission to create an item in the {} Workgroup'.format(s.object.workgroup)
+                            'message': 'You don\'t have permission to create an item in the {} Workgroup'.format(
+                                s.object.workgroup)
                         })
 
-            return Response({'created':created,'errors':errors})
+            return Response({'created': created, 'errors': errors})
         except Exception as e:
             if settings.DEBUG and 'explode' in request.query_params.keys():
                 raise
@@ -222,6 +229,7 @@ class SupersededRelationshipSerializer(serializers.ModelSerializer):
     older_item = serializers.SerializerMethodField()
     newer_item = serializers.SerializerMethodField()
     registration_authority = serializers.SerializerMethodField()
+
     class Meta:
         model = models.SupersedeRelationship
         fields = [
@@ -230,13 +238,13 @@ class SupersededRelationshipSerializer(serializers.ModelSerializer):
             'message', 'date_effective',
         ]
 
-    def get_older_item(self,instance):
+    def get_older_item(self, instance):
         return instance.older_item.uuid
 
-    def get_newer_item(self,instance):
+    def get_newer_item(self, instance):
         return instance.newer_item.uuid
 
-    def get_registration_authority(self,instance):
+    def get_registration_authority(self, instance):
         return instance.registration_authority.uuid
 
 

@@ -1,17 +1,14 @@
-from rest_framework import permissions
-from aristotle_mdr_api.token_auth.permissions import (
-    TokenOrReadOnlyPerm,
-    IsAuthenticated
-)
+from rest_framework.permissions import IsAuthenticated, BasePermission, SAFE_METHODS
+from aristotle_mdr_api.token_auth.permissions import TokenOrReadOnlyPerm
 
 
-class IsSuperuserOrReadOnly(permissions.BasePermission):
+class IsSuperuserOrReadOnly(BasePermission):
     """
     Allows access only to super users.
     """
 
     def has_permission(self, request, view):
-        if request.method in permissions.SAFE_METHODS:
+        if request.method in SAFE_METHODS:
             return True
         return (
             request.user and
