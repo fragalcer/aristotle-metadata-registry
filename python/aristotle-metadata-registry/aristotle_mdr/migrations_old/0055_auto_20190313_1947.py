@@ -5,7 +5,6 @@ from __future__ import unicode_literals
 from django.db import migrations
 
 
-
 def move_to_new(apps, schema_migration):
     Workgroup = apps.get_model('aristotle_mdr', 'Workgroup')
     WorkgroupMembership = apps.get_model('aristotle_mdr', 'WorkgroupMembership')

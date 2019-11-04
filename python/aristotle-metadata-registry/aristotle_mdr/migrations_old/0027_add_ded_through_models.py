@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 from django.db import migrations, models
 import django.db.models.deletion
 
+
 def add_through(apps, schema_editor):
 
     ded = apps.get_model('aristotle_mdr', 'DataElementDerivation')
@@ -30,6 +31,7 @@ def add_through(apps, schema_editor):
             )
             count += 1
 
+
 def add_through_reverse(apps, schema_editor):
 
     try:
@@ -53,6 +55,7 @@ def add_through_reverse(apps, schema_editor):
             dataelementderivation=through_obj.data_element_derivation,
             dataelement=through_obj.data_element
         )
+
 
 class Migration(migrations.Migration):
 

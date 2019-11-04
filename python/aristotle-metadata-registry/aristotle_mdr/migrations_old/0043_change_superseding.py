@@ -20,9 +20,9 @@ def move_to_new(apps, schema_migration):
             for state in item.statuses.all():
                 if state.state == STATES.superseded:
                     SupersedeRelationship.objects.update_or_create(
-                        older_item = item,
-                        newer_item = item.superseded_by,
-                        registration_authority = state.registrationAuthority
+                        older_item=item,
+                        newer_item=item.superseded_by,
+                        registration_authority=state.registrationAuthority
                     )
 
 
@@ -31,7 +31,6 @@ def move_to_old(apps, schema_migration):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('aristotle_mdr', '0042_remove_possumprofile_favourites'),
     ]
@@ -41,10 +40,14 @@ class Migration(migrations.Migration):
             name='SupersedeRelationship',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', model_utils.fields.AutoCreatedField(default=django.utils.timezone.now, editable=False, verbose_name='created')),
-                ('modified', model_utils.fields.AutoLastModifiedField(default=django.utils.timezone.now, editable=False, verbose_name='modified')),
+                ('created', model_utils.fields.AutoCreatedField(default=django.utils.timezone.now, editable=False,
+                                                                verbose_name='created')),
+                ('modified', model_utils.fields.AutoLastModifiedField(default=django.utils.timezone.now, editable=False,
+                                                                      verbose_name='modified')),
                 ('message', models.TextField(blank=True, null=True)),
-                ('date_effective', models.DateField(blank=True, help_text='The date the superseding relationship became effective.', null=True, verbose_name='Date effective')),
+                ('date_effective',
+                 models.DateField(blank=True, help_text='The date the superseding relationship became effective.',
+                                  null=True, verbose_name='Date effective')),
             ],
             options={
                 'abstract': False,
@@ -53,17 +56,22 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='supersederelationship',
             name='newer_item',
-            field=aristotle_mdr.fields.ConceptForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='superseded_items_relation_set', to='aristotle_mdr._concept'),
+            field=aristotle_mdr.fields.ConceptForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                                                         related_name='superseded_items_relation_set',
+                                                         to='aristotle_mdr._concept'),
         ),
         migrations.AddField(
             model_name='supersederelationship',
             name='older_item',
-            field=aristotle_mdr.fields.ConceptForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='superseded_by_items_relation_set', to='aristotle_mdr._concept'),
+            field=aristotle_mdr.fields.ConceptForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                                                         related_name='superseded_by_items_relation_set',
+                                                         to='aristotle_mdr._concept'),
         ),
         migrations.AddField(
             model_name='supersederelationship',
             name='registration_authority',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='aristotle_mdr.RegistrationAuthority'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                                    to='aristotle_mdr.RegistrationAuthority'),
         ),
         migrations.RunPython(move_to_new, move_to_old),
     ]

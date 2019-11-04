@@ -1,6 +1,7 @@
 # Custom migration for synonym data
 from django.db import migrations
 
+
 def add_slots(apps, schema_editor):
 
     try:
@@ -21,6 +22,7 @@ def add_slots(apps, schema_editor):
     else:
         print("Data migration could not be completed")
 
+
 def reverse_add_slots(apps, schema_editor):
 
     try:
@@ -35,6 +37,7 @@ def reverse_add_slots(apps, schema_editor):
                 s.concept.save()
     else:
         print('Reverse data migration could not be completed')
+
 
 class Migration(migrations.Migration):
 

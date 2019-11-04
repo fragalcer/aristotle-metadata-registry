@@ -4,16 +4,19 @@ from __future__ import unicode_literals
 
 from django.db import migrations
 
-def make_lowercase(apps, schema_editor):
-    UserModel = apps.get_model('aristotle_mdr_user_management', 'User')
 
-    for user in UserModel.objects.all():
+def make_lowercase(apps, schema_editor):
+    User = apps.get_model('aristotle_mdr_user_management', 'User')
+
+    for user in User.objects.all():
         if not user.email.islower():
             user.email = user.email.lower()
             user.save()
 
+
 def lowercase_reverse(apps, schema_editor):
     print('WARNING: This migration cannot be reversed. All user emails will remain lowercase')
+
 
 class Migration(migrations.Migration):
 

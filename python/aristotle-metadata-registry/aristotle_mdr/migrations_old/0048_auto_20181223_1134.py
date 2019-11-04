@@ -13,7 +13,6 @@ from aristotle_mdr.utils.migrations import (
 
 
 class Migration(StewardMigration):
-
     dependencies = [
         ('aristotle_mdr', '0047_auto_20181217_0926'),
     ]
@@ -24,15 +23,15 @@ class Migration(StewardMigration):
             migrations.RunPython(cls.add_stewardship_org, migrations.RunPython.noop),
             migrations.RunPython(cls.fetch_stewardship_org_uuid, migrations.RunPython.noop),
             migrations.RunPython(
-                lambda a, s: cls.assign_orgs_to_model(a,s, "registrationauthority"),
+                lambda a, s: cls.assign_orgs_to_model(a, s, "registrationauthority"),
                 migrations.RunPython.noop
             ),
             migrations.RunPython(
-                lambda a, s: cls.assign_orgs_to_model(a,s, "workgroup"),
+                lambda a, s: cls.assign_orgs_to_model(a, s, "workgroup"),
                 migrations.RunPython.noop
             ),
             migrations.RunPython(
-                lambda a, s: cls.assign_orgs_to_model(a,s, "measure"),
+                lambda a, s: cls.assign_orgs_to_model(a, s, "measure"),
                 migrations.RunPython.noop
             ),
             migrations.RunPython(cls.assign_orgs_to_metadata, migrations.RunPython.noop),

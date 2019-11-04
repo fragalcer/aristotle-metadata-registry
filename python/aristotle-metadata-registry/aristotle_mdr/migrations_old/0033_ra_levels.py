@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 
 from django.db import migrations
 
+
 def move_to_new(apps, schema_migration):
     ra = apps.get_model('aristotle_mdr', 'RegistrationAuthority')
 
@@ -15,6 +16,7 @@ def move_to_new(apps, schema_migration):
 
         obj.save()
 
+
 def move_to_old(apps, schema_migration):
     ra = apps.get_model('aristotle_mdr', 'RegistrationAuthority')
 
@@ -25,6 +27,7 @@ def move_to_old(apps, schema_migration):
             obj.active = False
 
         obj.save()
+
 
 class Migration(migrations.Migration):
 
