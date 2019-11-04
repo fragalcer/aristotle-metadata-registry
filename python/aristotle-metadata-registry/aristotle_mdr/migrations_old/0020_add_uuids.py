@@ -49,7 +49,6 @@ class Migration(migrations.Migration):
                 help_text='Universally-unique Identifier. Uses UUID1 as this improves uniqueness and tracking between registries'
             ),
         ),
-        
         migrations.AddField(
             model_name='measure',
             name='uuid',
@@ -64,7 +63,6 @@ class Migration(migrations.Migration):
                 help_text='Universally-unique Identifier. Uses UUID1 as this improves uniqueness and tracking between registries'
             ),
         ),
-
         migrations.AddField(
             model_name='organization',
             name='uuid',
@@ -79,7 +77,6 @@ class Migration(migrations.Migration):
                 help_text='Universally-unique Identifier. Uses UUID1 as this improves uniqueness and tracking between registries'
             ),
         ),
-
         migrations.AddField(
             model_name='workgroup',
             name='uuid',
