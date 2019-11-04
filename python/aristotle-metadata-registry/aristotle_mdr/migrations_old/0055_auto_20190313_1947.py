@@ -9,7 +9,7 @@ def move_to_new(apps, schema_migration):
     Workgroup = apps.get_model('aristotle_mdr', 'Workgroup')
     WorkgroupMembership = apps.get_model('aristotle_mdr', 'WorkgroupMembership')
 
-    wgs = Workgroup.objects.all() #.prefetch_related('statuses')
+    wgs = Workgroup.objects.all()  # .prefetch_related('statuses')
     for wg in wgs:
         wg.save()  # Force slug creation
         for viewer in wg.viewers.all():
