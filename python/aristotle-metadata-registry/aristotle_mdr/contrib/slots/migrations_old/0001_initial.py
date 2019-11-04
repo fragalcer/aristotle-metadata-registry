@@ -10,6 +10,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         # ('aristotle_mdr', '0011_update_ckeditor_remove_d19_errors'),
+        ('aristotle_mdr', '0001_squashed_0072__v310_squishy_part1.py'),
     ]
 
     operations = [
