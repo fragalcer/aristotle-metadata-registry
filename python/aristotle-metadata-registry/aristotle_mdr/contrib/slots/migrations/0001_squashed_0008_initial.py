@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
     dependencies = [
         ('aristotle_mdr', '0073_squashed_0075__v310_squishy_part2'),
     ]
-    replaces =[
+    replaces = [
         ('aristotle_mdr_slots', '0001_initial'),
         ('aristotle_mdr_slots', '0002_lengthen_slot_value'),
         ('aristotle_mdr_slots', '0003_correct_slots'),
