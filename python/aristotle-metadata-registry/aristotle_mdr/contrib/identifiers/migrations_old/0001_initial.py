@@ -10,6 +10,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         # ('aristotle_mdr', '0017_add_organisations'),
+        ('aristotle_mdr', '0001_squashed_0072__v310_squishy_part1.py'),
     ]
 
     operations = [
