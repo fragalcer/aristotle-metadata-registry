@@ -4,34 +4,34 @@ on:
     paths:
       - '**.py'
 
-jobs:
-  python_lint:
-    name: Python Lint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: 'actions/checkout@v1'
-      - name: Setup python
-        uses: 'actions/setup-python@v1'
-        with:
-          python-version: 3.6
-      - name: Install flake8
-        run: pip install flake8
-      - name: Lint
-        run: flake8
-  python_typing:
-    name: Python type checking
-    runs-on: ubuntu-latest
-    steps:
-      - uses: 'actions/checkout@v1'
-      - name: Setup python
-        uses: 'actions/setup-python@v1'
-        with:
-          python-version: 3.6
-      - name: Install mypy
-        run: pip install mypy
-      - name: Type checking
-        shell: bash
-        run: |
-          mypy $(find ./python/ -maxdepth 3 -name '__init__.py' -printf '%h\n')
+    jobs:
+      python_lint:
+        name: Python Lint
+        runs-on: ubuntu-latest
+        steps:
+          - uses: 'actions/checkout@v1'
+          - name: Setup python
+            uses: 'actions/setup-python@v1'
+            with:
+              python-version: 3.6
+          - name: Install flake8
+            run: pip install flake8
+          - name: Lint
+            run: flake8
+      python_typing:
+        name: Python type checking
+        runs-on: ubuntu-latest
+        steps:
+          - uses: 'actions/checkout@v1'
+          - name: Setup python
+            uses: 'actions/setup-python@v1'
+            with:
+              python-version: 3.6
+          - name: Install mypy
+            run: pip install mypy
+          - name: Type checking
+            shell: bash
+            run: |
+              mypy $(find ./python/ -maxdepth 3 -name '__init__.py' -printf '%h\n')
 
 
