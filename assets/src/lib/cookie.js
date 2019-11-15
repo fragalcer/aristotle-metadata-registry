@@ -16,6 +16,8 @@ export function getCookie(name) {
     return cookieValue;
 }
 
+// test
+
 export function getCSRF() {
     return getCookie('csrftoken')
 }
