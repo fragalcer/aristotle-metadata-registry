@@ -18,6 +18,7 @@ export function getCookie(name) {
 
 
 
+
 export function getCSRF() {
     return getCookie('csrftoken')
 }
