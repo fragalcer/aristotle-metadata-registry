@@ -19,12 +19,12 @@ jobs:
         run: pip install -U setuptools pip pipenv
 
       - name: Install Pip dependencies
-        run: pipenv install --deploy --system
+        run: pipenv install --deploy --dev --system
 
       - name: Check for unapplied migrations
         run: "django-admin makemigrations --check"
         env:
           DJANGO_SETTINGS_MODULE: "aristotle_mdr.required_settings"
           DATABASE_URL: "sqlite://:memory:"
-          aristotlemdr_SETTINGS_FILE: "./fixtures/aristotle_settings.yaml"
-          UNIQUE_NAME: "github-check"
+#          aristotlemdr_SETTINGS_FILE: "./fixtures/aristotle_settings.yaml"
+#          UNIQUE_NAME: "github-check"
