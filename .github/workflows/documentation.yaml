@@ -1,9 +1,9 @@
-name: Check for unapplied Django migrations
+name: Documentation
 on: [pull_request]
 
 jobs:
-  build:
-    name: Check for unapplied Django migrations
+  documentation:
+    name: Documentation Check
     runs-on: ubuntu-latest
 
     steps:
@@ -13,13 +13,12 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: 3.6
-      - name: Install Pip & Pipenv
-        run: pip install -U setuptools pip pipenv
+      - name: Install Codecov & Coveralls
+        run: pip install codecov coveralls
       - name: Install Pip dependencies
-        run: pipenv install --deploy --dev --system
-      - name: Check for unapplied migrations
+        run: pipenv install install 'tox>=3.0'
+      - name: Check for documentation
+        run: tox -e docs
         env:
           DJANGO_SETTINGS_MODULE: "aristotle_mdr.required_settings"
-          DATABASE_URL: "sqlite://:memory:"
-        run: "django-admin makemigrations --check"
-
+          DATABASE_URL: "postgresql://postgres:@localhost/aristotle_test_db"

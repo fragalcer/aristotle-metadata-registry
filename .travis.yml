@@ -71,16 +71,16 @@ matrix:
       script:
         - npm run lint
 
-    - stage: "Unapplied Migrations"
-      name: "Unapplied Django Migrations"
-      language: python
-      python: 3.6
-      env:
-        DATABASE_URL="sqlite://:memory:" DJANGO_SETTINGS_MODULE=aristotle_mdr.required_settings
-      install:
-        - pip install -U setuptools pip pipenv
-        - pipenv install --system --deploy --dev
-      script: django-admin makemigrations --check
+#    - stage: "Unapplied Migrations"
+#      name: "Unapplied Django Migrations"
+#      language: python
+#      python: 3.6
+#      env:
+#        DATABASE_URL="sqlite://:memory:" DJANGO_SETTINGS_MODULE=aristotle_mdr.required_settings
+#      install:
+#        - pip install -U setuptools pip pipenv
+#        - pipenv install --system --deploy --dev
+#      script: django-admin makemigrations --check
 
     - stage: "Documentation"
       name: "Documentation"
