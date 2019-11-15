@@ -17,6 +17,7 @@ class MultiUpdateListSerializer(serializers.ListSerializer):
 
     lookup_key_flag = 'id'
 
+
     def update(self, instance: QuerySet, validated_data: Iterable[Dict]):
         db_mapping: Dict[int, Model] = {obj.id: obj for obj in instance}
 
