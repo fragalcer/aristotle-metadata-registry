@@ -26,5 +26,3 @@ jobs:
         env:
           DJANGO_SETTINGS_MODULE: "aristotle_mdr.required_settings"
           DATABASE_URL: "sqlite://:memory:"
-#          aristotlemdr_SETTINGS_FILE: "./fixtures/aristotle_settings.yaml"
-#          UNIQUE_NAME: "github-check"
