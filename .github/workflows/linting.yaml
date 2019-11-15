@@ -5,6 +5,8 @@ jobs:
   python_lint:
     name: Python Lint
     runs-on: ubuntu-latest
+    paths:
+      - '**.py'
     steps:
       - uses: 'actions/checkout@v1'
       - name: Setup python
@@ -18,6 +20,8 @@ jobs:
   python_typing:
     name: Python type checking
     runs-on: ubuntu-latest
+    paths:
+      - '**.py'
     steps:
       - uses: 'actions/checkout@v1'
       - name: Setup python
@@ -33,6 +37,8 @@ jobs:
   js_lint:
     name: Javascript Lint
     runs-on: ubuntu-latest
+    paths:
+      - '**.js'
     steps:
       - uses: 'actions/checkout@v1'
       - name: Setup node
