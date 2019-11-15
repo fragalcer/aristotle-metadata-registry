@@ -16,7 +16,7 @@ jobs:
       - name: Install Codecov & Coveralls
         run: pip install codecov coveralls
       - name: Install Pip dependencies
-        run: pipenv install 'tox>=3.0'
+        run: pip install 'tox>=3.0'
       - name: Check for documentation
         run: tox -e docs
         env:
