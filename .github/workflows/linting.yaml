@@ -1,12 +1,13 @@
-name: Linting
-on: pull_request
+name: Python Linting
+on:
+  pull_request:
+    paths:
+      - '**.py'
 
 jobs:
   python_lint:
     name: Python Lint
     runs-on: ubuntu-latest
-    paths:
-      - '**.py'
     steps:
       - uses: 'actions/checkout@v1'
       - name: Setup python
@@ -20,8 +21,6 @@ jobs:
   python_typing:
     name: Python type checking
     runs-on: ubuntu-latest
-    paths:
-      - '**.py'
     steps:
       - uses: 'actions/checkout@v1'
       - name: Setup python
@@ -34,22 +33,3 @@ jobs:
         shell: bash
         run: |
           mypy $(find ./python/ -maxdepth 3 -name '__init__.py' -printf '%h\n')
-  js_lint:
-    name: Javascript Lint
-    runs-on: ubuntu-latest
-    paths:
-      - '**.js'
-    steps:
-      - uses: 'actions/checkout@v1'
-      - name: Setup node
-        uses: 'actions/setup-node@v1'
-        with:
-          node-version: 10
-      - name: Install dependancies
-        run: |
-          cd assets
-          npm install
-      - name: Lint
-        run: |
-          cd assets
-          npm run lint
