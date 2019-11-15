@@ -15,7 +15,7 @@ jobs:
           uses: 'actions/setup-node@v1'
           with:
             node-version: 10
-        - name: Install dependancies
+        - name: Install dependencies
           run: |
             cd assets
             npm install
