@@ -4,7 +4,7 @@ on: [pull_request]
 #      - '**.py'
 
 jobs:
-  build:
+  python-lint:
     name: Python Lint
     runs-on: ubuntu-latest
     steps:
@@ -17,7 +17,7 @@ jobs:
         run: pip install flake8
       - name: Lint
         run: flake8
-  python_typing:
+  python-typing:
     name: Python Type Checking
     runs-on: ubuntu-latest
     steps:
