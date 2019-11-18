@@ -18,7 +18,8 @@ jobs:
       - name: Install Pip dependencies
         run: pip install 'tox>=3.0'
       - name: Check for documentation
-        run: tox -e docs
         env:
           DJANGO_SETTINGS_MODULE: "aristotle_mdr.required_settings"
           DATABASE_URL: "postgresql://postgres:@localhost/aristotle_test_db"
+        run: "tox -e docs"
+
