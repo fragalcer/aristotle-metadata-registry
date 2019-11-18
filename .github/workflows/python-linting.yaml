@@ -28,5 +28,4 @@ jobs:
         run: pip install mypy
       - name: Type checking
         shell: bash
-        run: |
-          mypy $(find ./python/ -maxdepth 3 -name '__init__.py' -printf '%h\n')
+        run: mypy $(find ./python/ -maxdepth 3 -name '__init__.py' -printf '%h\n')
