@@ -2,7 +2,7 @@ name: Python Linting
 on:
   pull_request:
     paths:
-      - 'python/**'
+      - './python/**'
 
 jobs:
   python_lint:
@@ -19,7 +19,7 @@ jobs:
       - name: Lint
         run: flake8
   python_typing:
-    name: Python type checking
+    name: Python Type Checking
     runs-on: ubuntu-latest
     steps:
       - name: Setup python
