@@ -2,8 +2,8 @@ name: JavaScript Linting
 on:
   pull_request:
     paths:
-      - '**.js'
-      - '**.vue'
+      - 'assets/**'
+      - '!assets/src/styles/**'
 
 jobs:
   js_lint:
