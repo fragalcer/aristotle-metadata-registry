@@ -6,7 +6,7 @@ on:
       - '!assets/src/styles/**'
 
 jobs:
-  js_lint:
+  javascript_lint:
     name: Linting
     runs-on: ubuntu-latest
     steps:
