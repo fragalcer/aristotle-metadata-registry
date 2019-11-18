@@ -11,6 +11,8 @@ class AristotleBackend(ModelBackend):
         Actual permissions to edit/change content are covered in aristotle_mdr.admin
         Otherwise, it returns as per Django permissions
         """
+
+        # test
         extensions = fetch_aristotle_settings().get('CONTENT_EXTENSIONS', [])
         if app_label in extensions + ["aristotle_mdr"]:
             return perms.user_is_authenticated_and_active(user_obj)
