@@ -1,4 +1,4 @@
-name: Python linting
+name: Python
 on:
   pull_request:
     paths:
@@ -6,7 +6,7 @@ on:
 
 jobs:
   python-lint:
-    name: Python Lint
+    name: Linting
     runs-on: ubuntu-latest
     steps:
       - name: Checkout PR
@@ -20,7 +20,7 @@ jobs:
       - name: Lint
         run: flake8
   python-typing:
-    name: Python Type Checking
+    name: Type Checking
     runs-on: ubuntu-latest
     steps:
       - name: Checkout PR
