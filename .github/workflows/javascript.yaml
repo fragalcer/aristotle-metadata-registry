@@ -6,6 +6,24 @@ on:
       - '!assets/src/styles/**'
 
 jobs:
+  js_lint:
+    name: Javascript Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PR
+        uses: actions/checkout@v1
+      - name: Setup node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10
+      - name: Install dependencies
+        run: |
+          cd assets
+          npm install
+      - name: Lint
+        run: |
+          cd assets
+          npm run lint
   javascript_tests:
     name: Javascript Tests
     runs-on: ubuntu-latest
