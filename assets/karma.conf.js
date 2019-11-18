@@ -11,8 +11,7 @@ dev_wp_config['optimization'] = {minimize: false}
 process.env.CHROME_BIN = require('puppeteer').executablePath()
 
 module.exports = (config) => {
-    // test
-    // test 2
+    
     config.set({
         frameworks: ['mocha'],
         browsers: ['ChromeHeadlessNoSandbox'],
