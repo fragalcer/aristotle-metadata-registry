@@ -1,0 +1,25 @@
+name: JavaScript Tests
+on:
+  pull_request:
+    paths:
+      - 'assets/**'
+      - '!assets/src/styles/**'
+
+jobs:
+  javascript_tests:
+    name: Javascript Tests
+      runs-on: ubuntu-latest
+      steps:
+        - uses: 'actions/checkout@v1'
+        - name: Setup node
+          uses: 'actions/setup-node@v1'
+          with:
+            node-version: 10
+        - name: Install dependencies
+          run: |
+            cd assets
+            npm install
+        - name: Run Tests
+          run: |
+            cd assets
+            npm run test
