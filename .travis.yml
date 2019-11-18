@@ -82,16 +82,16 @@ matrix:
 #        - pipenv install --system --deploy --dev
 #      script: django-admin makemigrations --check
 
-    - stage: "Documentation"
-      name: "Documentation"
-      language: python
-      python: 3.6
-      env:
-        DATABASE_URL=postgresql://postgres:@localhost/aristotle_test_db
-      install:
-        - pip install codecov coveralls
-        - pip install 'tox>=3.0'
-      script: tox -e docs
+#    - stage: "Documentation"
+#      name: "Documentation"
+#      language: python
+#      python: 3.6
+#      env:
+#        DATABASE_URL=postgresql://postgres:@localhost/aristotle_test_db
+#      install:
+#        - pip install codecov coveralls
+#        - pip install 'tox>=3.0'
+#      script: tox -e docs
 
     # FRONTEND JAVASCRIPT TESTS:
     - stage: "Frontend"
