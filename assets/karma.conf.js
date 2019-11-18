@@ -12,7 +12,7 @@ process.env.CHROME_BIN = require('puppeteer').executablePath()
 
 module.exports = (config) => {
 
-    
+
     config.set({
         frameworks: ['mocha'],
         browsers: ['ChromeHeadlessNoSandbox'],
