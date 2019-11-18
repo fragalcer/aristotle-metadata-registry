@@ -1,42 +1,18 @@
-#name: JavaScript Linting
-#on:
-#  pull_request:
-#    paths:
-#      - 'assets/**'
-#
-#jobs:
-#  js_lint:
-#    name: Javascript Lint
-#      runs-on: ubuntu-latest
-#      steps:
-#        - name: Checkout PR
-#          uses: actions/checkout@v1
-#        - name: Setup node
-#          uses: actions/setup-node@v1
-#          with:
-#            node-version: 10
-#        - name: Install dependencies
-#          run: |
-#            cd assets
-#            npm install
-#        - name: Lint
-#          run: |
-#            npm run lint
-
 name: JavaScript Linting
 on:
   pull_request:
     paths:
-      - '**.js'
-      - '**.vue'
+      - 'assets/**'
+
 jobs:
   js_lint:
-      name: Javascript Lint
+    name: Javascript Lint
       runs-on: ubuntu-latest
       steps:
-        - uses: 'actions/checkout@v1'
+        - name: Checkout PR
+          uses: actions/checkout@v1
         - name: Setup node
-          uses: 'actions/setup-node@v1'
+          uses: actions/setup-node@v1
           with:
             node-version: 10
         - name: Install dependencies
@@ -47,3 +23,28 @@ jobs:
           run: |
             cd assets
             npm run lint
+
+#name: JavaScript Linting
+#on:
+#  pull_request:
+#    paths:
+#      - '**.js'
+#      - '**.vue'
+#jobs:
+#  js_lint:
+#      name: Javascript Lint
+#      runs-on: ubuntu-latest
+#      steps:
+#        - uses: 'actions/checkout@v1'
+#        - name: Setup node
+#          uses: 'actions/setup-node@v1'
+#          with:
+#            node-version: 10
+#        - name: Install dependencies
+#          run: |
+#            cd assets
+#            npm install
+#        - name: Lint
+#          run: |
+#            cd assets
+#            npm run lint
