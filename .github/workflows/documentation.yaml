@@ -18,7 +18,7 @@ jobs:
       - name: Install Pip dependencies
         run: pip install 'tox>=3.0'
       - name: Instal Pip dependencies
-        run: pip install 'libpq-dev==9.0.0'
+        run: apt install libpq-dev python3-dev
       - name: Check for documentation
         env:
           DJANGO_SETTINGS_MODULE: "aristotle_mdr.required_settings"
