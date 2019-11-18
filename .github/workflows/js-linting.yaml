@@ -10,9 +10,10 @@ jobs:
     name: Javascript Lint
       runs-on: ubuntu-latest
       steps:
-        - uses: 'actions/checkout@v1'
+        - name: Checkout PR
+          uses: actions/checkout@v1
         - name: Setup node
-          uses: 'actions/setup-node@v1'
+          uses: actions/setup-node@v1
           with:
             node-version: 10
         - name: Install dependencies
