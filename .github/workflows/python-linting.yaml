@@ -32,7 +32,6 @@
 #          mypy $(find ./python/ -maxdepth 3 -name '__init__.py' -printf '%h\n')
 
 
-@@ -1,35 +1,62 @@
 name: Python Linting
 on: [pull_request]
 
