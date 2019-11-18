@@ -7,7 +7,7 @@ on:
 
 jobs:
   js_lint:
-    name: Javascript Lint
+    name: Linting
     runs-on: ubuntu-latest
     steps:
       - name: Checkout PR
@@ -25,7 +25,7 @@ jobs:
           cd assets
           npm run lint
   javascript_tests:
-    name: Javascript Tests
+    name: Tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout PR
