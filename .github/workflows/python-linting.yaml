@@ -1,32 +1,59 @@
-name: Python Linting
+#name: Python Linting
+#on: [pull_request]
+#
+#jobs:
+#  python-lint:
+#    name: Python Lint
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Setup python
+#        uses: actions/checkout@v1
+#      - name: Install flake8
+#        uses: actions/setup-python@v1
+#        with:
+#          python-version: 3.6
+#        run: pip install flake8
+#      - name: Lint
+#        run: flake8
+#  python-typing:
+#    name: Python Type Checking
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Setup python
+#        uses: actions/checkout@v1
+#      - name: Install mypy
+#        uses: actions/setup-python@v1
+#        with:
+#          python-version: 3.6
+#        run: pip install mypy
+#      - name: Type checking
+#        shell: bash
+#        run: |
+#          mypy $(find ./python/ -maxdepth 3 -name '__init__.py' -printf '%h\n')
+
+
+name: Check for unapplied Django migrations
 on: [pull_request]
 
 jobs:
-  python-lint:
-    name: Python Lint
+  build:
+    name: Check for unapplied Django migrations
     runs-on: ubuntu-latest
+
     steps:
-      - name: Setup python
-        uses: actions/checkout@v1
-      - name: Install flake8
+      - name: Checkout PR
+        uses: actions/checkout@v1  # Equivalent to running git fetch and git checkout
+      - name: Setup Python 3.6
         uses: actions/setup-python@v1
         with:
           python-version: 3.6
-        run: pip install flake8
-      - name: Lint
-        run: flake8
-  python-typing:
-    name: Python Type Checking
-    runs-on: ubuntu-latest
-    steps:
-      - name: Setup python
-        uses: actions/checkout@v1
-      - name: Install mypy
-        uses: actions/setup-python@v1
-        with:
-          python-version: 3.6
-        run: pip install mypy
-      - name: Type checking
-        shell: bash
-        run: |
-          mypy $(find ./python/ -maxdepth 3 -name '__init__.py' -printf '%h\n')
+      - name: Install Pip & Pipenv
+        run: pip install -U setuptools pip pipenv
+      - name: Install Pip dependencies
+        run: pipenv install --deploy --dev --system
+      - name: Check for unapplied migrations
+        env:
+          DJANGO_SETTINGS_MODULE: "aristotle_mdr.required_settings"
+          DATABASE_URL: "sqlite://:memory:"
+        run: "django-admin makemigrations --check"
+
