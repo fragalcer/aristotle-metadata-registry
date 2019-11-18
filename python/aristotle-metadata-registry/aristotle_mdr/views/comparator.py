@@ -18,6 +18,7 @@ from .versions import ConceptVersionCompareBase
 # ff
 # frefe
 # cer
+# rfer
 class MetadataComparison(ConceptVersionCompareBase, AristotleMetadataToolView):
     template_name = 'aristotle_mdr/actions/compare/compare_items.html'
     context: dict = {}
