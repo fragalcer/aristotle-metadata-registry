@@ -2,7 +2,7 @@ name: Python Linting
 on:
   pull_request:
     paths:
-      - '../../aristotle-metadata-registry/python/*'
+      - 'python/*'
 
 jobs:
   python_lint:
