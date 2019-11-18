@@ -13,7 +13,7 @@ from reversion.models import Version
 from .tools import AristotleMetadataToolView
 from .versions import ConceptVersionCompareBase
 
-
+# test
 class MetadataComparison(ConceptVersionCompareBase, AristotleMetadataToolView):
     template_name = 'aristotle_mdr/actions/compare/compare_items.html'
     context: dict = {}
