@@ -3,7 +3,6 @@ on:
   pull_request:
     paths:
       - 'assets/**'
-      - '!assets/src/styles/**'
 
 jobs:
   js_lint:
