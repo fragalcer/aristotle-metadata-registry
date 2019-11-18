@@ -1,7 +1,5 @@
 name: Python Linting
 on: [pull_request]
-#    paths:
-#      - '**.py'
 
 jobs:
   python-lint:
