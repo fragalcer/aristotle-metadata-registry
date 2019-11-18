@@ -45,21 +45,21 @@ defaults:
 
 matrix:
   include:
-    - stage: "Style Check"
-      name: "Python Lint"
-      language: python
-      python: 3.6
-      install:
-        - pip install codecov coveralls
-        - pip install 'tox>=3.0'
-      script: tox -e flake8
-
-    - name: "Python Type Checking"
-      language: python
-      python: 3.6
-      install:
-        - pip install mypy
-      script: ./scripts/type.sh
+#    - stage: "Style Check"
+#      name: "Python Lint"
+#      language: python
+#      python: 3.6
+#      install:
+#        - pip install codecov coveralls
+#        - pip install 'tox>=3.0'
+#      script: tox -e flake8
+#
+#    - name: "Python Type Checking"
+#      language: python
+#      python: 3.6
+#      install:
+#        - pip install mypy
+#      script: ./scripts/type.sh
 
 #    - name: "JS Lint"
 #      language: node_js

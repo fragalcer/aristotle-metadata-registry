@@ -92,7 +92,6 @@ class MetadataComparison(ConceptVersionCompareBase, AristotleMetadataToolView):
                 raise PermissionDenied
         return None
 
-
     def apply_permission_checking(self, version_permission_1, version_permission_2):
         # We're not checking the version permissions because we are getting the most
         # recent version and we have already checked that the user can view the item
