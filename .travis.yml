@@ -61,15 +61,15 @@ matrix:
         - pip install mypy
       script: ./scripts/type.sh
 
-    - name: "JS Lint"
-      language: node_js
-      node_js: 10
-      before_install:
-        - cd assets
-      install:
-        - npm install
-      script:
-        - npm run lint
+#    - name: "JS Lint"
+#      language: node_js
+#      node_js: 10
+#      before_install:
+#        - cd assets
+#      install:
+#        - npm install
+#      script:
+#        - npm run lint
 
 #    - stage: "Unapplied Migrations"
 #      name: "Unapplied Django Migrations"
@@ -93,17 +93,17 @@ matrix:
 #        - pip install 'tox>=3.0'
 #      script: tox -e docs
 
-    # FRONTEND JAVASCRIPT TESTS:
-    - stage: "Frontend"
-      name: "Javascript Tests"
-      language: node_js
-      node_js: 10
-      before_install:
-        - cd assets
-      install:
-        - npm install
-      script:
-        - npm run test
+#    # FRONTEND JAVASCRIPT TESTS:
+#    - stage: "Frontend"
+#      name: "Javascript Tests"
+#      language: node_js
+#      node_js: 10
+#      before_install:
+#        - cd assets
+#      install:
+#        - npm install
+#      script:
+#        - npm run test
 
     # THESE CONCURRENT JOBS MUST ALWAYS BE RUN FOR THE MAIN ARISTOTLE REPO.
     # THEY INCLUDE OUR USUAL SETUP COMBINATION (POSTGRES DB AND ELASTIC SEARCH ENGINE)
