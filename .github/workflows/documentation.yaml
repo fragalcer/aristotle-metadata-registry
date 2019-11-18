@@ -17,8 +17,6 @@ jobs:
         run: pip install codecov coveralls
       - name: Install Pip dependencies
         run: pip install 'tox>=3.0'
-      - name: Instal Pip dependencies
-        run: apt install libpq-dev python3-dev
       - name: Check for documentation
         env:
           DJANGO_SETTINGS_MODULE: "aristotle_mdr.required_settings"
