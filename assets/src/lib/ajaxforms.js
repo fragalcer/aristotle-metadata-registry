@@ -1,5 +1,5 @@
 export function ajaxForm(selector='form.ajaxform') {
-    
+
     $(selector).submit(function(e) {
         // Stop standard form submission
         e.preventDefault()
