@@ -1,8 +1,6 @@
 name: JavaScript Linting
 on:
-  pull_request:
-    paths:
-      - 'assets/**'
+  [pull_request]
 
 jobs:
   js_lint:
