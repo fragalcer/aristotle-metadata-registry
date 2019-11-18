@@ -4,7 +4,7 @@ on: [pull_request]
 #      - '**.py'
 
 jobs:
-  python_lint:
+  build:
     name: Python Lint
     runs-on: ubuntu-latest
     steps:
