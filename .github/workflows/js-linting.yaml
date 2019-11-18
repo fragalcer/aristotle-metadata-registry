@@ -21,5 +21,4 @@ jobs:
             npm install
         - name: Lint
           run: |
-            cd assets
             npm run lint

@@ -22,5 +22,4 @@ jobs:
             npm install
         - name: Run Tests
           run: |
-            cd assets
             npm run test
