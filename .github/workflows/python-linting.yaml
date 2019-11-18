@@ -2,7 +2,7 @@ name: Python linting
 on:
   pull_request:
     paths:
-      - './python/*.py'
+      - './python/**.py'
 
 jobs:
   python-lint:
