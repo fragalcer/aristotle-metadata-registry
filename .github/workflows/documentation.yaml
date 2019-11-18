@@ -20,6 +20,6 @@ jobs:
       - name: Check for documentation
         env:
           DJANGO_SETTINGS_MODULE: "aristotle_mdr.required_settings"
-          DATABASE_URL: "postgresql://postgres:@localhost/aristotle_test_db"
-        run: "echo 'this is happening' && ls && tox -e docs"
+          DATABASE_URL: "sqllite://:memory:"
+        run: "tox -e docs"
 

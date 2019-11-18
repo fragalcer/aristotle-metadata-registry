@@ -1,7 +1,7 @@
 Sphinx==1.6.7
 sphinx-rtd-theme
 whoosh
-psycopg2
+
 -e python/aristotle-metadata-registry
 -e python/aristotle-bg-workers
 -e python/aristotle-mdr-api
