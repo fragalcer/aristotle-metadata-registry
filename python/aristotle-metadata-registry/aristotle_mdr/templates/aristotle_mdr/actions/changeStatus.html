@@ -34,15 +34,16 @@
 {% endblock %}
 
 {% block form %}
-    <ol class="breadcrumb">
-        <li><a href="{% url 'aristotle:item' item.id %}">{{ item.name }}</a></li>
-        <li class="active">Change registation status</li>
-    </ol>
+    {% if not request.is_ajax %}
+        <ol class="breadcrumb">
+            <li><a href="{% url 'aristotle:item' item.id %}">{{ item.name }}</a></li>
+            <li class="active">Change registation status</li>
+        </ol>
+    {% endif %}
 
-    <header>This form allows you to change the status of multiple items in your registration authorities.
+    <header>This form allows you to create registration statuses for items in your registration authorities.
     </header>
     <div>
-
         {{ wizard.form.items }}
     </div>
     <div id="visibilty">

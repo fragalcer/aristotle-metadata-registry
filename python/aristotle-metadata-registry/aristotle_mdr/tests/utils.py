@@ -1,7 +1,6 @@
 from typing import List, Dict
 import attr
 import datetime
-import random
 import string
 
 from django.urls import reverse

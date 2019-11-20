@@ -2,47 +2,57 @@
 
 <section>
     <div class="changeStatusDiv container">
-        <div class="col-sm-4 col-md-2">
+        <div class="col-sm-4 col-md-3">
             <label for="id_registrationDate">{{ form.registrationDate.label }}</label>:
             <span class="text-danger">{{ form.registrationDate.errors }}</span>
         </div>
-        <div class="col-sm-7 col-md-4">
+        <div class="col-sm-7 col-md-5">
             {{ form.registrationDate }}
             <div>
                 Date the registration state will be active from.
             </div>
         </div>
     </div>
-    <div class="changeStatusDiv">
-    <span>
-        <label for="id_cascadeRegistration">
-        {{ form.cascadeRegistration.label }}
-        <a tabindex="0"
-           class="aristotle-popover"
-           role="button"
-           data-toggle="popover"
-           title="Associated Items Help"
-           data-content="Associated items can be components of another piece of metadata, or other items that have been linked together by a user.<br><br>
-        For example, the associated metadata for a Data Element would be its Data Element Concept, Value Domain, Object Class and Property<br><br>
-        You can review what other metadata items will be changed by clicking 'Review Changes' button"
-           data-html="true">
-        <i class="fa fa-2x fa-question-circle"></i>
-        </a>
-        </label>
-        <span class="text-danger">{{ form.cascadeRegistration.errors }}</span>
-    </span>
-        <span class="pull-right">
-        {{ form.cascadeRegistration }}
-    </span>
+    <div class="changeStatusDiv container">
+        <div class="col-sm-4 col-md-3">
+            <label for="id_cascadeRegistration">
+                Cascade endorsement            
+            </label>
+        </div>
+        <div class="col-sm-7 col-md-5">
+            <span class="text-danger">{{ form.cascadeRegistration.errors }}</span>
+            <span class="pull-right">
+            {{ form.cascadeRegistration }}
+            </span>
+            <br>
+            <div>
+                Cascading registration allows an item, and many related items to be registered in a single action.
+                <a tabindex="0"
+                   class="aristotle-popover"
+                   role="button"
+                   data-toggle="popover"
+                   title="Help about Cascaded Registration"
+                   data-placement="bottom"
+                   data-content="Associated items can be components of another piece of metadata, or other items that have been linked together by a user.<br><br>
+                For example, the associated metadata for a Data Element would be its Data Element Concept, Value Domain, Object Class and Property<br><br>
+                You can review what other metadata items will be changed by clicking 'Review Changes' button"
+                   data-html="true">
+                <i class="fa fa-question-circle"></i>
+                </a>
+
+            </div>
+
+        </div>
     </div>
     <div id="changeStatus">
+        <!--<div class="col-xs-12">-->
         <div>
         <span>
-            {{ form.state.label }}
+            {{ form.state.label }} <span class="text-danger">*</span>
             <span class="text-danger">{{ form.state.errors }}</span>
         </span>
             <span>
-            {{ form.registrationAuthorities.label }}
+            {{ form.registrationAuthorities.label }} <span class="text-danger">*</span>
             <span class="text-danger">{{ form.registrationAuthorities.errors }}</span>
         </span>
         </div>
@@ -64,7 +74,9 @@
         </div>
     </div>
     <div class="status_change_description">
-        {{ form.changeDetails.label }}
+        <label for="id_changeDetails">{{ form.changeDetails.label }}
+        </label><span class="text-danger">*</span>
+        <p>The administrative note is a publishable statement describing the reasons for registration.</p>
         {{ form.changeDetails }}
     </div>
 </section>

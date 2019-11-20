@@ -29,7 +29,7 @@ class ChangeStatusGenericForm(RegistrationAuthorityMixin, UserAwareForm):
     )
     cascadeRegistration = forms.ChoiceField(
         initial=0,
-        choices=[(0, _('No')), (1, _('Yes'))],
+        choices=[(0, _('No - only register the selected item')), (1, _('Yes - register the selected item, and all child items'))],
         label=_("Do you want to request a status change for associated items")
     )
     changeDetails = forms.CharField(

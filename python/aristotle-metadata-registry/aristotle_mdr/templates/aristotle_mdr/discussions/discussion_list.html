@@ -49,3 +49,7 @@
     {% endfor %}
     </tbody>
 </table>
+{% if discussions.count > 15 %}
+    {# If there a lot of discussions, we're nice and put one on the button, so a user doesn't need to scroll up #}
+    <a class="btn btn-default pull-right" href="{% url 'aristotle:discussionsNew' %}?workgroup={{ workgroup.id }}">New discussion</a>
+{% endif %}

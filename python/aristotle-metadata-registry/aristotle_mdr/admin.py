@@ -10,7 +10,6 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 import aristotle_mdr.models as MDR
 import aristotle_mdr.forms as MDRForms
 from aristotle_mdr import perms
-from reversion_compare.admin import CompareVersionAdmin
 
 from aristotle_mdr.search_indexes import ConceptIndex
 from haystack import indexes
@@ -71,7 +70,7 @@ class StatusInline(admin.TabularInline):
             return perms.user_can_add_status(request.user, obj)
         return super().has_change_permission(request, obj=None)
 
-    def has_add_permission(self, request):
+    def has_add_permission(self, request, obj=None):
         if perms.user_is_registrar(request.user):
             return True
         return super().has_add_permission(request)

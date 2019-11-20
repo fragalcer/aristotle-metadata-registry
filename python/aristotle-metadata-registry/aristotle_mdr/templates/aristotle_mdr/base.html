@@ -38,7 +38,7 @@
 
    </head>
 
-   <body>
+   <body class="{% block body_class %}{% endblock %}">
 
    {% block header %}
     {% include 'aristotle_mdr/header.html' %}
@@ -58,7 +58,7 @@
           </div>
         </noscript>
    </div>
-   <div id='content' class="container">
+   <div id='content' class="container" >
         {% block content %}
         {% endblock %}
     </div>

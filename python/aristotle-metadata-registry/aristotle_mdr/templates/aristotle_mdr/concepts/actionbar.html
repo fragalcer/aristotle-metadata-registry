@@ -13,57 +13,70 @@
             </button>
             <ul class="dropdown-menu dropdown-menu-right" role="menu">
                 {% if can_edit %}
-                    <li><a class="" href="{% url 'aristotle:edit_item' item.id %}"
-                           >
-                        <i class="fa fa-fw fa-pencil-square-o"></i> {% trans 'Open item editor'%}
-                    </a></li>
+                    <li>
+                        <a class="" href="{% url 'aristotle:edit_item' item.id %}">
+                            <i class="fa fa-fw fa-pencil-square-o"></i> {% trans 'Open item editor'%}
+                        </a>
+                    </li>
                 {% endif %}
-                <li><a class="" href="{% url 'aristotle:clone_item' item.id %}">
-                    <i class="fa fa-fw fa-code-fork"></i> {% trans 'Clone this item'%}
-                </a></li>
-                <li><a class="" href="{% url 'aristotle:item_history' item.id %}">
-                    <i class="fa fa-fw fa-history"></i> {% trans 'View changes'%}
-                </a></li>
-                <li class="divider"></li>
                 <li>
-                    <a class="" href="{% url 'aristotle_reviews:review_create' %}?items={{item.id}}">
-                        <i class="fa fa-fw fa-flag"></i> {% trans 'Submit for review'%}
-                    </a></li>
-
-                {% if item.stewardship_organisation and can_publish %}
-                    <li><a href="{% url 'aristotle_publishing:publish_item' item.meta.model_name item.id %}"
-                           data-toggle="modal" data-target="#infobox_adv_edit">
-                        <i class="fa fa-fw fa-globe"></i> {% trans 'Publication details'%}
+                    <a class="" href="{% url 'aristotle:clone_item' item.id %}">
+                        <i class="fa fa-fw fa-code-fork"></i> {% trans 'Clone this item'%}
                     </a>
+                </li>
+                <li>
+                    <a class="" href="{% url 'aristotle:item_history' item.id %}">
+                        <i class="fa fa-fw fa-history"></i> {% trans 'View changes'%}
+                    </a>
+                </li>
+                <li class="divider"></li>
+                {% if user.profile.registrar_count > 1 %}
+                    <li>
+                        <a class="" href="{% url 'aristotle_reviews:review_create' %}?items={{item.id}}">
+                            <i class="fa fa-fw fa-flag"></i> {% trans 'Submit for review'%}
+                        </a>
                     </li>
                 {% endif %}
 
-                {% if can_add_status %}
-                    <li><a class="" href="{% url 'aristotle:changeStatus' item.id %}" data-toggle="modal" data-target="#infobox_adv_edit">
-                        <i class="fa fa-fw fa-university"></i> {% trans 'Add registration status'%}
-                    </a></li>
+                {% if item.stewardship_organisation and can_publish %}
+                    <li>
+                        <a href="{% url 'aristotle_publishing:publish_item' item.meta.model_name item.id %}"
+                           data-toggle="modal" data-target="#infobox_adv_edit">
+                            <i class="fa fa-fw fa-globe"></i> {% trans 'Publication details'%}
+                        </a>
+                    </li>
+                {% endif %}
+
+                {% if can_add_status and user.profile.registrar_count > 1 %}
+                    <li>
+                        <a class="" href="{% url 'aristotle:changeStatus' item.id %}" data-toggle="modal" data-target="#infobox_adv_edit">
+                            <i class="fa fa-fw fa-university"></i> {% trans 'Add registration status'%}
+                        </a>
+                    </li>
                 {% endif %}
 
                 {% if user_can_supersede %}
                     <li>
-                      <a class="" href="{% url 'aristotle:supersede' item.id %}">
-                        <i class="fa fa-fw fa-fast-forward"></i> {% trans 'Edit Supersedes'%}
-                      </a>
+                        <a class="" href="{% url 'aristotle:supersede' item.id %}">
+                            <i class="fa fa-fw fa-fast-forward"></i> {% trans 'Edit Supersedes'%}
+                        </a>
                     </li>
                 {% endif %}
 
                 {% if can_edit %}
                     <li>
-                      <a class="" href="{% url 'aristotle:proposed_supersede' item.id %}">
-                        <i class="fa fa-fw fa-fast-forward"></i> {% trans 'Propose Supersedes'%}
-                      </a>
+                        <a class="" href="{% url 'aristotle:proposed_supersede' item.id %}">
+                            <i class="fa fa-fw fa-fast-forward"></i> {% trans 'Propose Supersedes'%}
+                        </a>
                     </li>
                 {% endif %}
 
                 {% if item.registry_cascade_items %}
-                    <li><a class="" href="{% url 'aristotle:check_cascaded_states' item.id %}" data-toggle="modal" data-target="#infobox_adv_edit">
-                        <i class="fa fa-fw fa-sitemap"></i> {% trans 'Check component states'%}
-                    </a></li>
+                    <li>
+                        <a class="" href="{% url 'aristotle:check_cascaded_states' item.id %}" data-toggle="modal" data-target="#infobox_adv_edit">
+                            <i class="fa fa-fw fa-sitemap"></i> {% trans 'Check component states'%}
+                        </a>
+                    </li>
                 {% endif %}
                 {% if can_edit and 'aristotle_mdr_links'|is_active_extension %}
                     {% include "aristotle_mdr_links/actions/add_link_action.html" %}

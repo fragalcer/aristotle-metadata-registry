@@ -78,3 +78,4 @@ python/aristotle-metadata-registry/aristotle_mdr/media/
 
 # ignore src file created by pypandoc
 docker/src
+yarn.lock

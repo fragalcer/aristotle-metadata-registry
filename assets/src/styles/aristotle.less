@@ -21,6 +21,18 @@
         width:100%;
     }
 }
+@media (min-width:@screen-md-regular)  {
+    body {
+        display: -ms-flexbox;
+        display: flex;
+        min-height: 100%;
+        flex-direction: column;
+    }
+     body > #content.container {
+        flex-grow: 10;
+     }
+}
+
 @media (min-width:@screen-sm-min)  {
     #infobox-wrap {padding:0;border:none;background-color:white;}
     #infobox {margin:0;}
@@ -810,6 +822,11 @@ body > nav.main.navbar {
     background-color: #2d6987 !important;
 }
 
+// Overriden because of panel-headings setting a dark blue color
+.btn-danger {
+    color: white !important;
+}
+
 /*
 The purpose of the following css is to format the table for the registration statuses table.
 Thanks to: https://css-tricks.com/responsive-data-tables/
@@ -821,7 +838,6 @@ and also iPads specifically.
 only screen
 and (max-width: 760px), (min-device-width: 760px)
 and (max-device-width: 1024px)  {
-
     .registration_status_table {
         /* Force table to not be like tables anymore */
         table, thead, tbody, th, td, tr {
@@ -866,7 +882,7 @@ and (max-device-width: 1024px)  {
         td:nth-of-type(1):before { content: 'State'; font-weight: bold; padding-top: 8px;}
         td:nth-of-type(2):before { content: 'Date registration effective'; font-weight: bold; padding-top: 8px;}
         td:nth-of-type(3):before { content: 'Date registration expires'; font-weight: bold; padding-top: 8px;}
-        td:nth-of-type(4):before { content: 'Comments'; font-weight: bold; padding-top: 8px;}
+        td:nth-of-type(4):before { content: 'Administrative note'; font-weight: bold; padding-top: 8px;}
 
         /* Zebra striping */
         tr:nth-of-type(odd) {

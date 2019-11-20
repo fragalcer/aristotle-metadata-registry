@@ -1,11 +1,18 @@
-name: Python
+name: Main Python Tests
 on:
   pull_request:
     paths:
       - 'python/**'
+      - 'Pipfile.lock'
+      - 'Pipfile'
+      - '.github/workflows/python.yaml' # Run on every change to itself
+  push:
+    branches:
+      - master
+      - develop
 
 jobs:
-  python-lint:
+  python_lint:
     name: Linting
     runs-on: ubuntu-latest
     steps:
@@ -19,7 +26,8 @@ jobs:
         run: pip install flake8
       - name: Lint
         run: flake8
-  python-typing:
+
+  python_typing:
     name: Type Checking
     runs-on: ubuntu-latest
     steps:
@@ -35,3 +43,82 @@ jobs:
         shell: bash
         run: |
           mypy $(find ./python/ -maxdepth 3 -name '__init__.py' -printf '%h\n')
+
+  main_testing:
+    needs: [python_lint, python_typing]
+    name: Main Testing
+    strategy:
+      matrix:
+        python_module: ['Aristotle Metadata Registry',
+                        'Dataset Extensions',
+                        'Comet Indicator Registry',
+                        'GraphQL',
+                        'API']
+        include:
+          - python_module: 'Aristotle Metadata Registry'
+            TOX_MODULE: amr
+
+          - python_module: 'Dataset Extensions'
+            TOX_MODULE: dse
+
+          - python_module: 'Comet Indicator Registry'
+            TOX_MODULE: cir
+
+          - python_module: 'GraphQL'
+            TOX_MODULE: gql
+
+          - python_module: 'API'
+            TOX_MODULE: api
+
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/aristotle_db
+      SEARCH: elastic
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Restart elasticsearch
+      run: |
+        sudo sysctl -w vm.max_map_count=262144
+        docker restart $(docker ps -a -q)
+
+    - uses: actions/checkout@v1
+    - uses: actions/setup-node@v1
+      with:
+        node-version: 10.x
+    - uses: actions/setup-python@v1
+
+    - name: Install tox
+      run: pip install "tox>=3.0"
+
+    - name: Install npm dependencies
+      run: |
+        set -ev
+        cd ./assets
+        npm install
+        npm run devbuild
+
+    - name: Install postgres dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install libpq-dev -y
+
+    - name: Run tests
+      run: tox -e dj-test-linux-db-postgres-search-elastic-module_${{ matrix.TOX_MODULE }}
+
+    services:
+      postgres:
+        image: postgres:10.10
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: aristotle_db
+        ports:
+          - 5432:5432
+      redis:
+        image: redis:latest
+
+      elasticsearch:
+        image: docker.elastic.co/elasticsearch/elasticsearch:5.6.8
+        ports:
+          - 9200:9200

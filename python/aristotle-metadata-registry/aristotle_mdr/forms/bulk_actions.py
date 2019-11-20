@@ -218,6 +218,12 @@ class ChangeStateForm(ChangeStatusForm, BulkActionForm):
     items_label = "These are the items that will be registered. " \
                   "Add or remove additional items with the autocomplete box."
 
+    cascadeRegistration = forms.ChoiceField(
+        initial=0,
+        choices=[(0, _('No - only register the selected items')), (1, _('Yes - register the selected items, and all their child items'))],
+        label=_("Do you want to request a status change for associated items")
+    )
+
     @classmethod
     def can_use(cls, user):
         return user_is_registrar(user)

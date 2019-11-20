@@ -82,7 +82,6 @@ def reindex_metadata_item(item):
                     # Get the value from each rich text field
                     for rich_text_field in rich_text_fields:
                         field_values.append(rich_text_field.value_from_object(component))
-
     custom_fields = [
         cv.content
         for cv in item.customvalue_set.all()

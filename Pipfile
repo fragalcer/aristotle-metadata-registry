@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-# Needed for procuction
+# Needed for production
 elasticsearch = ">=5.0.0,<6.0.0"
 django-haystack-elasticsearch = "*"
 django-redis = "*"
@@ -12,7 +12,7 @@ django-redis = "*"
 # ---------- Pins --------
 django = "~=2.2.0"
 django-haystack = "~=2.8.0"
-psycopg2 = "~=2.7.0"
+psycopg2 = "*"
 redis = ">2.10,<3.0"
 celery = "==4.2.2"
 kombu = "~=4.3.0"
@@ -42,7 +42,6 @@ django-tools = "*"
 mock = "*"
 wcag-zoo = "*"
 django-impersonate = "*"
-psycopg2 = "*"
 boto3 = "*"
 mypy = "*"
 

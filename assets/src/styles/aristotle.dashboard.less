@@ -2,6 +2,14 @@
 @screen-sm-max:760px;
 @screen-md-regular:992px;
 
+@media (min-width:@screen-sm-min)  {
+    body.dashboard #content {
+        display: -ms-flexbox;
+        display: flex;
+        flex-direction: row;
+    }
+}
+
 #dashboard-nav {
     padding-left:0px;
     padding-right:0px;
@@ -31,9 +39,11 @@
 @screen-sm-min:600px;
 #user_sidebar {
     @media only screen and (min-width: @screen-sm-min) {
-        padding:25px 0;
+        padding:10px 0;
         width:250px;
     }
+    margin-bottom: 0px;
+    border-width: 0px;
     background-color:#2E2E3E;
     li a {
         color:#e2e2e2;
@@ -89,11 +99,9 @@
 }
 
 @media only screen and (min-width: @screen-sm-min) {
-    #content {
-        display:table-row;
-    }
     #content > * {
-        display:table-cell;
+        /* display:table-cell; */
+        margin-left: 0px;
         vertical-align: top;
     }
 }
@@ -138,7 +146,6 @@ li.dashboard_link div a.main:hover {
 .nav > li.dashboard_link > div > a {
     display:table-cell;
 }
-
 
 .nav > li.dashboard_link  a .fa-inverse {
     color:#2E2E3E;

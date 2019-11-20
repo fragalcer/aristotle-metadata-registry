@@ -2,6 +2,7 @@ from django import forms
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
+from django.db.models import BLANK_CHOICE_DASH
 
 import aristotle_mdr.models as MDR
 from aristotle_mdr.forms.creation_wizards import UserAwareModelForm, UserAwareForm
@@ -45,13 +46,13 @@ class RequestReviewCreateForm(UserAwareModelForm):
     class Meta:
         model = models.ReviewRequest
         fields = [
-            'registration_authority', 'title', 'due_date', 'target_registration_state',
+            'title', 'registration_authority', 'due_date', 'target_registration_state',
             'registration_date', 'concepts',
             'cascade_registration'
         ]
         widgets = {
-            'title': forms.Textarea(),
-            'target_registration_state': forms.RadioSelect(),
+            'title': forms.Textarea(attrs={"rows": "1"}),
+            'target_registration_state': forms.Select,
             'due_date': BootstrapDateTimePicker(options={"format": "YYYY-MM-DD"}),
             'registration_date': BootstrapDateTimePicker(options={"format": "YYYY-MM-DD"}),
             'concepts': ConceptAutocompleteSelectMultiple(),
@@ -68,7 +69,7 @@ class RequestReviewCreateForm(UserAwareModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['target_registration_state'].choices = MDR.STATES
+        self.fields['target_registration_state'].choices = BLANK_CHOICE_DASH + MDR.STATES
         self.fields['concepts'].queryset = self.fields['concepts'].queryset.all().visible(self.user)
         self.fields['concepts'].widget.choices = self.fields['concepts'].choices
         self.fields['registration_authority'].queryset = self.fields['registration_authority'].queryset.filter(active=0)  # Exclude "inactive" Registration Authorities.
