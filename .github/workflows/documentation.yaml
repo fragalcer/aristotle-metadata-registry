@@ -1,0 +1,28 @@
+name: Documentation
+on:
+  pull_request:
+    paths:
+      - 'docs/**'
+
+jobs:
+  documentation:
+    name: Documentation Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout PR
+        uses: actions/checkout@v1  # Equivalent to running git fetch and git checkout
+      - name: Setup Python 3.6
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.6
+      - name: Install Codecov & Coveralls
+        run: pip install codecov coveralls
+      - name: Install Pip dependencies
+        run: pip install 'tox>=3.0'
+      - name: Check for documentation
+        env:
+          DJANGO_SETTINGS_MODULE: "aristotle_mdr.required_settings"
+          DATABASE_URL: "sqlite://:memory:"
+        run: "tox -e docs"
+

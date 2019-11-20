@@ -7,6 +7,8 @@
         {% else %}
             <a class="itemLink" href="{{ item.get_absolute_url }}">
         {% endif %}
+            {{ item.name }}
+        </a>
     {% else %}
         {% if skip_can_view or item|can_view:user %}
             <a class="itemLink" href="{{ item.get_absolute_url }}">

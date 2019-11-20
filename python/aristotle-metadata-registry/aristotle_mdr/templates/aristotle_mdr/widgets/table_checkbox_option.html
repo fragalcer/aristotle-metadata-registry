@@ -1,2 +1,8 @@
-<td><input type="{{ widget.type }}" name="{{ widget.name }}"{% if widget.value != None %} {% if not enabled %}disabled{% else %}{% if checked %}checked{% endif %}{% endif %} value="{{ widget.value|stringformat:'s' }}"{% endif %}{% include "django/forms/widgets/attrs.html" %}>
-</td>{% if wrap_label %}<td><a {% if widget.value %}href="{% url 'aristotle:item' widget.value %}" target="_blank"{% endif %}>{{ widget.label }}</a></td>{% endif %}
+<td>
+    <input type="{{ widget.type }}" name="{{ widget.name }}"{% if widget.value != None %} {% if not enabled %}disabled{% else %}{% if checked %}checked{% endif %}{% endif %} value="{{ widget.value|stringformat:'s' }}"{% endif %}{% include "django/forms/widgets/attrs.html" %}>
+</td>
+{% if wrap_label %}
+    <td>
+        <a {% if widget.value %}href="{% url 'aristotle:item' widget.value %}" target="_blank"{% endif %}>{{ widget.label }}</a>
+    </td>
+{% endif %}

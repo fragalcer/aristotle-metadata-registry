@@ -1,0 +1,44 @@
+name: JavaScript
+on:
+  pull_request:
+    paths:
+      - 'assets/**'
+      - '!assets/src/styles/**'
+
+jobs:
+  javascript_lint:
+    name: Linting
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PR
+        uses: actions/checkout@v1
+      - name: Setup node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10
+      - name: Install dependencies
+        run: |
+          cd assets
+          npm install
+      - name: Lint
+        run: |
+          cd assets
+          npm run lint
+  javascript_tests:
+    name: Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PR
+        uses: actions/checkout@v1
+      - name: Setup node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10
+      - name: Install dependencies
+        run: |
+          cd assets
+          npm install
+      - name: Run Tests
+        run: |
+          cd assets
+          npm run test

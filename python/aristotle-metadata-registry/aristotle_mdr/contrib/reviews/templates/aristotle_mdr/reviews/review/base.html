@@ -33,7 +33,13 @@
                 initial-status="{{review.status_code}}"
               >
               </open-close-approved>
-                  <span v-pre>{{ review.message }}</span>
+              <span v-pre>
+                {% if review.title %}
+                  {{review.title}}
+                {% else %}
+                  {% trans "Unititled Review" %} #{{review.pk}}
+                {% endif %}
+              </span>
             </div>
             <span v-pre class="pull-right">
               {% if can_edit_review %}

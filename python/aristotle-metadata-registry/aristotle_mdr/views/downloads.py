@@ -159,7 +159,6 @@ class DownloadStatusView(View):
             'file_details': {}
         }
         if job.ready():
-            logger.critical(job.result)
             if job.state == 'SUCCESS':
                 context['result'] = job.result
             context['is_ready'] = True

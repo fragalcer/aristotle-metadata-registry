@@ -343,6 +343,7 @@ class HTMLDownloader(Downloader):
             'config': aristotle_settings,
             'export_date': now(),
         }
+        context['CURRENT_CLIENT_BASE'] = getattr(settings, 'CURRENT_CLIENT_BASE', None)
         return context
 
     def get_download_context(self) -> Dict[str, Any]:

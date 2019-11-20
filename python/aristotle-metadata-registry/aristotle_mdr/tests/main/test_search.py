@@ -9,6 +9,7 @@ from django.urls import reverse
 from django.contrib.auth import get_user_model
 from django.core.management import call_command
 from reversion import revisions as reversion
+from aristotle_mdr.forms.search import get_permission_sqs
 
 import datetime
 from django.utils import timezone
@@ -45,6 +46,7 @@ class TestSearch(utils.AristotleTestUtils, TestCase):
         self.item_xmen = [
             models.ObjectClass.objects.create(name=t,definition="known xman",workgroup=self.xmen_wg)\
             for t in xmen.split()]
+
         for item in self.item_xmen:
             registered = self.ra.register(item,models.STATES.standard,self.su)
             self.assertTrue(item in registered['success'])
@@ -221,7 +223,6 @@ class TestSearch(utils.AristotleTestUtils, TestCase):
         self.assertFalse(dp.is_public())
 
         # Charles isn't a viewer of X-men yet, so no results.
-        from aristotle_mdr.forms.search import get_permission_sqs
         psqs = get_permission_sqs()
         psqs = psqs.auto_query('deadpool').apply_permission_checks(self.viewer)
         self.assertEqual(len(psqs),0)
@@ -279,7 +280,6 @@ class TestSearch(utils.AristotleTestUtils, TestCase):
         self.assertEqual(len(sqs.auto_query('Hello')), 1)
 
         # User is not in workgroup, so there should be no results
-        from aristotle_mdr.forms.search import get_permission_sqs
         psqs = get_permission_sqs().auto_query('Hello').apply_permission_checks(self.viewer)
         self.assertEqual(len(psqs), 0)
 
@@ -499,7 +499,6 @@ class TestSearch(utils.AristotleTestUtils, TestCase):
 
         self.login_superuser()
 
-        from aristotle_mdr.forms.search import get_permission_sqs
         response = self.client.get(reverse('aristotle:search')+"?q=pokemon")
 
         objs = response.context['page'].object_list
@@ -571,7 +570,6 @@ class TestSearch(utils.AristotleTestUtils, TestCase):
 
     def test_values_in_conceptual_domain_search(self):
         # For bug #676
-        from aristotle_mdr.forms.search import get_permission_sqs
         PSQS = get_permission_sqs()
         psqs = PSQS.auto_query('flight').apply_permission_checks(self.su)
         self.assertEqual(len(psqs),0)
@@ -598,7 +596,6 @@ class TestSearch(utils.AristotleTestUtils, TestCase):
 
     def test_values_in_value_domain_search(self):
         # For bug #676
-        from aristotle_mdr.forms.search import get_permission_sqs
         PSQS = get_permission_sqs()
         psqs = PSQS.auto_query('flight').apply_permission_checks(self.su)
         self.assertEqual(len(psqs),0)
@@ -670,6 +667,28 @@ class TestSearch(utils.AristotleTestUtils, TestCase):
             item.delete()
 
         random_wg.delete()
+
+    def test_filters_without_text(self):
+        """Test filtering objects without any search text"""
+        # Create data element concept test object
+        dec = models.DataElementConcept.objects.create(
+            name='Person―Speed',
+            definition='A persons speed',
+            workgroup=self.avengers_wg
+        )
+        registered = self.ra.register(dec, models.STATES.standard, self.su)
+
+        url = reverse('aristotle:search') + '?category=metadata&q=&models=aristotle_mdr.dataelementconcept'
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+        # Make sure we recieve only the data element concept
+        page = response.context['page']
+        self.assertEqual(models.DataElementConcept.objects.count(), 1)
+        self.assertEqual(len(page), 1)
+        self.assertEqual(page[0].pk, dec.pk)
+
+
 
 @tag('token_search')
 class TestTokenSearch(TestCase):

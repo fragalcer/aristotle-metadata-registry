@@ -38,9 +38,11 @@
         <div class="derivation_rule panel panel-info aristotle-display-panel" style="order:3;">
             <header class="panel-heading">Deriviation rule</header>
             <div class="panel-body">
+                {% if item.derivation_rule %}
                 <pre style="max-width:100%; overflow:auto;">{% spaceless %}
                      {{ item.derivation_rule }}
                 {% endspaceless %}</pre>
+                {% endif %}
             </div>
         </div>
 

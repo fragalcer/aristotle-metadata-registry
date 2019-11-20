@@ -45,65 +45,65 @@ defaults:
 
 matrix:
   include:
-    - stage: "Style Check"
-      name: "Python Lint"
-      language: python
-      python: 3.6
-      install:
-        - pip install codecov coveralls
-        - pip install 'tox>=3.0'
-      script: tox -e flake8
+#    - stage: "Style Check"
+#      name: "Python Lint"
+#      language: python
+#      python: 3.6
+#      install:
+#        - pip install codecov coveralls
+#        - pip install 'tox>=3.0'
+#      script: tox -e flake8
+#
+#    - name: "Python Type Checking"
+#      language: python
+#      python: 3.6
+#      install:
+#        - pip install mypy
+#      script: ./scripts/type.sh
 
-    - name: "Python Type Checking"
-      language: python
-      python: 3.6
-      install:
-        - pip install mypy
-      script: ./scripts/type.sh
+#    - name: "JS Lint"
+#      language: node_js
+#      node_js: 10
+#      before_install:
+#        - cd assets
+#      install:
+#        - npm install
+#      script:
+#        - npm run lint
 
-    - name: "JS Lint"
-      language: node_js
-      node_js: 10
-      before_install:
-        - cd assets
-      install:
-        - npm install
-      script:
-        - npm run lint
+#    - stage: "Unapplied Migrations"
+#      name: "Unapplied Django Migrations"
+#      language: python
+#      python: 3.6
+#      env:
+#        DATABASE_URL="sqlite://:memory:" DJANGO_SETTINGS_MODULE=aristotle_mdr.required_settings
+#      install:
+#        - pip install -U setuptools pip pipenv
+#        - pipenv install --system --deploy --dev
+#      script: django-admin makemigrations --check
 
-    - stage: "Unapplied Migrations"
-      name: "Unapplied Django Migrations"
-      language: python
-      python: 3.6
-      env:
-        DATABASE_URL="sqlite://:memory:" DJANGO_SETTINGS_MODULE=aristotle_mdr.required_settings
-      install:
-        - pip install -U setuptools pip pipenv
-        - pipenv install --system --deploy --dev
-      script: django-admin makemigrations --check
+#    - stage: "Documentation"
+#      name: "Documentation"
+#      language: python
+#      python: 3.6
+#      env:
+#        DATABASE_URL=postgresql://postgres:@localhost/aristotle_test_db
+#      install:
+#        - pip install codecov coveralls
+#        - pip install 'tox>=3.0'
+#      script: tox -e docs
 
-    - stage: "Documentation"
-      name: "Documentation"
-      language: python
-      python: 3.6
-      env:
-        DATABASE_URL=postgresql://postgres:@localhost/aristotle_test_db
-      install:
-        - pip install codecov coveralls
-        - pip install 'tox>=3.0'
-      script: tox -e docs
-
-    # FRONTEND JAVASCRIPT TESTS:
-    - stage: "Frontend"
-      name: "Javascript Tests"
-      language: node_js
-      node_js: 10
-      before_install:
-        - cd assets
-      install:
-        - npm install
-      script:
-        - npm run test
+#    # FRONTEND JAVASCRIPT TESTS:
+#    - stage: "Frontend"
+#      name: "Javascript Tests"
+#      language: node_js
+#      node_js: 10
+#      before_install:
+#        - cd assets
+#      install:
+#        - npm install
+#      script:
+#        - npm run test
 
     # THESE CONCURRENT JOBS MUST ALWAYS BE RUN FOR THE MAIN ARISTOTLE REPO.
     # THEY INCLUDE OUR USUAL SETUP COMBINATION (POSTGRES DB AND ELASTIC SEARCH ENGINE)

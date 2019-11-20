@@ -225,9 +225,11 @@ class ReviewStatusChangeBase(ReviewActionMixin, ReviewChangesView):
         return change_data
 
     def get_context_data(self, *args, **kwargs):
+        review = self.get_review()
         kwargs = super().get_context_data(*args, **kwargs)
         kwargs['status_matrix'] = json.dumps(generate_visibility_matrix(self.request.user))
-        kwargs['review'] = self.get_review()
+        kwargs['review'] = review
+        kwargs['ra'] = review.registration_authority
         if self.show_supersedes:
             kwargs['supersedes'] = self.get_supersedes_context()
         kwargs['show_supersedes'] = self.show_supersedes

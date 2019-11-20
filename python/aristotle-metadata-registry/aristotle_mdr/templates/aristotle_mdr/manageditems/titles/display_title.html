@@ -3,23 +3,33 @@
 
 {% spaceless %}
 <ul class="breadcrumb">
-  {% if item.stewardship_organisation %}
-  <li>
-    <a href="{{item.stewardship_organisation.get_absolute_url}}">
-      {{item.stewardship_organisation}}
-    </a>
-  </li>
-  <li>
-    <a href="{% url 'aristotle_mdr:stewards:group:managed_item_list_types' item.stewardship_organisation.slug %}">Managed Items</a>
-  </li>
-  <li>
-    <a href="{% url 'aristotle_mdr:stewards:group:managed_item_list_items' item.stewardship_organisation.slug item.meta.model_name %}"
-    >{{ item.get_verbose_name_plural }}</a>
-  </li>
+  {% if breadcrumbs %}
+    {% for crumb in breadcrumbs %}
+        <li {% if crumb.active %}class="active"{% endif %}>
+            {% if crumb.url %}
+                <a href="{{ crumb.url }}">{{ crumb.name }}</a>
+            {% else %}
+                {{ crumb.name }}
+            {% endif %}
+        </li>
+      {% endfor %}
+  {% elif item.stewardship_organisation %}
+    <li>
+      <a href="{{item.stewardship_organisation.get_absolute_url}}">
+        {{item.stewardship_organisation}}
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'aristotle_mdr:stewards:group:managed_item_list_types' item.stewardship_organisation.slug %}">Managed Items</a>
+    </li>
+    <li>
+      <a href="{% url 'aristotle_mdr:stewards:group:managed_item_list_items' item.stewardship_organisation.slug item.meta.model_name %}"
+      >{{ item.get_verbose_name_plural }}</a>
+    </li>
   {% else %}
     <li>
       <a href="">
-        Sandboxed Item
+        My Sandbox
       </a>
     </li>
   {% endif %}

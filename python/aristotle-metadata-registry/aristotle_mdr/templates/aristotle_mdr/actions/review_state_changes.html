@@ -2,9 +2,28 @@
 
 {% load i18n %}
 
+
 {% block title %}Review Changes{% endblock %}
 
 {% block content %}
+
+{% block breadcrumbs %}
+<ul class="breadcrumb">
+      <li >
+        <a href="{{review.get_absolute_url}}">
+          {% if review.title %}
+            {{review.title}}
+          {% else %}
+            {% trans "Unititled Review" %} #{{review.pk}}
+          {% endif %}
+        </a>
+      </li>
+      <li class="active">
+        <a href="#">Review changes</a>
+      </li>
+</ul>
+{% endblock %}
+
 <h1>Review included items for status change</h1>
 <p>Below is a list of the items you have selected for a status change, including those linked to a parent item.<br>
 This table includes the current registration status and date for the item in the registration authority
