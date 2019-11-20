@@ -69,6 +69,7 @@ def review_list(request):
 
 
 class ReviewActionMixin(LoginRequiredMixin, UserFormViewMixin):
+    """Mixin used for functionality common to all review tabs"""
     pk_url_kwarg = 'review_id'
     context_object_name = "review"
     user_form = True
@@ -109,12 +110,16 @@ class ReviewActionMixin(LoginRequiredMixin, UserFormViewMixin):
 
     def get_context_data(self, *args, **kwargs):
         kwargs = super().get_context_data(*args, **kwargs)
-        kwargs['review'] = self.review
-        kwargs['can_approve_review'] = perms.user_can_approve_review(self.request.user, self.review)
-        kwargs['can_open_close_review'] = perms.user_can_close_or_reopen_review(self.request.user, self.review)
-        kwargs['can_edit_review'] = perms.user_can_edit_review(self.request.user, self.review)
+        kwargs.update({
+            'review': self.review,
+            'can_approve_review': perms.user_can_approve_review(self.request.user, self.review),
+            'can_open_close_review': perms.user_can_close_or_reopen_review(self.request.user, self.review),
+            'can_edit_review': perms.user_can_edit_review(self.request.user, self.review),
+            'is_registrar': perms.user_is_registrar(self.request.user)
+        })
         if hasattr(self, "active_tab_name"):
             kwargs['active_tab'] = self.active_tab_name
+
         return kwargs
 
     def get_object(self):

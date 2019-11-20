@@ -2,7 +2,7 @@
 {% load i18n %}
 {% load aristotle_tags %}
 
-{% block title %}Accept Request{% endblock %}
+{% block title %}Approve review request{% endblock %}
 
 {% block form_tag %}
 <form method="post" action="{% url 'aristotle_reviews:accept_review' review.id %}">
@@ -16,8 +16,9 @@
         <li class="active">Approve review request</li>
       </ol>
 
-      <header>By approving this review, this form will change the status of the listed items in your registration authorities.
-      </header>
+      <p class="margin-below">
+        By approving this review, the status of the items listed below will be change to {{ review.state_name }} in the {{ ra.name }} registration authority
+      </p>
       {% include 'aristotle_mdr/helpers/accept_review_info.html' %}
       <section>
       <div class="status_change_description">

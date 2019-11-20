@@ -1,9 +1,12 @@
 <div>
-    <div>Requested registration status:
-        <em>{{review.get_state_display}}</em> in <a href="{{review.registration_authority.get_absolute_url }}">{{review.registration_authority.name }}</a>
-    </div>
     <div class="well">
         {{ wizard.form.errors }}
+        {% if review.state_name %}
+          <strong>Requested registration status:</strong>
+          <p>
+              <em>{{ review.state_name }}</em> in <a href="{{review.registration_authority.get_absolute_url }}">{{review.registration_authority.name }}</a>
+          </p>
+        {% endif %}
         <strong>The original message for this request:</strong>
         <p>{{ review.message }}</p>
         <strong>The items in this request are listed below:</strong>

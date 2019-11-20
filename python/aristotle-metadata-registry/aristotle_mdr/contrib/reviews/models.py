@@ -86,6 +86,13 @@ class ReviewRequest(StatusMixin, TimeStampedModel):
         return self.target_registration_state
 
     @property
+    def state_name(self):
+        if self.target_registration_state in MDR.STATES:
+            return MDR.STATES[self.target_registration_state]
+
+        return self.target_registration_state
+
+    @property
     def proposed_supersedes(self):
         """
         Get the proposed supersedes attached to this review only
