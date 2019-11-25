@@ -14,9 +14,9 @@
 </template>
 
 <script>
-import userPanel from './userPanel.vue'
-import para from './para.vue'
-import moment from 'moment'
+  import userPanel from './userPanel.vue'
+  import para from './para.vue'
+  import moment from 'moment'
 
 export default {
     props: ['pic', 'name', 'created', 'body'],
@@ -25,10 +25,10 @@ export default {
       para
     },
     computed: {
-        displayCreated: function() {
-            return moment(this.created).format('Do MMM YYYY, hh:mm A')
-        }
+      displayCreated: function() {
+        return moment(this.created).format('Do MMM YYYY, hh:mm A')
+      }
     }
-}
+  }
 </script>
 
