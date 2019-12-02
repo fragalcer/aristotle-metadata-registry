@@ -47,7 +47,7 @@
             {% endif %}
 
             {% if item.submitting_organizations %}
-                <h3>Submitting Organizations</h3>
+                <h2>Submitting Organizations</h2>
                 {% for rec in item.submitting_organizations %}
                     {% if rec.organization_record|can_view:request.user %}
                         <p><a href="{{ rec.organization_record.get_absolute_url }}">{{ rec.organization_record.name }}</a></p>
@@ -57,7 +57,7 @@
             {% endif %}
 
             {% if item.responsible_organizations %}
-                <h3>Responsible Organizations</h3>
+                <h2>Responsible Organizations</h2>
                 {% for rec in item.responsible_organizations %}
                     {% if rec.organization_record|can_view:request.user %}
                         <p><a href="{{ rec.organization_record.get_absolute_url }}">{{ rec.organization_record.name }}</a></p>
