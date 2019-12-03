@@ -444,7 +444,7 @@ def bootstrap_modal(_id, size=None):
     elif size == 'sm':
         size_class = "modal-sm"
 
-    modal = '<div id="%s" class="modal fade"><div class="modal-dialog %s"><div class="modal-content"></div></div></div>'
+    modal = '<div id="%s" class="modal fade" data-backdrop="static"><div class="modal-dialog %s"><div class="modal-content"></div></div></div>'
     return mark_safe(modal % (_id, size_class))
 
 

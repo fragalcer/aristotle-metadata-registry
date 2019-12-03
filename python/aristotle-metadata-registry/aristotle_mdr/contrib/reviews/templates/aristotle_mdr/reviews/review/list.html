@@ -18,7 +18,7 @@
             <caption>Items currently listed for this review</caption>
             <tr>
                 <th>Item Details</th>
-                <th>Last Modified</th>
+                <th>Last Updated</th>
                 <th></th>
             </tr>
             {% for concept in concepts %}
@@ -30,7 +30,6 @@
                     <time datetime="{{ concept.item.modified|isotime }}">{{ concept.item.modified }}</time>
                 </td>
                 <td>
-
                     {% if concept.remove %}
                     <delete-button
                             button-type="btn-danger"

@@ -22,7 +22,7 @@ Showing {{ page.paginator.count }} result{{ page.paginator.count|pluralize }}.
             {% else %}
             <a href="?{% paginator_get request page.number %}&sort=mod_desc"><i class="fa fa-sort"></i></a>
             {% endif %}
-            {% trans 'Last modified' %}
+            {% trans 'Last Updated' %}
         </th>
         <th>
             {% if sort == "cre_asc" %}

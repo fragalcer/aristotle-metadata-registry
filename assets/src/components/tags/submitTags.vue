@@ -2,7 +2,7 @@
     <div class="submit-tags">
       <saving v-if="loading"></saving>
       <button v-if="!loading" id="tag-editor-submit" type="button" class="btn btn-primary" @click="submit_tags">
-          Save changes
+          Save tags
       </button>
     </div>
 </template>

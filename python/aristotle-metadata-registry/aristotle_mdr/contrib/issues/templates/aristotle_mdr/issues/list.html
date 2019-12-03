@@ -3,31 +3,34 @@
 {% block title %}Issues for {{ item.name }}{% endblock %}
 
 {% block webpack_bundle %}
-  {% render_bundle 'item_issues' 'js' %}
+{% render_bundle 'item_issues' 'js' %}
 {% endblock %}
 
 {% block webpack_css_bundle %}
-  {% render_bundle 'item_issues' 'css' %}
+{% render_bundle 'item_issues' 'css' %}
 {% endblock %}
 
 {% block infoContent %}
-    <h1>Issues</h1>
-    <button class="btn btn-success pull-right" @click="openIssuesModal">New Issue</button>
-    <ul v-pre class="nav nav-tabs" role="tablist">
-        <li role="presentation" class="active"><a href="#open" aria-controls="open" role="tab" data-toggle="tab">Open</a></li>
-        <li role="presentation"><a href="#closed" aria-controls="closed" role="tab" data-toggle="tab">Closed</a></li>
-    </ul>
-
-    <div v-pre class="tab-content">
-        <div role="tabpanel" class="tab-pane active margin-above" id="open">
-            {% include 'aristotle_mdr/issues/sublist.html' with issues=open_issues context_class="success" %}
+<div class="panel panel-default margin-above swap-container">
+    <div class="panel-heading">
+        <div class="btn-group">
+            <a class="btn btn-default swap-panels active" data-target="#open">
+                Open
+            </a>
+            <a class="btn btn-default swap-panels" data-target="#closed">
+                Closed
+            </a>
         </div>
-        <div role="tabpanel" class="tab-pane margin-above" id="closed">
-            {% include 'aristotle_mdr/issues/sublist.html' with issues=closed_issues context_class="danger" %}
-        </div>
+        <button class="btn btn-success pull-right" @click="openIssuesModal">New Issue</button>
     </div>
-
-    <issue-modal
+    <div v-pre id="open" class="collapse in">
+        {% include 'aristotle_mdr/issues/sublist.html' with issues=open_issues context_class="success" type="open" %}
+    </div>
+    <div v-pre id="closed" class="collapse">
+        {% include 'aristotle_mdr/issues/sublist.html' with issues=closed_issues context_class="danger" type="closed" %}
+    </div>
+</div>
+<issue-modal
         v-model="issueModalOpen"
         iid="{{ item.id }}"
         url="{% url 'api_v4:issues:create' %}"
@@ -35,7 +38,6 @@
         propose-fields="{{ fields }}"
         html-editor-config="{{ config }}"
         all-labels-json="{{ all_labels }}"
-        steward-organisation-name="{{ stewardship_organisation_name }}"
-    >
-    </issue-modal>
+        steward-organisation-name="{{ stewardship_organisation_name }}">
+</issue-modal>
 {% endblock %}

@@ -24,6 +24,11 @@
                 Reviews
             {% endif %}
         </li>
+        {% if single_item_review %}
+            <li>
+                <a href="{{ item_under_review.get_absolute_url }}">{{ item_under_review.name }}</a>
+            </li>
+        {% endif %}
         <li class="active">Request review details</li>
     </ol>
 {% endblock %}

@@ -285,6 +285,35 @@ class CloneItemView(ExtraFormsetMixin, ConceptEditFormView, SingleObjectMixin, F
         })
         return kwargs
 
+    def get_extra_formsets(self, item=None, postdata=None, clone_item=False):
+        extra_formsets = super().get_extra_formsets(item, postdata)
+
+        if self.slots_active:
+            slot_formset = self.get_slots_formset()(
+                queryset=Slot.objects.none(),
+                data=postdata
+            )
+            extra_formsets.append({
+                'formset': slot_formset,
+                'title': 'Slots',
+                'type': 'slot',
+                'saveargs': None
+            })
+
+        if self.identifiers_active:
+            id_formset = self.get_identifier_formset()(
+                queryset=ScopedIdentifier.objects.none(),
+                data=postdata
+            )
+            extra_formsets.append({
+                'formset': id_formset,
+                'title': 'Identifiers',
+                'type': 'identifiers',
+                'saveargs': None
+            })
+
+        return extra_formsets
+
     @transaction.atomic()
     def post(self, request, *args, **kwargs):
         form = self.get_form()
@@ -315,19 +344,16 @@ class CloneItemView(ExtraFormsetMixin, ConceptEditFormView, SingleObjectMixin, F
                 # Save item
                 form.save_custom_fields(item)
                 form.save_m2m()
-                # Copied from wizards.py - maybe refactor
+
                 final_formsets = []
                 for info in extra_formsets:
-                    if info['type'] != 'slot':
+                    if info['saveargs'] is not None:
                         info['saveargs']['item'] = item
                     else:
                         info['formset'].instance = item
                     final_formsets.append(info)
 
-                # This was removed from the revision below due to a bug with saving
-                # long slots, links are still saved due to reversion follows
                 self.save_formsets(final_formsets)
-
                 item.save()
 
             return HttpResponseRedirect(url_slugify_concept(item))

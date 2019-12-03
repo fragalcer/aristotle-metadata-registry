@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load static from staticfiles %}
 {% load render_bundle from webpack_loader %}
+{% load util_tags %}
 
 {% block title %}
 Create Data Element - Step {{ wizard.steps.step1 }}: {{step_title}}
@@ -19,6 +20,7 @@ Create Data Element - Step {{ wizard.steps.step1 }}: {{step_title}}
 {% endblock %}
 
 {% block content %}
+{% breadcrumb_list breadcrumbs %}
 <h1>Create Data Element - <span><em>Step {{ wizard.steps.step1 }}</em>: {{step_title}}</span></h1>
 
 <div class="progress">

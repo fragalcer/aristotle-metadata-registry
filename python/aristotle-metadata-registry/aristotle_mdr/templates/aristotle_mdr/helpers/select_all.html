@@ -2,31 +2,31 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-xs-1">
-    <input title='{% trans "Select all" %}' type="checkbox" id="select-all-checkbox">
+            <input title='{% trans "Select all" %}' type="checkbox" id="select-all-checkbox">
         </div>
         <div class="col-xs-11">
-    <div id="initial-div" class="well well-sm" style="display: none">
-        {% if page_obj|length == total_queryset_size %}
-            You have selected all <b>{{ total_queryset_size }}</b> {{ item }}. There are no more items to select.
-        {% else %}
-            You have selected the <b>{{ page_obj|length }}</b> items on the page
-            <button class="btn btn-outline btn-outline-info" id="select-all-queryset-button" type="button">
-                Select all <b>{{ total_queryset_size }}</b>
-                of your {{ item }}?
-            </button>
-        {% endif %}
-    </div>
+            <div id="initial-div" class="well well-sm" style="display: none">
+                {% if page_obj|length == total_queryset_size %}
+                    You have selected all <b>{{ total_queryset_size }}</b> {{ item }}. There are no more items to select.
+                {% else %}
+                    You have selected the <b>{{ page_obj|length }}</b> items on the page
+                    <button class="btn btn-outline btn-outline-info" id="select-all-queryset-button" type="button">
+                        Select all <b>{{ total_queryset_size }}</b>
+                        of your {{ item }}?
+                    </button>
+                {% endif %}
+            </div>
 
-    <div id="select-all-div" class=" well well-sm" style="display:none">
-        All of your <b>{{ total_queryset_size }}</b> {{ item }} have been selected
-        <button class="btn btn-outline btn-outline-info" id="clear-selections-button" type="button">Clear selections
-        </button>
-    </div>
+            <div id="select-all-div" class=" well well-sm" style="display:none">
+                All of your <b>{{ total_queryset_size }}</b> {{ item }} have been selected
+                <button class="btn btn-outline btn-outline-info" id="clear-selections-button" type="button">Clear selections
+                </button>
+            </div>
 
-    {# Hidden form selections #}
-    <input title='{% trans "Select all" %}' type="checkbox" id="all_in_queryset" name="all_in_queryset"
-           style="display: none;">
-    <input type="hidden" name="qs" value="{{ view.object_list|register_queryset }}">
-</div>
+            {# Hidden form selections #}
+            <input title='{% trans "Select all" %}' type="checkbox" id="all_in_queryset" name="all_in_queryset"
+                   style="display: none;">
+            <input type="hidden" name="qs" value="{{ view.object_list|register_queryset }}">
+        </div>
     </div>
 </div>

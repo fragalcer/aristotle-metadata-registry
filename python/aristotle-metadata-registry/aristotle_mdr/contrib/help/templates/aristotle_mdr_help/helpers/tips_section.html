@@ -1,13 +1,8 @@
+
 {% load i18n aristotle_help aristotle_tags util_tags %}
 
 {% if help or custom_help %}
-    <header class='editor'>Help on {{ model_name_plural }}</header>
-    <p>For more information on {{model_name_plural}}, read the
-        <a href="{% url 'aristotle_help:concept_help' app_label model %}">
-            help page.
-        </a>
-    </p>
-
+    <h2>Help on {{ model_name_plural }}</h2>
     {% if custom_help.creation_tip or help.creation_tip %}
         <header class='editor'>Tips for creating {{model_name_plural}}</header>
         {% if custom_help.creation_tip %}
@@ -20,5 +15,9 @@
             </div>
         {% endif %}
     {% endif %}
-
+     <p>For more information on {{model_name_plural}}, read the
+        <a href="{% url 'aristotle_help:concept_help' app_label model %}">
+        help page.
+        </a>
+     </p>
 {% endif %}

@@ -1,6 +1,11 @@
+from aristotle_mdr.utils.text import truncate_words
 from typing import Optional, List, Dict, Tuple, Any, Union, Callable
 from django.conf import settings
+from django.urls import reverse
 from collections import defaultdict
+
+import logging
+logger = logging.getLogger(__name__)
 
 
 class Node:
@@ -64,12 +69,13 @@ class Tree:
             # Create child nodes and add to stack
             children = relation_dict.get(next_node.data.id, [])
             for child_id, relation_info in children:
-                node_stack.append(
-                    (
-                        Node(next_node, datadict.get(child_id, None), relation_info),
-                        depth + 1
+                item = datadict.get(child_id, None)
+                if item:
+                    node_stack.append(
+                        (Node(next_node, item, relation_info), depth + 1)
                     )
-                )
+                else:
+                    logger.error(f'id {child_id} not found in datadict')
 
     def get_node_children(self, identifier, sort_by=None) -> List[Node]:
         children = [self.nodes[i] for i in self.children[identifier]]
@@ -122,3 +128,21 @@ class Tree:
 
     def __str__(self):
         return self.get_string(self.root)
+
+
+class Breadcrumb:
+    """Object representing a single breadcrumb"""
+
+    def __init__(self, name: str, url_name='', url_args=[], active=False):
+        self._name = name
+        self.active = active
+
+        if url_name:
+            self.url = reverse(url_name, args=url_args)
+        else:
+            self.url = ''
+
+    @property
+    def name(self):
+        """Display name for breadcrumb"""
+        return truncate_words(self._name, 10)

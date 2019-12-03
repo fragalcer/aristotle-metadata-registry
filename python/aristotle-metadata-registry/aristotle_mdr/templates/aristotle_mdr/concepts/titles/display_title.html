@@ -1,44 +1,38 @@
 {% load humanize i18n %}
-{% load aristotle_tags %}
+{% load util_tags aristotle_tags %}
 
 {% spaceless %}
-<ul class="breadcrumb">
-  {% if breadcrumbs %}
-    {% for crumb in breadcrumbs %}
-        <li {% if crumb.active %}class="active"{% endif %}>
-            {% if crumb.url %}
-                <a href="{{ crumb.url }}">{{ crumb.name }}</a>
-            {% else %}
-                {{ crumb.name }}
-            {% endif %}
-        </li>
-      {% endfor %}
-  {% elif item.stewardship_organisation %}
-    <li>
-      <a href="{{item.stewardship_organisation.get_absolute_url}}">
-        {{item.stewardship_organisation}}
-      </a>
+{% if breadcrumbs %}
+  {% breadcrumb_list breadcrumbs %}
+{% else %}
+  <ul class="breadcrumb">
+    {% if item.stewardship_organisation %}
+      <li>
+        <a href="{{item.stewardship_organisation.get_absolute_url}}">
+          {{item.stewardship_organisation}}
+        </a>
+      </li>
+      <li>
+        <a href="{{item.stewardship_organisation.get_absolute_url}}">Metadata</a>
+      </li>
+      <li>
+              <a href="{% url 'aristotle_help:concept_help' item.meta.app_label item.meta.model_name %}"
+                  title="{% trans 'Learn about this metadata type' %}"
+                  data-toggle="modal" data-target="#infobox_modal"
+              >{{ item.get_verbose_name_plural }}</a>
+      </li>
+    {% else %}
+      <li>
+        <a href="">
+          Sandboxed Item
+        </a>
+      </li>
+    {% endif %}
+    <li class="maybe-long-breadcrumb-item">
+      {{ item.name }}
     </li>
-    <li>
-      <a href="{{item.stewardship_organisation.get_absolute_url}}">Metadata</a>
-    </li>
-    <li>
-            <a href="{% url 'aristotle_help:concept_help' item.meta.app_label item.meta.model_name %}"
-                title="{% trans 'Learn about this metadata type' %}"
-                data-toggle="modal" data-target="#infobox_modal"
-            >{{ item.get_verbose_name_plural }}</a>
-    </li>
-  {% else %}
-    <li>
-      <a href="">
-        Sandboxed Item
-      </a>
-    </li>
-  {% endif %}
-  <li class="maybe-long-breadcrumb-item">
-    {{ item.name }}
-  </li>
-</ul>
+  </ul>
+{% endif %}
 {% endspaceless %}
 <div class="col-xs-12">
 

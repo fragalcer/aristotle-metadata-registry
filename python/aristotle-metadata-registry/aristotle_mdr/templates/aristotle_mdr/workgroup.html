@@ -132,7 +132,7 @@
                     {% if recent %}
                         {% for item in recent %}
                             <li class="list-group-item">{% include "aristotle_mdr/helpers/itemLink.html" with item=item %} ({{ item.get_verbose_name }})
-                                <br><small>{% trans 'Modified' %} {{ item.modified|naturaltime }}</small>
+                                <br><small>{% trans 'Updated' %} {{ item.modified|naturaltime }}</small>
                             </li>
                         {% endfor %}
                     {% else %}

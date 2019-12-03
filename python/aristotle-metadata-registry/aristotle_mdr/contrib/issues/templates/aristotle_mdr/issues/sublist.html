@@ -1,26 +1,27 @@
 {% if issues %}
     <div class="list-group">
         {% for issue in issues %}
-            <a href="{% url 'aristotle_issues:issue' issue.item_id issue.id %}" class="list-group-item">
-                <div class="h4 list-group-item-heading">
-                    <i class="text-{{ context_class }} fa fa-exclamation-circle"></i>
-                    {{ issue.name }}
-                    <small>
-                        <ul class="taggle_inline_list">
-                            {% for label in issue.labels.all %}
-                                <li class="taggle">{{ label.label }}</li>
-                            {% endfor %}
-                        </ul>
-                    </small>
-                </div>
-                <div class="list-group-item-text">
-                    <span>
-                      Opened {{ issue.created|timesince }} ago by {{ issue.submitter.display_name }}
-                    </span>
-                </div>
-            </a>
+        <a href="{% url 'aristotle_issues:issue' issue.item_id issue.id %}" class="list-group-item" target="_blank">
+            <div class="h4 list-group-item-heading">
+                <i class="text-{{ context_class }} fa fa-exclamation-circle"></i>
+                {{ issue.name }}
+
+                <small>
+                    <ul class="taggle_inline_list">
+                        {% for label in issue.labels.all %}
+                        <li class="taggle">{{ label.label }}</li>
+                        {% endfor %}
+                    </ul>
+                </small>
+            </div>
+            <div class="list-group-item-text">
+                        <span>
+                          Opened {{ issue.created|timesince }} ago by {{ issue.submitter.display_name }}
+                        </span>
+            </div>
+        </a>
         {% endfor %}
     </div>
 {% else %}
-    <b>No issues to display</b>
+<p>There are no {{ type }} issues for this item</p>
 {% endif %}

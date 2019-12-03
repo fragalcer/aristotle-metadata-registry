@@ -23,6 +23,7 @@ from aristotle_mdr.utils import (
     is_active_module
 )
 from aristotle_mdr.contrib.generic.views import ExtraFormsetMixin
+from aristotle_mdr.structs import Breadcrumb
 
 from formtools.wizard.views import SessionWizardView
 from reversion import revisions as reversion
@@ -83,6 +84,12 @@ class PermissionWizard(SessionWizardView):
         kwargs = super().get_form_kwargs(step)
         kwargs.update({'user': self.request.user})
         return kwargs
+
+    def get_breadcrumbs(self, model_name):
+        return [
+            Breadcrumb('Create Metadata', 'aristotle_mdr:create_list'),
+            Breadcrumb(f'Create {model_name}', active=True),
+        ]
 
     def get_context_data(self, form, **kwargs):
         context = super().get_context_data(form=form, **kwargs)
@@ -193,7 +200,8 @@ class ConceptWizard(ExtraFormsetMixin, PermissionWizard):
             fscontext = self.get_formset_context(fslist)
             context.update(fscontext)
 
-        context.update({'model_name': self.model._meta.verbose_name,
+        model_name = self.model._meta.verbose_name
+        context.update({'model_name': model_name,
                         'model_name_plural': self.model._meta.verbose_name_plural.title,
                         'help': ConceptHelp.objects.filter(
                             app_label=self.model._meta.app_label,
@@ -213,6 +221,8 @@ class ConceptWizard(ExtraFormsetMixin, PermissionWizard):
                     content_type__model=self.model._meta.model_name,
                 ).first()
             })
+
+        context['breadcrumbs'] = self.get_breadcrumbs(model_name)
 
         return context
 
@@ -648,6 +658,7 @@ class DataElementConceptWizard(MultiStepAristotleWizard):
         context.update({
             'template_name': self.template_name,
             })
+        context['breadcrumbs'] = self.get_breadcrumbs('Data Element Concept')
         return context
 
     @reversion.create_revision()
@@ -939,6 +950,7 @@ class DataElementWizard(MultiStepAristotleWizard):
                 'de_matches': self.get_data_elements(),
                 'made_de': self.get_cleaned_data_for_step('find_de_results'),
                 })
+        context['breadcrumbs'] = self.get_breadcrumbs('Data Element')
         return context
 
     def get_form_initial(self, step):

@@ -3,7 +3,6 @@
 
 {% block breadcrumbs %}
     <ol class="breadcrumb">
-        <!--<li><a href="{% url 'aristotle_reviews:userReadyForReview' %}">Review list</a></li>-->
         <li><a href="{{review.registration_authority.get_absolute_url }}">{{review.registration_authority.name }}</a></li>
         <li><a href="{% url 'aristotle_reviews:userReadyForReview' %}">Reviews</a></li>
         <li><a href="{% url 'aristotle_reviews:review_details' item.id %}">Request review details</a></li>

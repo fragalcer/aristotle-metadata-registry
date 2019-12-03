@@ -64,8 +64,6 @@ class ConceptWizardPage(HaystackReindexMixin, utils.AristotleTestUtils):
     wizard_form_name="dynamic_aristotle_wizard"
     extra_step2_data = {}
     step_names = ['initial', 'results']
-    # def tearDown(self):
-    #     call_command('clear_index', interactive=False, verbosity=0)
 
     def setUp(self):
         super().setUp()

@@ -106,18 +106,18 @@
                             <a href="#" class="dropdown-toggle"
                                data-toggle="dropdown">
                                 <i class="fa fa-calendar fa-fw"></i>
-                                {% trans 'Modified' context 'Modified date' %} <span class="caret"></span>
+                                {% trans 'Updated' context 'Updated date' %} <span class="caret"></span>
                                 <small class="details"></small>
                             </a>
                             <ul class="dropdown-menu fancy_checkbox_list" role="menu">
                                 {{ form.mq }}
                                 <li role="presentation" class="divider"></li>
                                 <li role="presentation">
-                                    <label role="menuitem" for='id_{{form.mds.name}}'>Modified after...</label>
+                                    <label role="menuitem" for='id_{{form.mds.name}}'>Updated after...</label>
                                     {{ form.mds }}
                                 </li>
                                 <li role="presentation">
-                                    <label role="menuitem" for='id_{{form.mde.name}}'>Modified before...</label>
+                                    <label role="menuitem" for='id_{{form.mde.name}}'>Updated before...</label>
                                     {{ form.mde }}
                                 </li>
                             </ul>

@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load static from staticfiles %}
 {% load render_bundle from webpack_loader %}
+{% load util_tags %}
 
 {% block webpack_css_bundle %}
     {% render_bundle 'wizard' 'css' %}
@@ -16,6 +17,7 @@
 {% endblock %}
 
 {% block content %}
+    {% breadcrumb_list breadcrumbs %}
     <h1>Create {{ model_name }} - <em>Step {{ wizard.steps.step1 }} of {{ wizard.steps.count }} - {{ step_title }}</em>
     </h1>
     {% block content_container_start %}

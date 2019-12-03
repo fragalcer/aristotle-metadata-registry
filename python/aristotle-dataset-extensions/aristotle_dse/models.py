@@ -371,7 +371,7 @@ class DataSetSpecification(aristotle.models.concept):
         # Lookup all objects
         if not objects:
             dss_ids = self.get_unique_ids(cluster_relations)
-            
+
             de_ids = self.get_unique_ids(de_relations)
             objects = type(self).objects.in_bulk(dss_ids)
             objects.update(aristotle.models.DataElement.objects.in_bulk(de_ids))

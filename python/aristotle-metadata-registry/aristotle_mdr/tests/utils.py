@@ -33,9 +33,7 @@ def model_to_dict(item):
 
 
 def get_management_forms(item, org_records=True, slots=False, identifiers=False, item_is_model=False):
-
     d = {}
-
     if slots:
         d['slots-TOTAL_FORMS'] = 0
         d['slots-INITIAL_FORMS'] = 0

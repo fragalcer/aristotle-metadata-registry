@@ -46,8 +46,8 @@ QUICK_DATES = Choices(
 # For dates and times, ascending means that earlier dates will precede later ones.
 SORT_OPTIONS = Choices(
     ('n', 'natural', _('Relevance')),
-    ('md', 'modified_descending', _('Most Recently Modified')),
-    ('ma', 'modified_ascending', _('Least Recently Modified')),
+    ('md', 'modified_descending', _('Most Recently Updated')),
+    ('ma', 'modified_ascending', _('Least Recently Updated')),
     ('ca', 'created_ascending', _('First Created')),
     ('cd', 'created_descending', _('Last Created')),
     ('aa', 'alphabetical', _('Alphabetical')),
@@ -397,12 +397,12 @@ class PermissionSearchForm(TokenSearchForm):
     )
     mds = forms.DateField(
         required=False,
-        label="Modified after date",
+        label="Updated after date",
         widget=BootstrapDateTimePicker(options=datePickerOptions)
     )
     mde = forms.DateField(
         required=False,
-        label="Modified before date",
+        label="Updated before date",
         widget=BootstrapDateTimePicker(options=datePickerOptions)
     )
     cq=forms.ChoiceField(

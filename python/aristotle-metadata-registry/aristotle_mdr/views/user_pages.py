@@ -14,6 +14,7 @@ from aristotle_mdr.views.utils import (paginated_registration_authority_list,
                                        GenericListWorkgroup,
                                        AjaxFormMixin)
 from aristotle_mdr.views.views import ConceptRenderView
+from aristotle_mdr.structs import Breadcrumb
 
 from django.apps import apps
 from django.conf import settings
@@ -672,14 +673,12 @@ class SharedItemView(LoginRequiredMixin, GetShareMixin, ConceptRenderView):
         share_user = self.share.profile.user
         user_display_name = share_user.full_name or share_user.short_name or share_user.email
         context['breadcrumbs'] = [
-            {
-                'name': '{}\'s Sandbox'.format(user_display_name),
-                'url': reverse('aristotle:sharedSandbox', args=[self.share.uuid])
-            },
-            {
-                'name': self.item.name,
-                'active': True
-            }
+            Breadcrumb(
+                '{}\'s Sandbox'.format(user_display_name),
+                'aristotle:sharedSandbox',
+                url_args=[self.share.uuid]
+            ),
+            Breadcrumb(self.item.name, active=True)
         ]
         # Set these in order to display links to other sandbox content  correctly
         context['shared_ids'] = self.sandbox_ids

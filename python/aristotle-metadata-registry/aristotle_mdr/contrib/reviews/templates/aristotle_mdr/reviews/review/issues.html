@@ -4,17 +4,32 @@
 
 {% block title %}Issues for Review{{ item.name }}{% endblock %}
 {% block tabpanel %}
+<h4>Issues for items in the review</h4>
 <div v-pre role="tabpanel" class="tab-pane active" id="review_issues">
-  <h2>Open issues related to items in this review</h2>
-
-      {% regroup open_issues by item as issues %}
-      {% for issue_set in issues %}
-          <h3>{{ issue_set.grouper.name }}</h1>
-            {% include 'aristotle_mdr/issues/sublist.html' with issues=issue_set.list context_class="success" %}
-      {% empty %}
+    {% regroup open_issues by item as issues %}
+    <div class="panel-group" id="accordion" role="tablist">
+        {% for issue_set in issues %}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a data-toggle="collapse" class="expand-chevrons" data-parent="#accordion" href="#collapse{{ forloop.counter0 }}"
+                    aria-expanded="false">
+                        {{ issue_set.grouper.name }}
+                        <i class="fa fa-chevron-right pull-right"></i>
+                        <i class="fa fa-chevron-down pull-right"></i>
+                    </a>
+                </h3>
+            </div>
+            <div id="collapse{{ forloop.counter0 }}" class="panel-collapse collapse" role="tabpanel">
+                <div class="panel-body">
+                    {% include 'aristotle_mdr/issues/sublist.html' with issues=issue_set.list context_class="success" %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
         <p>No issues to display</p>
-      {% endfor %}
+        {% endfor %}
+    </div>
 
 </div>
-
 {% endblock %}

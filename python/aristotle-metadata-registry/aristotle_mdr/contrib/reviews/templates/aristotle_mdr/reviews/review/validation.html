@@ -5,69 +5,73 @@
 
 {% block title %}Review details{{ item.name }}{% endblock %}
 {% block tabpanel %}
+{% if no_results %}
+    <p>There were no validation results for the items in this review</p>
+{% else %}
     <div v-pre role="tabpanel" class="tab-pane active" id="review_checks">
         <table class="table">
-        <thead>
-          <tr>
-          <th>Item</th>
-          <th>Results</th>
-          </tr>
-        </thead>
-        <tbody>
-        {% for agg in total_results %}
-        <tr>
-        <td>{{ agg.item_name }}</td>
-        <td>
-          {% if not setup_valid %}
-            <p>
-              No Validation rules avaliable
-            </p>
-          {% else %}
-            {% with results=agg.results %}
-              <div class="list-group">
-              {% for result in agg.results %}
-              <a href="#" class="list-group-item">
-                <div class="h5 list-group-item-heading">
-                  {% if result.status %}
-                    <i class="fa fa-check text-success"></i><span class="sr-only">Success</span>
-                  {% elif result.rule.severity == 'warning' %}
-                    <i class="fa fa-circle" style="color:#ffc107;"></i><span class="sr-only">Warning</span>
-                  {% else %}
-                    <i class="fa fa-times text-danger"></i><span class="sr-only">Failure</span>
-                  {% endif %}
-                  {{ result.validator.get_name }}
-                  {% if result.validator.rule.description %}
-                    <button class="btn btn-default btn-xs" type="button" data-toggle="collapse" data-target="#collapse_rule_{{forloop.parentloop.counter}}_{{ forloop.counter }}" aria-expanded="false" aria-controls="collapseExample">
-                      More info
-                    </button>
-                  {% endif %}
-                </div>
-                {% if result.message %}
-                  <p class="list-group-item-text">
-                    {{ result.message }}
-                  </p>
-                {% endif %}
-                {% if result.validator.rule.description %}
-                  <div class="collapse" id="collapse_rule_{{forloop.parentloop.counter}}_{{ forloop.counter }}">
-                    <div class="well">
-                      {{result.validator.rule.description}}
-                    </div>
-                  </div>
-                {% endif %}
-                {% comment %}
-                <pre>{% spaceless %}
-                  {{result}}
-                {% endspaceless %}</pre>
-                {% endcomment %}
-              </a>
-              {% endfor %}
-              </div>
-            {% endwith %}
-          {% endif %}
-        </td>
-        </tr>
-        {% endfor %}
-        </tbody>
-        </table>
-    </div>
+            <thead>
+            <tr>
+                <th>Item</th>
+                <th>Results</th>
+            </tr>
+            </thead>
+            <tbody>
+                {% for agg in total_results %}
+                <tr>
+                    <td>{{ agg.item_name }}</td>
+                    <td>
+                        {% if not setup_valid %}
+                        <p>No validation rules available</p>
+                        {% else %}
+                        {% with results=agg.results %}
+                        <div class="list-group">
+                            {% for result in agg.results %}
+                            <a href="#" class="list-group-item">
+                                <div class="h5 list-group-item-heading">
+                                    {% if result.status %}
+                                        <i class="fa fa-check text-success"></i><span class="sr-only">Success</span>
+                                    {% elif result.rule.severity == 'warning' %}
+                                        <i class="fa fa-circle" style="color:#ffc107;"></i><span class="sr-only">Warning</span>
+                                    {% else %}
+                                        <i class="fa fa-times text-danger"></i><span class="sr-only">Failure</span>
+                                    {% endif %}
+
+                                    {{ result.validator.get_name }}
+
+                                    {% if result.validator.rule.description %}
+                                        <button class="btn btn-default btn-xs" type="button" data-toggle="collapse"
+                                                data-target="#collapse_rule_{{forloop.parentloop.counter}}_{{ forloop.counter }}"
+                                                aria-expanded="false" aria-controls="collapseExample">
+                                            More info
+                                        </button>
+                                    {% endif %}
+                                </div>
+                                {% if result.message %}
+                                    <p class="list-group-item-text">
+                                        {{ result.message }}
+                                </p>
+                                {% endif %}
+                                {% if result.validator.rule.description %}
+                                    <div class="collapse" id="collapse_rule_{{forloop.parentloop.counter}}_{{ forloop.counter }}">
+                                        <div class="well">
+                                            {{result.validator.rule.description}}
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </a>
+                            {% empty %}
+                            <p>No validation results for this item</p>
+                            {% endfor %}
+
+                        </div>
+                        {% endwith %}
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+</div>
 {% endblock %}

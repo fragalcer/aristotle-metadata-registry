@@ -1,30 +1,37 @@
 // To add the gmail style select all button to a bulk_action page:
-    // 1. import {initSelectAll} from "src/lib/select_all"
-    // 2. initSelectAll()
-    // 3. Add {{page}}.js to webpack
-    // 4. Add total_query_size context to your view
+// 1. import {initSelectAll} from "src/lib/select_all"
+// 2. initSelectAll()
+// 3. Add {{page}}.js to webpack
+// 4. Add total_query_size context to your view
 
 export function initSelectAll() {
-    let selectAllCheckbox = document.getElementById('select-all-checkbox');
-    selectAllCheckbox.addEventListener("change", function () {
-        toggle_all_checkboxes(this);
-        if (document.getElementById('select-all-checkbox').checked) {
-            show_initial_div()
-        }
-        else {
-            // Checkbox is not checked
-            hide_initial_div()
-        }
-    });
 
+    let selectAllCheckbox = document.getElementById('select-all-checkbox')
     let selectAllQuerysetButton = document.getElementById("select-all-queryset-button")
-    selectAllQuerysetButton.addEventListener("click", function () {
-        select_all_queryset();
-    });
+
+    if (selectAllCheckbox != null) {
+        selectAllCheckbox.addEventListener("change", function () {
+            toggle_all_checkboxes(this);
+            if (document.getElementById('select-all-checkbox').checked) {
+                show_initial_div()
+            }
+            else {
+                // Checkbox is not checked
+                hide_initial_div()
+            }
+        })
+    }
+
+    if (selectAllQuerysetButton != null) {
+        selectAllQuerysetButton.addEventListener("click", function () {
+            select_all_queryset()
+        })
+    }
+
 }
 
 function get_all_checkboxes() {
-        return document.querySelectorAll('input[type="checkbox"]');
+    return document.querySelectorAll('input[type="checkbox"]');
 }
 
 function toggle_checkboxes_state() {
@@ -94,7 +101,7 @@ function select_all_queryset() {
     document.getElementById("clear-selections-button").addEventListener("click",
         function () {
             clear_selections(this);
-    });
+        });
     // Disable checkbox
     toggle_checkboxes_state()
 

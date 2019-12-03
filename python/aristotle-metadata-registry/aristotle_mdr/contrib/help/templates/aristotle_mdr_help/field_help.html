@@ -14,18 +14,14 @@
 {% endblock %}
 
 {% block title %}
-    {% if this_is_a_custom_field %}
-        Custom Field help - {{ model.get_verbose_name }} - {{field}}
-    {% else %}
-        Field help - {{ model.get_verbose_name }} - {{field.verbose_name.title}}
-    {% endif %}
+    {{ model.get_verbose_name }} - Help
 {% endblock %}
 
 {% block help_content %}
 
     {% if this_is_a_custom_field %}
         <h2>
-            Help text for Custom Field <em>{{ field }}</em>
+            <em>{{ field }}</em>
         </h2>
         <div class="panel panel-info">
             <div class="panel-heading">Short help</div>
@@ -47,7 +43,7 @@
         </div>
     {% else %}
         <h2>
-            Help text for field <em>{{ field.verbose_name.title }}</em>
+            <em>{{ field.verbose_name.title }}</em>
         </h2>
         <div class="panel panel-info">
             <div class="panel-heading">ISO 11179 help definition</div>
@@ -60,16 +56,14 @@
             </div>
         </div>
 
-        <div class="panel panel-info">
-            <div class="panel-heading">Registry specific help</div>
-            <div class="panel-body">
-                {% if custom_help %}
+        {% if custom_help %}
+            <div class="panel panel-info">
+                <div class="panel-heading">Registry specific help</div>
+                <div class="panel-body">
                     {{ custom_help | bleach }}
-                {% else %}
-                    <p class="text-muted">No text available.</p>
-                {% endif %}
+                </div>
             </div>
-        </div>
+        {% endif %}
     {% endif %}
 
 {% endblock %}

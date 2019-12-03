@@ -6,6 +6,7 @@ from django.utils.safestring import mark_safe, SafeString
 from django.conf import settings
 
 from aristotle_mdr.utils.text import pretify_camel_case
+from aristotle_mdr.structs import Breadcrumb
 
 import bleach
 import json
@@ -162,3 +163,8 @@ def dict_lookup(mapping, *keys):
                 return ''
 
     return result
+
+
+@register.inclusion_tag('aristotle_mdr/helpers/breadcrumbs.html')
+def breadcrumb_list(crumbs: List[Breadcrumb]):
+    return {'breadcrumbs': crumbs}
