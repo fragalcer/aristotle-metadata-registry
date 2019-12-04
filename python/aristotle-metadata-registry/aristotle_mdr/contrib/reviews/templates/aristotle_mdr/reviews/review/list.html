@@ -13,9 +13,9 @@
 {% block title %}Review details - items {{ item.name }}{% endblock %}
 {% block tabpanel %}
     <api-errors :errors="errors"></api-errors>
+    <p class="margin-above">Items currently listed for this review</p>
     <div role="tabpanel" class="tab-pane active" id="review_items">
         <table class="table table-striped" id="item-table">
-            <caption>Items currently listed for this review</caption>
             <tr>
                 <th>Item Details</th>
                 <th>Last Updated</th>

@@ -4,7 +4,8 @@
 
 {% block title %}Issues for Review{{ item.name }}{% endblock %}
 {% block tabpanel %}
-<h4>Issues for items in the review</h4>
+<p class="margin-above">Items with issues in this review</p>
+<hr>
 <div v-pre role="tabpanel" class="tab-pane active" id="review_issues">
     {% regroup open_issues by item as issues %}
     <div class="panel-group" id="accordion" role="tablist">

@@ -189,7 +189,9 @@ class Downloader:
         # Build url to regenerate download
         query = QueryDict(mutable=True)
         query.setlist('items', self.item_ids)
-        regenerate_url = '{url}?{qstring}'.format(
+
+        regenerate_url = '{host}{url}?{qstring}'.format(
+            host=self.options['CURRENT_HOST'],
             url=reverse('aristotle:download_options', args=[self.download_type]),
             qstring=query.urlencode()
         )

@@ -6,7 +6,8 @@
 {% block title %}Review details{{ item.name }}{% endblock %}
 {% block tabpanel %}
 {% if no_results %}
-    <p>There were no validation results for the items in this review</p>
+    <p class="margin-above">There were no validation results for the items in this review</p>
+    <hr>
 {% else %}
     <div v-pre role="tabpanel" class="tab-pane active" id="review_checks">
         <table class="table">
@@ -36,9 +37,7 @@
                                     {% else %}
                                         <i class="fa fa-times text-danger"></i><span class="sr-only">Failure</span>
                                     {% endif %}
-
                                     {{ result.validator.get_name }}
-
                                     {% if result.validator.rule.description %}
                                         <button class="btn btn-default btn-xs" type="button" data-toggle="collapse"
                                                 data-target="#collapse_rule_{{forloop.parentloop.counter}}_{{ forloop.counter }}"

@@ -100,10 +100,12 @@ class ReviewActionMixin(LoginRequiredMixin, UserFormViewMixin):
     def get_supersedes_context(self) -> List[Dict[str, Dict[str, Any]]]:
         supersedes = []
         qs = self.get_supersedes_qs()
-        for ss in qs:
+        for supersede in qs:
             supersedes.append({
-                'older': {'id': ss.older_item.id, 'name': ss.older_item.name},
-                'newer': {'id': ss.newer_item.id, 'name': ss.newer_item.name}
+                'older': {'id': supersede.older_item.id, 'name': supersede.older_item.name},
+                'newer': {'id': supersede.newer_item.id, 'name': supersede.newer_item.name},
+                'message': supersede.message,
+                'date_effective': supersede.date_effective
             })
         return supersedes
 

@@ -3,18 +3,26 @@
     <tr>
       <th>Older</th>
       <th>Newer</th>
+      <th>Message</th>
+      <th>Date Effective</th>
     </tr>
   </thead>
   <tbody>
     {% for rel in supersedes %}
-    <tr>
-      <td>
-        <a href="{% url 'aristotle:item' rel.older.id %}" target="_blank">{{ rel.older.name }}</a>
-      </td>
-      <td>
-        <a href="{% url 'aristotle:item' rel.newer.id %}" target="_blank">{{ rel.newer.name }}</a>
-      </td>
-    </tr>
+      <tr>
+        <td>
+          <a href="{% url 'aristotle:item' rel.older.id %}" target="_blank">{{ rel.older.name }}</a>
+        </td>
+        <td>
+          <a href="{% url 'aristotle:item' rel.newer.id %}" target="_blank">{{ rel.newer.name }}</a>
+        </td>
+        <td>
+          {{ rel.message|default:"-" }}
+        </td>
+        <td>
+          {{ rel.date_effective|default:"-" }}
+        </td>
+      </tr>
     {% endfor %}
   </tbody>
 </table>

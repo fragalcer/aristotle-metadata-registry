@@ -164,7 +164,6 @@ class DownloadStatusView(View):
             context['is_ready'] = True
             context['is_expired'] = False
 
-        # job.forget()
         return JsonResponse(context)
 
 

@@ -3,8 +3,8 @@
     <div>
         <div class="clearfix"></div>
         <h2>Additional Attributes</h2>
-        <table class="table">
-            <thead>
+        <table class="table table-hover">
+            <thead class="thead-dark">
             <tr>
                 <th>
                     {% trans 'Slot name' %}
@@ -23,13 +23,9 @@
             <tbody>
             {% for slot in slots %}
                 <tr>
-                    <td>
-                        {{ slot.name }}
-                    </td>
+                    <td>{{ slot.name }}</td>
                     <td>{{slot.type}}</td>
-                    <td>
-                        {{ slot.value|linebreaks }}
-                    </td>
+                    <td>{{ slot.value|linebreaks }}</td>
                     <td>
                         <a href="{% url 'aristotle_slots:similar_slots' slot.name %}?value={{slot.value}}">
                             {% count_similar request.user slot %}

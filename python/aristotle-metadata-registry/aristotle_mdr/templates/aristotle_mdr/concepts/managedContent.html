@@ -3,7 +3,6 @@
 {% load aristotle_tags util_tags %}
 
 {% block infoContent %}
-
     <section class="managed row">
         {% include "aristotle_mdr/concepts/infobox.html" %}
 
@@ -77,11 +76,12 @@
             {% if item.relational_attributes %}
                 <h2>Related content</h2>
 
-                <table class="table">
+                <table class="tabletable-hover">
+                    <thead class="thead-dark">
                     <tr>
                         <th>Relation</th>
                         <th>Count</th>
-                    </tr>
+                    </tr></thead>
                     {% for name, data in item.relational_attributes.items %}
                         <tr>
                             <td>
@@ -103,9 +103,7 @@
             {% endblock %}
 
         </div>
-
     </section>
-
     <tags-modal
             :open="tagsModalOpen"
             item-tags="{{ item_tags }}"

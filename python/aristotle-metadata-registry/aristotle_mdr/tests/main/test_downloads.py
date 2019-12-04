@@ -280,7 +280,7 @@ class DownloaderTestCase(AristotleTestUtils, TestCase):
         self.assertEqual(content, 'MyFile')
 
     def test_email_file(self):
-        downloader = FakeDownloader([self.item.id], self.editor.id, {})
+        downloader = FakeDownloader([self.item.id], self.editor.id, {'CURRENT_HOST': 'http://testserver'})
         f = ContentFile('MyFile')
         size = f.size
         f.close()

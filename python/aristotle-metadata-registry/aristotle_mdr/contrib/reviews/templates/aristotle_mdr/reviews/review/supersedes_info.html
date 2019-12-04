@@ -4,18 +4,17 @@
 
 {% block title %}Review details{{ item.name }}{% endblock %}
 {% block tabpanel %}
+<p class="margin-above">These supersedes relations have been proposed for the items in this review</p>
+<hr>
 <div v-pre role="tabpanel" class="tab-pane active" id="review_impact">
   <div class="panel">
     <div class="panel-body">
-      <p>
-        These supersedes relations have been proposed for the items in this review
-      </p>
-      {% if can_edit_review %}
-      <a class="btn btn-primary" href="{% url 'aristotle_mdr_review_requests:request_supersedes_edit' review.id %}">
-        Edit Supersedes
-      </a>
-      {% endif %}
       {% include 'aristotle_mdr/helpers/supersedes_display_table.html' with supersedes=supersedes only %}
+      {% if can_edit_review %}
+        <a class="btn btn-primary pull-right" href="{% url 'aristotle_mdr_review_requests:request_supersedes_edit' review.id %}">
+          Edit Supersedes
+        </a>
+      {% endif %}
     </div>
   </div>
 </div>
