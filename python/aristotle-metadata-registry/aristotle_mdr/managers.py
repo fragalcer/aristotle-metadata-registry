@@ -406,7 +406,10 @@ class StatusQuerySet(models.QuerySet):
     def valid(self):
         return self.valid_at_date(timezone.now().date())
 
-    def valid_at_date(self, when=timezone.now().date()):
+    def valid_at_date(self, when=None):
+        if when is None:
+            when = timezone.now().date()
+
         registered_before_now = Q(registrationDate__lte=when)
         registration_still_valid = (
             Q(until_date__gte=when) |
@@ -417,12 +420,14 @@ class StatusQuerySet(models.QuerySet):
             registered_before_now & registration_still_valid
         )
 
-    def current(self, when=timezone.now()):
+    def current(self, when=None):
         """
         Returns a queryset that returns the most up to date statuses
 
         It is **chainable** with other querysets.
         """
+        if when is None:
+            when = timezone.now()
         if hasattr(when, 'date'):
             when = when.date()
 
