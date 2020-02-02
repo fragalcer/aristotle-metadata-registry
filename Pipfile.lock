@@ -355,6 +355,7 @@
         "django-reversion-compare": {
             "hashes": [
                 "sha256:20a38ed641a2e7cb3fb6a3e3c6f4b24a2d5c4d08921030e4f0816ad794c14dd6",
+                "sha256:424de24d77c0be4bc1b08609e78ac0cb2b161ba3d37f3969f3937c8f3ebe6de4",
                 "sha256:bd29a775837e77e69d77fd54e5bdb34b02a0888b27a0be87777fa57f4e0ad8a4"
             ],
             "version": "==0.8.7"
@@ -397,9 +398,9 @@
         },
         "drf-writable-nested": {
             "hashes": [
-                "sha256:5c54eca93d74dc22014fb7ea54b6dbd559a058587596feba4d79078e32a83e16"
+                "sha256:79839ac42a7bf393dcc03fbe4a8c51966c28f423aee8e2de1b27124fd2c4f94a"
             ],
-            "version": "==0.5.1"
+            "version": "==0.5.4"
         },
         "drf-yasg": {
             "hashes": [
@@ -488,10 +489,10 @@
         },
         "jinja2": {
             "hashes": [
-                "sha256:6e7a3c2934694d59ad334c93dd1b6c96699cf24c53fdb8ec848ac6b23e685734",
-                "sha256:d6609ae5ec3d56212ca7d802eda654eaf2310000816ce815361041465b108be4"
+                "sha256:93187ffbc7808079673ef52771baa950426fd664d3aad1d0fa3e95644360e250",
+                "sha256:b0eaf100007721b5c16c1fc1eecb87409464edc10469ddc9a22a27a99123be49"
             ],
-            "version": "==2.11.0"
+            "version": "==2.11.1"
         },
         "jsonfield": {
             "hashes": [
@@ -665,7 +666,7 @@
         "pypandoc": {
             "editable": true,
             "git": "https://github.com/harrywhite4/pypandoc",
-            "ref": "2a17a9eedd30732ad5a05bbc130a3d46f8ac9c62"
+            "ref": "master"
         },
         "pypdf2": {
             "hashes": [
@@ -740,10 +741,10 @@
         },
         "ruamel.yaml": {
             "hashes": [
-                "sha256:91d6bfe4fce401a00388deb0f5d29e10d2d3683a868c1113ae16bbc351ceb6a4",
-                "sha256:966e5a049eebf011c90424b9ec7dab6358cee8de0907354b27a27f20a8c4c2ec"
+                "sha256:9d59fa89985c55155d35c886663e357813404ae8f94638cb673135b8c8c1a7c7",
+                "sha256:dba517a7e330b6caf476b757022d21efa13c32694bfba1e057ce59a374f18f0a"
             ],
-            "version": "==0.16.6"
+            "version": "==0.16.7"
         },
         "ruamel.yaml.clib": {
             "hashes": [
@@ -842,10 +843,10 @@
         },
         "wheel": {
             "hashes": [
-                "sha256:48e082fac9a549bb30abcb71360db41e9e999f63bfc9933fdb7339ba7205330f",
-                "sha256:664b9c5033ee7cd5aa6b355bc8a4a5915eadb7612e7b0acab1aa71f005457107"
+                "sha256:8788e9155fe14f54164c1b9eb0a319d98ef02c160725587ad60f14ddc57b6f96",
+                "sha256:df277cb51e61359aba502208d680f90c0493adec6f0e848af94948778aed386e"
             ],
-            "version": "==0.34.1"
+            "version": "==0.34.2"
         },
         "zipp": {
             "hashes": [
