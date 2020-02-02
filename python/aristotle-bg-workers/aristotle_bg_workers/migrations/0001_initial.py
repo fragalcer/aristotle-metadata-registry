@@ -9,6 +9,11 @@ class Migration(migrations.Migration):
 
     initial = True
 
+    replaces = [
+        ('aristotle_bg_workers', '0001_squashed_0002_extrataskinfo_date_started'),
+        ('aristotle_bg_workers', '0002_extrataskinfo_celery_task_id')
+    ]
+
     dependencies = [
         ('django_celery_results', '0003_auto_20181106_1101'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
