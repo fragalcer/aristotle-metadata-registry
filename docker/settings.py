@@ -30,7 +30,7 @@ INSTALLED_APPS = list(INSTALLED_APPS) + [
     "aristotle_dse",
     "aristotle_glossary",
     "comet",
-    # "mallard_qr",
+    "mallard_qr",
     "aristotle_mdr_graphql",
 ]
 

@@ -242,18 +242,18 @@ class ListVersionsView(ObjectAPIView, VersionsMixin):
 
 
 class ListVersionsPermissionsView(ObjectAPIView, VersionsMixin):
-    " List the version permissions of an item "
+    """List the version permissions of an item."""
 
     def get(self, request, *args, **kwargs):
         metadata_item = self.get_object()
-        versions = self.get_versions(metadata_item, self.request.user)
+        versions = self.get_concept_versions_for_user(metadata_item, self.request.user)
         versions.order_by("-revision__date_created")
 
         # Lookup all the respective versions
         permissions = []
         for version in versions:
-                version_permission = VersionPermissions.objects.get_object_or_none(version=version)
-                permissions.append(version_permission)
+            version_permission = VersionPermissions.objects.get_object_or_none(version=version)
+            permissions.append(version_permission)
 
         serializer = serializers.VersionPermissionsSerializer(permissions, many=True)
 
@@ -278,7 +278,7 @@ class UpdateVersionPermissionsView(generics.ListAPIView, VersionsMixin):
             raise PermissionDenied()
 
         # Get associated versions
-        versions = self.get_versions(self.item, self.request.user)
+        versions = self.get_concept_versions_for_user(self.item, self.request.user)
         self.version_ids = [version.pk for version in versions]
 
         return super().dispatch(request, *args, **kwargs)
@@ -328,7 +328,3 @@ class GetVersionsPermissionsView(ObjectAPIView, VersionsMixin):
         version_permission = VersionPermissions.objects.get_object_or_none(version=version)
 
         return Response(version_permission.visibility, status.HTTP_200_OK)
-
-
-
-

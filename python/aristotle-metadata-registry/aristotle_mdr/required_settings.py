@@ -352,8 +352,11 @@ ARISTOTLE_VALIDATORS = {
 }
 
 # Serialization
-SERIALIZATION_MODULES = {'mdrjson': 'aristotle_mdr_api.serializers.idjson',
-                         'aristotle_mdr_json': 'aristotle_mdr.contrib.serializers.concept_serializer'}
+SERIALIZATION_MODULES = {
+    'mdrjson': 'aristotle_mdr_api.serializers.idjson',
+    'aristotle_mdr_json': 'aristotle_mdr.contrib.serializers.concept_serializer',
+    'aristotle_mdr_json_uuid_compatible': 'aristotle_mdr.contrib.serializers.concept_serializer',
+}
 
 # Set an environment variable as the default email address to send backend emails for notifications.
 ARISTOTLE_EMAIL_NOTIFICATIONS = os.getenv('ARISTOTLE_EMAIL_NOTIFICATIONS', None)

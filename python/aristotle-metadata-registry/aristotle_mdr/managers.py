@@ -61,8 +61,8 @@ class UtilsManager(models.Manager):
         if isinstance(objects, models.QuerySet):
             objects.delete()
         else:
-            ids = [o.id for o in objects]
-            qs = self.get_queryset().filter(id__in=ids)
+            pks = [o.pk for o in objects]
+            qs = self.get_queryset().filter(pk__in=pks)
             qs.delete()
 
     def get_object_or_none(self, **kwargs):

@@ -563,8 +563,8 @@ def can_edit_label(label, user):
     return perms.user_can_edit_issue_label(user, label)
 
 
-@register.inclusion_tag('aristotle_mdr_help/helpers/field_icon.html', takes_context=True)
-def field_help_icon(context, item_or_model, field_name):
+@register.inclusion_tag('aristotle_mdr_help/helpers/field_icon.html')
+def field_help_icon(item_or_model, field_name):
     klass = item_or_model.__class__
     return {
         'app': klass._meta.app_label,

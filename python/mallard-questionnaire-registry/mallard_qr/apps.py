@@ -1,5 +1,6 @@
 from aristotle_mdr.apps import AristotleExtensionBaseConfig
 
+
 class MallardIndicatorConfig(AristotleExtensionBaseConfig):
     name = 'mallard_qr'
     verbose_name = "Mallard Questionnaire Registry"

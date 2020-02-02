@@ -1,10 +1,10 @@
-from django.conf.urls import url
+from django.urls import path
 from . import views
 
 urlpatterns = [
-    url(r'(?P<pk>\d+)/promote-concept/$', views.PromoteImpactedItemToReviewItemsView.as_view(), name='promote_concept'),
-    url(r'(?P<pk>\d+)/remove-concept/$', views.RemoveItemFromReviewItemsView.as_view(), name='remove_concept'),
-    url(r'(?P<pk>\d+)/updatecomment/$', views.ReviewUpdateAndCommentView.as_view(), name='update_and_comment'),
-    url(r'comments/$', views.ReviewCommentCreateView.as_view(), name='comment'),
-    url(r'comments/(?P<pk>\d+)/$', views.ReviewCommentRetrieveView.as_view(), name='comment_get'),
+    path('comments/', views.ReviewCommentCreateView.as_view(), name='comment'),
+    path('comments/<int:pk>/', views.ReviewCommentRetrieveView.as_view(), name='comment_get'),
+    path('<int:pk>/promote-concept/', views.PromoteImpactedItemToReviewItemsView.as_view(), name='promote_concept'),
+    path('<int:pk>/remove-concept/', views.RemoveItemFromReviewItemsView.as_view(), name='remove_concept'),
+    path('<int:pk>/update-comment/', views.ReviewUpdateAndCommentView.as_view(), name='update_and_comment'),
 ]

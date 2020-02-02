@@ -1,4 +1,4 @@
-from rest_framework import generics
+from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
@@ -60,11 +60,11 @@ class AlterItemInReviewView(APIView):
 
         if self.operation_flag == 'add':
             review_request.concepts.add(MDR._concept.objects.get(pk=concept_id))
-            return Response({"concept_id": concept_id}, 200)
+            return Response(data={"concept_id": concept_id}, status=status.HTTP_200_OK)
 
         elif self.operation_flag == 'remove':
             review_request.concepts.remove(MDR._concept.objects.get(pk=concept_id))
-            return Response({"concept_id": concept_id}, 200)
+            return Response(data={"concept_id": concept_id}, status=status.HTTP_200_OK)
 
         else:
             raise AssertionError("Flag must be set to either add or remove")

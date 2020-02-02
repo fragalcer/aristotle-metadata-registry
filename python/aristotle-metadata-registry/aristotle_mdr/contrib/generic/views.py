@@ -534,9 +534,11 @@ class UnorderedGenericAlterOneToManyView(GenericAlterOneToManyViewBase):
 
 
 class ExtraFormsetMixin:
-    # Mixin of utils function for adding additional formsets to a view
-    # extra_formsets must contain formset, type, title and saveargs
-    # See EditItemView for example usage
+    """
+    Mixin of utils function for adding additional formsets to a view.
+    Extra_formsets must contain formset, type, title and saveargs.
+    See EditItemView for example usage.
+    """
 
     def get_invalid_tab_context(self, form, extra_formsets):
 

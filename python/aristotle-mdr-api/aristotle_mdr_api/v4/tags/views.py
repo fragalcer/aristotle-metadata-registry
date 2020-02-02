@@ -15,18 +15,18 @@ from aristotle_mdr.perms import user_can_view
 
 class TagView(generics.RetrieveUpdateDestroyAPIView):
     """Retrieve and update a tag"""
-    permission_classes=(AuthCanViewEdit,)
-    permission_key='metadata'
-    serializer_class=serializers.TagSerializer
-    queryset=Tag.objects.all()
+    permission_classes = (AuthCanViewEdit,)
+    permission_key = 'metadata'
+    serializer_class = serializers.TagSerializer
+    queryset = Tag.objects.all()
 
 
 class ItemTagUpdateView(generics.UpdateAPIView):
     """Update tags for a specific item"""
-    permission_classes=(AuthCanViewEdit,)
-    permission_key='metadata'
-    serializer_class=serializers.ItemTagSerializer
-    pk_url_kwarg='iid'
+    permission_classes = (AuthCanViewEdit,)
+    permission_key = 'metadata'
+    serializer_class = serializers.ItemTagSerializer
+    pk_url_kwarg = 'iid'
 
     def dispatch(self, request, *args, **kwargs):
         item_id = self.kwargs[self.pk_url_kwarg]

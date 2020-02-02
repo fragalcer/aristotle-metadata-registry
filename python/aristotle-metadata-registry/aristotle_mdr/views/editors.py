@@ -1,10 +1,10 @@
-from django.db import transaction
+import reversion
 from django.http import HttpResponseRedirect
 from django.views.generic import UpdateView, FormView
 from django.views.generic.detail import SingleObjectMixin
 from django.utils import timezone
+from django.db import transaction
 
-import reversion
 from reversion.models import Version
 
 from aristotle_mdr.utils import (
@@ -33,7 +33,7 @@ logger.debug("Logging started for " + __name__)
 
 class ConceptEditFormView(ObjectLevelPermissionRequiredMixin):
     """
-    Base class for editing concepts
+    Base class for editing concepts.
     """
     raise_exception = True
     redirect_unauthenticated_users = True
@@ -141,8 +141,8 @@ class EditItemView(ExtraFormsetMixin, ConceptEditFormView, UpdateView):
 
             extra_formsets.append({
                 'formset': slot_formset,
-                'title': 'Slots',
                 'type': 'slot',
+                'title': 'Slots',
                 'saveargs': None
             })
 
@@ -158,25 +158,27 @@ class EditItemView(ExtraFormsetMixin, ConceptEditFormView, UpdateView):
 
             extra_formsets.append({
                 'formset': recordrelation_formset,
-                'title': 'RecordRelation',
                 'type': 'record_relation',
+                'title': 'RecordRelation',
                 'saveargs': None
             })
 
         if self.reference_links_active:
+            from aristotle_cloud.contrib.steward_extras.models import ReferenceBase
+
             referencelinks_formset = self.get_referencelinks_formset()(
                 instance=self.item.concept,
                 data=postdata
             )
-            from aristotle_cloud.contrib.steward_extras.models import ReferenceBase
+
             # Override the queryset to restrict to the records the user has permission to view
             for record_relation_form in referencelinks_formset:
                 record_relation_form.fields['reference'].queryset = ReferenceBase.objects.visible(self.request.user).order_by("title")
 
             extra_formsets.append({
                 'formset': referencelinks_formset,
-                'title': 'ReferenceLink',
                 'type': 'reference_links',
+                'title': 'ReferenceLink',
                 'saveargs': None
             })
 
@@ -189,8 +191,8 @@ class EditItemView(ExtraFormsetMixin, ConceptEditFormView, UpdateView):
 
             extra_formsets.append({
                 'formset': id_formset,
-                'title': 'Identifiers',
                 'type': 'identifiers',
+                'title': 'Identifiers',
                 'saveargs': None
             })
 
@@ -201,11 +203,13 @@ class EditItemView(ExtraFormsetMixin, ConceptEditFormView, UpdateView):
         extra_formsets = self.get_extra_formsets(self.item, request.POST)
 
         self.object = self.item
+        item = None
+        change_comments = None
 
         if form.is_valid():
             # Actualize the model, but don't save just yet
             item = form.save(commit=False)
-            change_comments = form.data.get('change_comments', None)
+            change_comments = form.data.get('change_comments')
             form_invalid = False
         else:
             form_invalid = True
@@ -335,10 +339,13 @@ class CloneItemView(ExtraFormsetMixin, ConceptEditFormView, SingleObjectMixin, F
         # TODO: eliminate formset hell.
         extra_formsets = self.get_extra_formsets(self.model, request.POST, clone_item=False)
 
+        item = None
+        change_comments = None
+
         if form.is_valid():
             item = form.save(commit=False)
             item.submitter = request.user
-            change_comments = form.data.get('change_comments', None)
+            change_comments = form.data.get('change_comments')
             form_invalid = False
         else:
             form_invalid = True
@@ -389,11 +396,12 @@ class CloneItemView(ExtraFormsetMixin, ConceptEditFormView, SingleObjectMixin, F
         fscontext = self.get_formset_context(self.extra_formsets)
         context.update(fscontext)
 
-        context['show_slots_tab'] = self.slots_active or context['form'].custom_fields
-        context['slots_active'] = self.slots_active
-        context['show_id_tab'] = self.identifiers_active
-
-        context['additional_records_active'] = self.additional_records_active
-        context['reference_links_active'] = self.reference_links_active
+        context.update({
+            'show_slots_tab': self.slots_active or context['form'].custom_fields,
+            'slots_active': self.slots_active,
+            'show_id_tab': self.identifiers_active,
+            'additional_records_active': self.additional_records_active,
+            'reference_links_active': self.reference_links_active
+        })
 
         return context

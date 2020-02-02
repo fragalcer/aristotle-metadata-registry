@@ -47,22 +47,13 @@ class BaseTokenPermissions(BasePermission):
         return False
 
 
-# Copy of djangorestframeworks permission to deal with CallableBool
-# Can be removed if using django 2
-class IsAuthenticated(BasePermission):
-
-    def has_permission(self, request, view):
-        result = (request.user and request.user.is_authenticated)
-        return bool(result)
-
-
-# Copy of djangorestframeworks permission to deal with CallableBool
-# Can be removed if using django 2
 class IsSuperuser(BasePermission):
+    """
+    Allows access to only to superusers.
+    """
 
     def has_permission(self, request, view):
-        result = (request.user and request.user.is_superuser)
-        return bool(result)
+        return bool(request.user and request.user.is_superuser)
 
 
 class TokenOrReadOnlyPerm(BaseTokenPermissions):

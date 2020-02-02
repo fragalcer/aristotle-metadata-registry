@@ -14,6 +14,11 @@ from aristotle_mdr.fields import (
 )
 from aristotle_mdr.structs import Tree, Node
 from aristotle_mdr.utils import fetch_aristotle_settings
+from aristotle_dse.model_utils import (
+    DSSGroupingLinkedGroupThrough,
+    DSSDEInclusionSpecialisationClassesThrough,
+    DistributionDataElementPathSpecialisationClassesThrough,
+)
 
 CARDINALITY = Choices(('optional', _('Optional')), ('conditional', _('Conditional')), ('mandatory', _('Mandatory')))
 
@@ -193,12 +198,13 @@ class DistributionDataElementPath(aristotle.models.aristotleComponent):
     specialisation_classes = ConceptManyToManyField(
         aristotle.models.ObjectClass,
         help_text=_(""),
-        blank=True
+        blank=True,
+        through=DistributionDataElementPathSpecialisationClassesThrough,
     )
 
 
 class DataSetSpecification(aristotle.models.concept):
-    """
+    r"""
     A collection of :model:`aristotle_mdr.DataElement`\s
     specifying the order and fields required for a standardised
     :model:`aristotle_dse.DataSource`.
@@ -306,13 +312,14 @@ class DataSetSpecification(aristotle.models.concept):
         return items
 
     def get_all_clusters(self) -> List[Tuple[int, int, Any]]:
-        """Get all clusters as (parent_id, child_id, inclusion) tuples (depth limited)"""
-        # Final triples
-        clusters = []
-        # Id's of last level
-        last_level_ids: Set = set([self.id])
-        # Inclusion id's
-        seen_inclusions: Set = set()
+        """
+        Get all the clusters of this DataSetSpecification Object.
+        The depth is limited by the `CLUSTER_DISPLAY_DEPTH` setting.
+        :return: Tuple containing parent id, child id, and inclusion. e.g. (parent_id, child_id, inclusion)
+        """
+        clusters = []  # Final triples
+        last_level_ids: Set = {self.id}  # Id's of last level
+        seen_inclusions: Set = set()  # Inclusion id's
 
         for i in range(settings.CLUSTER_DISPLAY_DEPTH):
             # get parent, child tuples
@@ -336,7 +343,9 @@ class DataSetSpecification(aristotle.models.concept):
         return clusters
 
     def get_de_relations(self, dss_ids: Set[int]) -> List[Tuple[int, int, Any]]:
-        """Helper used to fetch all data element relations for a set of dss's"""
+        """
+        The purpose of this function is to fetch all data element relations for a set of DSS's.
+        """
         dss_ids.add(self.id)
         values = DSSDEInclusion.objects.filter(
             dss__in=dss_ids,
@@ -429,9 +438,6 @@ class DSSInclusion(aristotle.models.aristotleComponent):
 
 
 class DSSGrouping(aristotle.models.aristotleComponent):
-    class Meta:
-        ordering = ['order']
-        verbose_name = 'DSS Grouping'
 
     inline_field_layout = 'list'
     parent_field_name = 'dss'
@@ -444,8 +450,12 @@ class DSSGrouping(aristotle.models.aristotleComponent):
         _('definition'),
         blank=True,
     )
+
     linked_group = models.ManyToManyField(
-        'self', blank=True, symmetrical=False
+        'self',
+        blank=True,
+        symmetrical=False,
+        through=DSSGroupingLinkedGroupThrough,
     )
     order = models.PositiveSmallIntegerField(
         "Position",
@@ -454,22 +464,32 @@ class DSSGrouping(aristotle.models.aristotleComponent):
     )
     parent = 'dss'
 
+    class Meta:
+        ordering = ['order']
+        verbose_name = 'DSS Grouping'
+
     def __str__(self):
         return self.name
 
 
-# Holds the link between a DSS and a Data Element with the DSS Specific details.
 class DSSDEInclusion(DSSInclusion):
+    """
+    A DSSDEInclusion object holds the link between a DSS and a Data Element with the DSS Specific details.
+    """
     data_element = ConceptForeignKey(aristotle.models.DataElement, related_name="dssInclusions", on_delete=models.CASCADE)
+
     group = models.ForeignKey(
         DSSGrouping,
-        blank=True, null=True,
-        on_delete=models.SET_NULL
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+        to_field='id',
     )
     specialisation_classes = ConceptManyToManyField(
         aristotle.models.ObjectClass,
         help_text=_(""),
         blank=True,
+        through=DSSDEInclusionSpecialisationClassesThrough,
     )
 
     inline_field_layout = 'list'
@@ -513,10 +533,10 @@ class DSSDEInclusion(DSSInclusion):
         pass
 
 
-# Holds the link between a DSS and a cluster with the DSS Specific details.
 class DSSClusterInclusion(DSSInclusion):
     """
-    The child in this relationship is considered to be a child of the parent DSS as specified by the `dss` property.
+    A DSSClusterInclusion object holds the link between a DSS and a cluster with the DSS Specific details.
+    The `child` in this relationship is considered to be a child of the parent DSS as specified by the `dss` property.
     """
     child = ConceptForeignKey(DataSetSpecification, related_name='parent_dss', on_delete=models.CASCADE)
 
@@ -541,4 +561,4 @@ class DSSClusterInclusion(DSSInclusion):
         return ["Cluster '{}'".format(self.child.name)]
 
     def __str__(self):
-        return "Cluster {cls} at position {pos}".format(cls=self.child_id, pos=self.order)
+        return self.inline_editor_description()

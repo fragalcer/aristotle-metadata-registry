@@ -1,4 +1,4 @@
-from typing import List, Optional, Any
+from typing import List, Optional, Any, Union
 from django.urls import reverse
 from django.utils.html import format_html
 
@@ -44,13 +44,14 @@ class VersionField:
             raw = self.empty_text
 
         if self.html:
-            # Automatically bleach result if html
-            return bleach_filter(raw)
+            return bleach_filter(raw)  # Automatically bleach result if html
         return raw
 
 
 class VersionLinkField(VersionField):
-    """Version field that links to a concept"""
+    """
+    Version field that links to a concept
+    """
 
     empty_text = 'None'
     perm_message = 'Linked to object you do not have permission to view'
@@ -59,11 +60,16 @@ class VersionLinkField(VersionField):
     group = False
     html = False
 
-    def __init__(self, fname: str, id: Optional[int], obj: Optional[Any]):
+    def __init__(self, fname: str, identifier: Union[int, str, None], obj: Optional[Any]):
+        """
+        :param fname: Str: Name of the field.
+        :param identifier: This class attribute represents the kind of identifier used in this LinkField.
+        We use integers to represent ids, or strings type to represent uuids.
+        :param obj: Metadata object linked to this VersionLinkField object
+        """
         self.fname = fname
-        self.id = id
+        self.identifier = identifier
         self.obj = obj
-
         self.is_concept = isinstance(obj, _concept)
 
     @property
@@ -81,27 +87,21 @@ class VersionLinkField(VersionField):
                 return str(self.obj)
         return ''
 
-    def __str__(self):
-        if self.id is not None:
+    def __str__(self):  # Get a nice name for object
+        if self.identifier is not None:
             if self.obj:
                 url = self.url
-                # Get a nice name for object
                 if url:
-                    # Build link
-                    return format_html(
+                    return format_html(  # Build link dynamically
                         '<a href="{url}">{name}</a> <span class="text-danger">*</span>',
                         url=url,
                         name=self.obj_name
                     )
-
                 else:
-                    # Return plain name
-                    return self.obj_name
+                    return self.obj_name  # Return plain name
             else:
-                # If field is set but object is None no perm
-                return self.perm_message
-        # Empty value if no id
-        return self.empty_text
+                return self.perm_message  # If field is set but object is None no perm
+        return self.empty_text  # Empty value if no id
 
 
 class VersionGroupField(VersionField):
@@ -118,8 +118,7 @@ class VersionGroupField(VersionField):
 
     @property
     def heading(self):
-        # Pluralize names for grouped field
-        if self.fname and self.fname[-1] != 's':
+        if self.fname and self.fname[-1] != 's':  # Pluralize names for grouped field
             return self.fname + 's'
         return self.fname
 
@@ -149,8 +148,7 @@ class VersionMultiLinkField(VersionField):
         self.fname = fname
         self.sub_links = sub_links
 
-    def __str__(self):
-        # Get str of sub fields
+    def __str__(self):  # Get str of sub fields
         sub_strings = [str(f) for f in self.sub_links]
         result = ', '.join(sub_strings)
 

@@ -1,8 +1,8 @@
-from django.conf.urls import include, url
+from django.urls import include, path, re_path
 
 urlpatterns = [
-    url(r'^', include('aristotle_mdr.urls')),
-    url(r'^browse/', include('aristotle_mdr.contrib.browse.urls')),
-    url(r'^help/', include(('aristotle_mdr.contrib.help.urls', "aristotle_help"), namespace="aristotle_help")),
-    url(r'^api/', include('aristotle_mdr_api.urls'))
+    re_path(r'^', include('aristotle_mdr.urls')),
+    path('browse/', include('aristotle_mdr.contrib.browse.urls')),
+    path('help/', include(('aristotle_mdr.contrib.help.urls', "aristotle_help"), namespace="aristotle_help")),
+    path('api/', include('aristotle_mdr_api.urls'))
 ]

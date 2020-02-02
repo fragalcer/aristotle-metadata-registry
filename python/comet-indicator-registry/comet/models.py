@@ -1,9 +1,8 @@
 from __future__ import unicode_literals
-
 from typing import List
 
 from django.db import models
-from django.db.models import Q, Subquery
+from django.db.models import Subquery
 from django.utils.translation import ugettext as _
 
 from mptt.models import MPTTModel, TreeForeignKey
@@ -16,10 +15,66 @@ from aristotle_mdr.utils import (
     fetch_aristotle_settings,
 )
 from aristotle_mdr.utils.model_utils import (
-    ManagedItem,
     aristotleComponent,
 )
 from comet.managers import FrameworkDimensionManager
+from comet.model_utils import IndicatorFrameworkDimensionsThrough
+
+
+class Framework(MDR.concept):
+    template = "comet/framework.html"
+    clone_warning_template = "comet/clone_warning/framework.html"
+    serialize_weak_entities = [
+        ('dimensions', 'frameworkdimension_set'),
+    ]
+
+    def root_dimensions(self):
+        return self.frameworkdimension_set.all().filter(
+            parent=None
+        )
+
+
+class FrameworkDimension(MPTTModel, TimeStampedModel, aristotleComponent):
+    parent_field_name = 'framework'
+
+    objects = FrameworkDimensionManager()
+    framework = ConceptForeignKey(Framework, on_delete=models.CASCADE)
+    name = models.CharField(max_length=2048)
+    description = MDR.RichTextField(blank=True)
+    parent = TreeForeignKey(
+        'self',
+        null=True,
+        blank=True,
+        to_field='id',
+        related_name='child_dimensions',
+        on_delete=models.CASCADE,
+    )
+
+    class MPTTMeta:
+        order_insertion_by = ['name']
+
+    @property
+    def parentItem(self):
+        return self.framework
+
+    def __str__(self):
+        return self.name
+
+
+class OutcomeArea(MDR.concept):
+    template = "comet/outcomearea.html"
+
+
+class QualityStatement(MDR.concept):
+    template = "comet/qualitystatement.html"
+
+    institutional_environment = MDR.RichTextField(blank=True)
+    timeliness = MDR.RichTextField(blank=True)
+    accessibility = MDR.RichTextField(blank=True)
+    interpretability = MDR.RichTextField(blank=True)
+    relevance = MDR.RichTextField(blank=True)
+    accuracy = MDR.RichTextField(blank=True)
+    coherence = MDR.RichTextField(blank=True)
 
 
 class Indicator(MDR.concept):
@@ -28,16 +83,11 @@ class Indicator(MDR.concept):
     and that provides relevant and actionable information about population or system performance.
     """
     # Subclassing from DataElement causes indicators to present as DataElements, which isn't quite right.
+    template = "comet/indicator.html"
+    through_edit_excludes = ['dimensions']  # Exclude dimensions from the Indicator editor page.
     backwards_compatible_fields = ['representation_class']
 
-    template = "comet/indicator.html"
-    outcome_areas = ConceptManyToManyField('OutcomeArea', related_name="indicators", blank=True)
-    quality_statement = ConceptForeignKey(
-        "QualityStatement",
-        null=True, blank=True, on_delete=models.SET_NULL,
-        help_text=_("A statement of multiple quality dimensions for the purpose of assessing the quality of the data for reporting against this Indicator.")
-    )
-    dimensions = ConceptManyToManyField("FrameworkDimension", related_name="indicators", blank=True)
+    outcome_areas = ConceptManyToManyField(OutcomeArea, related_name="indicators", blank=True)
 
     computation_description = MDR.RichTextField(blank=True)
     computation = MDR.RichTextField(blank=True)
@@ -46,9 +96,15 @@ class Indicator(MDR.concept):
     denominator_description = MDR.RichTextField(blank=True)
     disaggregation_description = MDR.RichTextField(blank=True)
 
+    quality_statement = ConceptForeignKey(
+        QualityStatement,
+        null=True, blank=True, on_delete=models.SET_NULL,
+        help_text=_("A statement of multiple quality dimensions for the purpose of assessing the quality of the data for reporting against this Indicator.")
+    )
     rationale = MDR.RichTextField(blank=True)
     benchmark = MDR.RichTextField(blank=True)
     reporting_information = MDR.RichTextField(blank=True)
+    dimensions = ConceptManyToManyField(FrameworkDimension, related_name="indicators", blank=True, through=IndicatorFrameworkDimensionsThrough)
 
     serialize_weak_entities = [
         ('numerators', 'indicatornumeratordefinition_set'),
@@ -86,6 +142,33 @@ class Indicator(MDR.concept):
             })
         return rels
 
+    @property
+    def numerators(self):
+        return MDR.DataElement.objects.filter(
+            indicatornumeratordefinition__indicator=self
+        )
+
+    @property
+    def denominators(self):
+        return MDR.DataElement.objects.filter(
+            indicatordenominatordefinition__indicator=self
+        )
+
+    @property
+    def disaggregators(self):
+        return MDR.DataElement.objects.filter(
+            indicatordisaggregationdefinition__indicator=self
+        )
+
+    def add_numerator(self, **kwargs):
+        self.add_component(model_class=IndicatorNumeratorDefinition, **kwargs)
+
+    def add_denominator(self, **kwargs):
+        self.add_component(model_class=IndicatorDenominatorDefinition, **kwargs)
+
+    def add_disaggregator(self, **kwargs):
+        self.add_component(model_class=IndicatorDisaggregationDefinition, **kwargs)
+
     def add_component(self, model_class, **kwargs):
         kwargs.pop('indicator', None)
         from django.db.models import Max
@@ -99,38 +182,8 @@ class Indicator(MDR.concept):
             order = max_order[0] + 1
         return model_class.objects.create(indicator=self, order=order, **kwargs)
 
-    @property
-    def numerators(self):
-        return MDR.DataElement.objects.filter(
-            indicatornumeratordefinition__indicator=self
-        )
-
-    def add_numerator(self, **kwargs):
-        self.add_component(model_class=IndicatorNumeratorDefinition, **kwargs)
-
-    @property
-    def denominators(self):
-        return MDR.DataElement.objects.filter(
-            indicatordenominatordefinition__indicator=self
-        )
-
-    def add_denominator(self, **kwargs):
-        self.add_component(model_class=IndicatorDenominatorDefinition, **kwargs)
-
-    @property
-    def disaggregators(self):
-        return MDR.DataElement.objects.filter(
-            indicatordisaggregationdefinition__indicator=self
-        )
-
-    def add_disaggregator(self, **kwargs):
-        self.add_component(model_class=IndicatorDisaggregationDefinition, **kwargs)
-
 
 class IndicatorDataElementBase(aristotleComponent):
-    class Meta:
-        abstract = True
-        ordering = ['order']
 
     indicator = ConceptForeignKey(Indicator, on_delete=models.CASCADE)
     order = models.PositiveSmallIntegerField(
@@ -168,6 +221,10 @@ class IndicatorDataElementBase(aristotleComponent):
             fields.append(f'Data set: {self.data_set}')
 
         return fields
+
+    class Meta:
+        abstract = True
+        ordering = ['order']
 
 
 class IndicatorNumeratorDefinition(IndicatorDataElementBase):
@@ -218,54 +275,3 @@ class IndicatorInclusion(aristotleComponent):
 
     class Meta:
         ordering = ['order']
-
-
-class OutcomeArea(MDR.concept):
-    template = "comet/outcomearea.html"
-
-
-class QualityStatement(MDR.concept):
-    template = "comet/qualitystatement.html"
-
-    institutional_environment = MDR.RichTextField(blank=True)
-    timeliness = MDR.RichTextField(blank=True)
-    accessibility = MDR.RichTextField(blank=True)
-    interpretability = MDR.RichTextField(blank=True)
-    relevance = MDR.RichTextField(blank=True)
-    accuracy = MDR.RichTextField(blank=True)
-    coherence = MDR.RichTextField(blank=True)
-
-
-class Framework(MDR.concept):
-    template = "comet/framework.html"
-    clone_warning_template = "comet/clone_warning/framework.html"
-    # parentFramework = ConceptForeignKey('Framework', blank=True, null=True, related_name="childFrameworks")
-
-    serialize_weak_entities = [
-        ('dimensions', 'frameworkdimension_set'),
-    ]
-
-    def root_dimensions(self):
-        return self.frameworkdimension_set.all().filter(
-            parent=None
-        )
-
-
-class FrameworkDimension(MPTTModel, TimeStampedModel, aristotleComponent):
-    parent_field_name = 'framework'
-
-    objects = FrameworkDimensionManager()
-    framework = ConceptForeignKey('Framework', on_delete=models.CASCADE)
-    name = models.CharField(max_length=2048)
-    description = MDR.RichTextField(blank=True)
-    parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='child_dimensions')
-
-    class MPTTMeta:
-        order_insertion_by = ['name']
-
-    @property
-    def parentItem(self):
-        return self.framework
-
-    def __str__(self):
-        return self.name

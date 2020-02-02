@@ -37,7 +37,7 @@ class RelationViewPage(LoggedInViewConceptPages, TestCase):
                 multiplicity=3,
             )
 
-    def test_weak_editing_in_advanced_editor_dynamic(self):
+    def test_weak_editing_in_advanced_editor_dynamic(self, updating_field=None, default_fields={}):
         super().test_weak_editing_in_advanced_editor_dynamic(updating_field='definition')
 
 

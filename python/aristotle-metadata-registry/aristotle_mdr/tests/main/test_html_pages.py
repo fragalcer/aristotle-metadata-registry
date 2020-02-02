@@ -918,7 +918,7 @@ class LoggedInViewConceptPages(utils.AristotleTestUtils):
         updated_item['name'] = updated_name
 
         response = self.client.post(reverse('aristotle:edit_item', args=[self.item1.id]), updated_item)
-        self.item1 = self.itemType.objects.get(pk=self.item1.pk)
+        self.item1.refresh_from_db()
         self.assertRedirects(response, url_slugify_concept(self.item1))
         self.assertEqual(self.item1.name, updated_name)
 
@@ -933,7 +933,7 @@ class LoggedInViewConceptPages(utils.AristotleTestUtils):
         updated_name = updated_item['name'] + " updated!"
         updated_item['name'] = updated_name
         response = self.client.post(reverse('aristotle:edit_item', args=[self.item1.id]), updated_item)
-        self.item1 = self.itemType.objects.get(pk=self.item1.pk)
+        self.item1.refresh_from_db()
         self.assertRedirects(response, url_slugify_concept(self.item1))
         self.assertEqual(self.item1.name, updated_name)
         self.assertEqual(self.item1.workgroup, None)
@@ -950,7 +950,7 @@ class LoggedInViewConceptPages(utils.AristotleTestUtils):
         change_comment = "I changed this because I can"
         updated_item['change_comments'] = change_comment
         response = self.client.post(reverse('aristotle:edit_item', args=[self.item1.id]), updated_item)
-        self.item1 = self.itemType.objects.get(pk=self.item1.pk)
+        self.item1.refresh_from_db()
 
         self.assertRedirects(response, url_slugify_concept(self.item1))
         self.assertEqual(self.item1.name, updated_name)
@@ -973,7 +973,7 @@ class LoggedInViewConceptPages(utils.AristotleTestUtils):
             state=models.STATES.standard
         )
 
-        self.item1 = self.itemType.objects.get(pk=self.item1.pk)
+        self.item1.refresh_from_db()
         self.assertTrue(self.item1._is_public)
         self.assertTrue(self.item1.can_view(None))
 
@@ -1018,7 +1018,7 @@ class LoggedInViewConceptPages(utils.AristotleTestUtils):
         updated_item.update(slot_formset_data)
 
         response = self.client.post(reverse('aristotle:edit_item', args=[self.item1.id]), updated_item)
-        self.item1 = self.itemType.objects.get(pk=self.item1.pk)
+        self.item1.refresh_from_db()
 
         self.assertRedirects(response, url_slugify_concept(self.item1))
         self.assertEqual(self.item1.slots.count(), 2)
@@ -1071,7 +1071,7 @@ class LoggedInViewConceptPages(utils.AristotleTestUtils):
         updated_item.update(ident_formset_data)
 
         response = self.client.post(reverse('aristotle:edit_item', args=[self.item1.id]), updated_item)
-        self.item1 = self.itemType.objects.get(pk=self.item1.pk)
+        self.item1.refresh_from_db()
 
         self.assertRedirects(response, url_slugify_concept(self.item1))
         self.assertEqual(self.item1.identifiers.count(), 2)
@@ -1322,8 +1322,8 @@ class LoggedInViewConceptPages(utils.AristotleTestUtils):
         self.assertRedirects(response, url_slugify_concept(most_recent))
         self.assertEqual(most_recent.name, updated_name)
 
-        # Make sure the right item was save and our original hasn't been altered
-        self.item1 = self.itemType.objects.get(id=self.item1.id)  # Refresh from cache
+        # Make sure the right item was save and our original hasn't been altered.
+        self.item1.refresh_from_db()
         self.assertTrue('cloned' not in self.item1.name)
 
     @tag('clone_item')
@@ -1352,7 +1352,7 @@ class LoggedInViewConceptPages(utils.AristotleTestUtils):
         self.assertEqual(most_recent.name, updated_name)
 
         # Make sure the right item was saved and our original hasn't been altered.
-        self.item1 = self.itemType.objects.get(id=self.item1.id)  # Stupid cache
+        self.item1.refresh_from_db()
         self.assertTrue('cloned with no WG' not in self.item1.name)
 
     def get_updated_data_for_clone(self, response):
@@ -1501,7 +1501,7 @@ class LoggedInViewConceptPages(utils.AristotleTestUtils):
         self.assertContains(response, "change 2")
         self.assertContains(response, 'statuses')
 
-        self.item1 = self.itemType.objects.get(pk=self.item1.pk)  # decache
+        self.item1.refresh_from_db()
         self.assertTrue(self.item1.name == "change 2")
         for s in self.item1.statuses.all():
             self.assertContains(
@@ -1532,7 +1532,7 @@ class LoggedInViewConceptPages(utils.AristotleTestUtils):
 
         # REVISION 2
         response = self.client.post(reverse('aristotle:edit_item', args=[self.item1.id]), updated_item)
-        self.item1 = self.itemType.objects.get(pk=self.item1.pk)
+        self.item1.refresh_from_db()
         self.assertEqual(self.item1.name, updated_name)
 
         self.make_review_request(self.item1, self.registrar)
@@ -1542,7 +1542,7 @@ class LoggedInViewConceptPages(utils.AristotleTestUtils):
             state=models.STATES.incomplete,
             user=self.registrar
         )
-        self.item1 = self.itemType.objects.get(pk=self.item1.pk)  # decache
+        self.item1.refresh_from_db()
 
         self.assertTrue(self.item1.statuses.all().count() == 1)
         self.assertTrue(self.item1.statuses.first().state == models.STATES.incomplete)
@@ -1558,12 +1558,12 @@ class LoggedInViewConceptPages(utils.AristotleTestUtils):
 
         # REVISION 4
         response = self.client.post(reverse('aristotle:edit_item', args=[self.item1.id]), updated_item)
-        self.item1 = self.itemType.objects.get(pk=self.item1.pk)
+        self.item1.refresh_from_db()
         self.assertEqual(self.item1.name, updated_name_again)
 
         # REVISION 5
         self.ra.register(self.item1, models.STATES.candidate, self.registrar)
-        self.item1 = self.itemType.objects.get(pk=self.item1.pk)  # decache
+        self.item1.refresh_from_db()
         self.assertTrue(self.item1.statuses.count() == 2)
         self.assertTrue(self.item1.statuses.last().state == models.STATES.candidate)
 
@@ -1576,7 +1576,7 @@ class LoggedInViewConceptPages(utils.AristotleTestUtils):
         )
         versions[2].revision.revert(delete=True)  # The version that has the first status changes
 
-        self.item1 = self.itemType.objects.get(pk=self.item1.pk)  # decache
+        self.item1.refresh_from_db()
 
         self.assertTrue(self.item1.statuses.count() == 1)
         self.assertTrue(self.item1.statuses.first().state == models.STATES.incomplete)
@@ -1584,12 +1584,12 @@ class LoggedInViewConceptPages(utils.AristotleTestUtils):
 
         # Go back to the initial revision
         versions[0].revision.revert(delete=True)
-        self.item1 = self.itemType.objects.get(pk=self.item1.pk)  # decache
+        self.item1.refresh_from_db()
         self.assertTrue(self.item1.statuses.count() == 0)
         self.assertEqual(self.item1.name, original_name)
 
         versions[4].revision.revert(delete=True)  # Back to the latest version
-        self.item1 = self.itemType.objects.get(pk=self.item1.pk)  # decache
+        self.item1.refresh_from_db()
 
         self.assertTrue(self.item1.statuses.count() == 2)
         self.assertTrue(self.item1.statuses.order_by('state')[0].state == models.STATES.incomplete)
@@ -1619,7 +1619,7 @@ class LoggedInViewConceptPages(utils.AristotleTestUtils):
         )
         self.assertRedirects(response, url_slugify_concept(self.item1))
 
-        self.item1 = self.itemType.objects.get(pk=self.item1.pk)
+        self.item1.refresh_from_db()
         self.assertEqual(self.item1.statuses.count(), 1)
         self.assertTrue(self.item1.is_registered)
         self.assertTrue(self.item1.is_public())
@@ -1667,7 +1667,7 @@ class LoggedInViewConceptPages(utils.AristotleTestUtils):
 
         self.change_status(self.item1, self.registrar, self.ra, cascade=True)
 
-        self.item1 = self.itemType.objects.get(pk=self.item1.pk)
+        self.item1.refresh_from_db()
         self.assertEqual(self.item1.statuses.count(), 1)
         self.assertTrue(self.item1.is_registered)
         self.assertTrue(self.item1.is_public())
@@ -1683,7 +1683,7 @@ class LoggedInViewConceptPages(utils.AristotleTestUtils):
 
         self.change_status(self.item1, self.registrar, self.ra, cascade=True)
 
-        self.item1 = self.itemType.objects.get(pk=self.item1.pk)
+        self.item1.refresh_from_db()
         self.assertEqual(self.item1.statuses.count(), 1)
         self.assertTrue(self.item1.is_registered)
         self.assertTrue(self.item1.is_public())
@@ -1696,7 +1696,7 @@ class LoggedInViewConceptPages(utils.AristotleTestUtils):
 
         self.assertFalse(perms.user_can_view(self.registrar, self.item1))
         self.item1.save()
-        self.item1 = self.itemType.objects.get(pk=self.item1.pk)
+        self.item1.refresh_from_db()
 
         self.make_review_request(self.item1, self.registrar)
 
@@ -1844,93 +1844,84 @@ class LoggedInViewConceptPages(utils.AristotleTestUtils):
     def test_weak_editing_in_advanced_editor_dynamic(self, updating_field=None, default_fields={}):
         if hasattr(self.item1, 'serialize_weak_entities'):
             self.login_editor()
-            value_url = 'aristotle:edit_item'
 
-            response = self.client.get(reverse(value_url, args=[self.item1.id]))
+            response = self.client.get(reverse('aristotle:edit_item', args=[self.item1.id]))
             self.assertEqual(response.status_code, 200)
 
             weak_formsets = response.context['weak_formsets']
 
-            weak = self.item1.serialize_weak_entities
-
-            for entity in weak:
-
-                value_type = entity[1]
-                pre = entity[0]
+            for prefix, value_type in self.item1.serialize_weak_entities:
 
                 # find associated formset
                 current_formset = None
                 for formset in weak_formsets:
-                    if formset['formset'].prefix == pre:
+                    if formset['formset'].prefix == prefix:
                         current_formset = formset['formset']
 
-                # check that a formset with the correct prefix was rendered
-                self.assertIsNotNone(current_formset)
+                self.assertIsNotNone(current_formset)  # check that a formset with the correct prefix was rendered
 
                 data = utils.model_to_dict_with_change_time(self.item1)
 
-                num_vals = getattr(self.item1, value_type).all().count()
+                weak_entities_count = getattr(self.item1, value_type).all().count()
                 ordering_field = getattr(self.item1, value_type).model.ordering_field
 
-                # check to make sure the classes with weak entities added them on setUp below
-                self.assertGreater(num_vals, 0)
+                self.assertGreater(weak_entities_count, 0)  # Make sure the weak entities were added.
 
-                skipped_fields = ['id', 'ORDER', 'start_date', 'end_date', 'DELETE']
-                for i, v in enumerate(getattr(self.item1, value_type).all()):
-                    data.update({"%s-%d-id" % (pre, i): v.pk, "%s-%d-ORDER" % (pre, i): getattr(v, ordering_field)})
+                skipped_fields = ['id', 'uuid', 'ORDER', 'start_date', 'end_date', 'DELETE']
+                for index, weak_object in enumerate(getattr(self.item1, value_type).all()):
+                    data.update({"{}-{}-id".format(prefix, index): weak_object.pk,
+                                 "{}-{}-ORDER".format(prefix, index): getattr(weak_object, ordering_field)})
                     for field in current_formset[0].fields:
-                        if hasattr(v, field) and field not in skipped_fields:
-                            value = getattr(v, field)
+                        if hasattr(weak_object, field) and field not in skipped_fields:
+                            value = getattr(weak_object, field)
                             if value is not None:
 
-                                if (updating_field is None):
-                                    # see if this is the field to update
+                                if updating_field is None:  # See if this is the field to update.
                                     model_field = current_formset[0]._meta.model._meta.get_field(field)
 
                                     if isinstance(model_field, CharField) or isinstance(model_field, TextField):
                                         updating_field = field
 
                                 if field == updating_field:
-                                    data.update({"%s-%d-%s" % (pre, i, field): value + ' -updated'})
+                                    data.update({"{}-{}-{}".format(prefix, index, field): value + ' -updated'})
                                 else:
                                     added_value = value
                                     if field in default_fields:
-                                        data.update({"%s-%d-%s" % (pre, i, field): default_fields[field]})
+                                        data.update({"{}-{}-{}".format(prefix, index, field): default_fields[field]})
                                         added_value = default_fields[field]
                                     else:
-                                        data.update({"%s-%d-%s" % (pre, i, field): value})
-                                    if (i == num_vals - 1):
+                                        data.update({"{}-{}-{}".format(prefix, index, field): value})
+                                    if index == weak_entities_count - 1:
                                         # add a copy
-                                        data.update({"%s-%d-%s" % (pre, i + 1, field): added_value})
+                                        data.update({"{}-{}-{}".format(prefix, index + 1, field): added_value})
 
-                self.assertIsNotNone(updating_field)
-                # no string was found to update
+                # Check if there is a string to update.
                 # if this happens the test needs to be passed an updating_field or changed to support more
                 # than text updates
+                self.assertIsNotNone(updating_field)
 
-                i = 0
-                data.update({"%s-%d-DELETE" % (pre, i): 'checked', "%s-%d-%s" % (pre, i, updating_field): getattr(v,
-                                                                                                                  updating_field) + " - deleted"})  # delete the last one.
-
-                # add order and updating_value to newly added data
-                i = num_vals
-                data.update({"%s-%d-ORDER" % (pre, i): i, "%s-%d-%s" % (pre, i, updating_field): "new value -updated"})
-
-                # add management form
                 data.update({
-                    "%s-TOTAL_FORMS" % pre: num_vals + 1, "%s-INITIAL_FORMS" % pre: num_vals,
-                    "%s-MAX_NUM_FORMS" % pre: 1000,
+                    # Delete the last one:
+                    "{}-{}-DELETE".format(prefix, 0): 'checked',
+                    "{}-{}-{}".format(prefix, 0, updating_field): getattr(weak_object, updating_field) + " - deleted",
+                    # Add order and updating_value to newly added data:
+                    "{}-{}-ORDER".format(prefix, weak_entities_count): weak_entities_count,
+                    "{}-{}-{}".format(prefix, weak_entities_count, updating_field): "new value -updated",
+                    # Add management form:
+                    "{}-TOTAL_FORMS".format(prefix): weak_entities_count + 1,
+                    "{}-INITIAL_FORMS".format(prefix): weak_entities_count,
+                    "{}-MAX_NUM_FORMS".format(prefix): 1000,
                 })
 
-                response = self.client.post(reverse(value_url, args=[self.item1.id]), data)
+                response = self.client.post(reverse('aristotle:edit_item', args=[self.item1.id]), data)
 
-                self.item1 = self.itemType.objects.get(pk=self.item1.pk)
+                self.item1.refresh_from_db()
 
-                self.assertTrue(num_vals == getattr(self.item1, value_type).all().count())
+                self.assertTrue(weak_entities_count == getattr(self.item1, value_type).all().count())
 
                 new_value_seen = False
-                for v in getattr(self.item1, value_type).all():
-                    value = getattr(v, updating_field)
+                for weak_object in getattr(self.item1, value_type).all():
+                    value = getattr(weak_object, updating_field)
                     self.assertTrue('updated' in value)  # This will fail if the item isn't updated
                     self.assertFalse('deleted' in value)  # make sure deleted value not present
                     if value == 'new value -updated':
@@ -2029,7 +2020,7 @@ class ValueDomainViewPage(LoggedInViewConceptPages, TestCase):
         self.item3.conceptual_domain = cd
         self.item3.save()
 
-    def test_weak_editing_in_advanced_editor_dynamic(self):
+    def test_weak_editing_in_advanced_editor_dynamic(self, updating_field=None, default_fields={}):
         super().test_weak_editing_in_advanced_editor_dynamic(updating_field='value')
 
     def submitter_user_can_use_value_edit_page(self, value_type):
@@ -2070,7 +2061,7 @@ class ValueDomainViewPage(LoggedInViewConceptPages, TestCase):
 
         response = self.client.post(reverse(value_url, args=[self.item1.id]), data)
         self.assertEqual(response.status_code, 302)
-        self.item1 = models.ValueDomain.objects.get(pk=self.item1.pk)
+        self.item1.refresh_from_db()
 
         self.assertEqual(num_vals, getattr(self.item1, value_type + "Values").count())
         new_value_seen = False
@@ -2088,7 +2079,7 @@ class ValueDomainViewPage(LoggedInViewConceptPages, TestCase):
             state=self.ra.locked_state
         )
 
-        self.item1 = models.ValueDomain.objects.get(pk=self.item1.pk)
+        self.item1.refresh_from_db()
         self.assertTrue(self.item1.is_locked())
         self.assertFalse(perms.user_can_edit(self.editor, self.item1))
 
@@ -2136,7 +2127,7 @@ class ValueDomainViewPage(LoggedInViewConceptPages, TestCase):
             "%s_values-MAX_NUM_FORMS" % (value_type): 1000,
         })
         self.client.post(reverse(value_url, args=[self.item1.id]), data)
-        self.item1 = models.ValueDomain.objects.get(pk=self.item1.pk)
+        self.item1.refresh_from_db()
 
         self.assertTrue(num_vals == getattr(self.item1, value_type + "Values").count())
 
@@ -2260,7 +2251,7 @@ class ValueDomainViewPage(LoggedInViewConceptPages, TestCase):
         response = self.client.post(reverse('aristotle:clone_item', args=[self.item1.id]), data)
 
         clone = response.context[-1]['object']  # Get the item back to check
-        self.item1 = models.ValueDomain.objects.get(pk=self.item1.pk)
+        self.item1.refresh_from_db()
         clone = models.ValueDomain.objects.get(pk=clone.pk)
         self.assertTrue(clone.pk != self.item1.id)
 
@@ -2271,13 +2262,13 @@ class ValueDomainViewPage(LoggedInViewConceptPages, TestCase):
         self.assertEqual(clone.permissiblevalue_set.count(), 4)
         self.assertEqual(clone.supplementaryvalue_set.count(), 4)
 
-    def create_bulk_values(self, n: int, vd):
+    def create_bulk_values(self, number_of_values: int, value_domain):
         pvs = []
-        for i in range(n):
+        for i in range(number_of_values):
             value = 'Value {}'.format(i),
             meaning = 'Meaning {}'.format(i),
             pv = models.PermissibleValue(
-                valueDomain=vd,
+                valueDomain=value_domain,
                 value=value,
                 meaning=meaning,
                 order=i
@@ -2285,7 +2276,7 @@ class ValueDomainViewPage(LoggedInViewConceptPages, TestCase):
             pvs.append(pv)
         models.PermissibleValue.objects.bulk_create(pvs)
 
-    def post_and_time_permissible_values(self, vd, data, datalist, initial, event_name):
+    def post_and_time_permissible_values(self, value_domain, data, datalist, initial, event_name):
         permdata = self.get_formset_postdata(datalist, 'permissible_values', initial)
         data.update(permdata)
 
@@ -2293,7 +2284,7 @@ class ValueDomainViewPage(LoggedInViewConceptPages, TestCase):
 
         self.start_timer()
         response = self.client.post(
-            reverse('aristotle:edit_item', args=[vd.id]),
+            reverse('aristotle:edit_item', args=[value_domain.id]),
             data
         )
         self.end_timer(event_name)
@@ -2447,7 +2438,7 @@ class DataElementConceptViewPage(LoggedInViewConceptPages, TestCase):
 
         response = self.client.post(check_url, {'objectClass': ''})
         self.assertEqual(response.status_code, 302)
-        self.item1 = self.item1.__class__.objects.get(pk=self.item1.pk)
+        self.item1.refresh_from_db()
         self.assertTrue(self.item1.objectClass is not None)
 
         self.login_editor()
@@ -2456,12 +2447,12 @@ class DataElementConceptViewPage(LoggedInViewConceptPages, TestCase):
 
         response = self.client.post(check_url, {'objectClass': ''})
         self.assertEqual(response.status_code, 302)
-        self.item1 = self.item1.__class__.objects.get(pk=self.item1.pk)
+        self.item1.refresh_from_db()
         self.assertTrue(self.item1.objectClass is None)
 
         response = self.client.post(check_url, {'objectClass': self.prop.pk})
         self.assertEqual(response.status_code, 200)
-        self.item1 = self.item1.__class__.objects.get(pk=self.item1.pk)
+        self.item1.refresh_from_db()
         self.assertTrue(self.item1.objectClass is None)
 
         another_oc = models.ObjectClass.objects.create(
@@ -2470,12 +2461,12 @@ class DataElementConceptViewPage(LoggedInViewConceptPages, TestCase):
         )
         response = self.client.post(check_url, {'objectClass': another_oc.pk})
         self.assertEqual(response.status_code, 200)
-        self.item1 = self.item1.__class__.objects.get(pk=self.item1.pk)
+        self.item1.refresh_from_db()
         self.assertTrue(self.item1.objectClass is None)
 
         response = self.client.post(check_url, {'objectClass': self.oc.pk})
         self.assertEqual(response.status_code, 302)
-        self.item1 = self.item1.__class__.objects.get(pk=self.item1.pk)
+        self.item1.refresh_from_db()
         self.assertTrue(self.item1.objectClass == self.oc)
 
     def test_regular_cannot_save_a_property_they_cant_see_via_edit_page(self):
@@ -2578,8 +2569,10 @@ class DataElementViewPage(LoggedInViewConceptPages, TestCase):
     def test_cascade_action(self):
         self.logout()
         check_url = reverse('aristotle:check_cascaded_states', args=[self.item1.pk])
-        self.dec1 = models.DataElementConcept.objects.create(name='DEC1 - visible', definition="my definition",
-                                                             workgroup=self.wg1)
+        self.dec1 = models.DataElementConcept.objects.create(
+            name='DEC1 - visible', definition="my definition",
+            workgroup=self.wg1
+        )
         self.item1.dataElementConcept = self.dec1
         self.item1.save()
 
@@ -2611,7 +2604,7 @@ class DataElementViewPage(LoggedInViewConceptPages, TestCase):
 
         self.assertTrue(cfield.is_link)
         self.assertEqual(cfield.obj_name, self.item1.dataElementConcept.name)
-        self.assertEqual(cfield.id, self.item1.dataElementConcept.id)
+        self.assertEqual(cfield.identifier, self.item1.dataElementConcept.uuid)
 
     @tag('version')
     def test_version_display_component_from_multi_revision(self):
@@ -2634,22 +2627,22 @@ class DataElementViewPage(LoggedInViewConceptPages, TestCase):
             self.item1.save()
             self.item2.save()
 
-        latest = reversion.models.Version.objects.get_for_object(self.item1).first()
+        latest_version = reversion.models.Version.objects.get_for_object(self.item1).first()
 
         self.login_editor()
         response = self.reverse_get(
             'aristotle:item_version',
-            reverse_args=[latest.id],
+            reverse_args=[latest_version.id],
             status_code=200
         )
 
         fields = {f.heading: f for f in response.context['item']['item_fields']}
         self.assertTrue('Data Element Concept' in fields)
-        cfield = fields['Data Element Concept']
+        dec_version_link_field = fields['Data Element Concept']
 
-        self.assertTrue(cfield.is_link)
-        self.assertEqual(cfield.obj_name, self.item1.dataElementConcept.name)
-        self.assertEqual(cfield.id, self.item1.dataElementConcept.id)
+        self.assertTrue(dec_version_link_field.is_link)
+        self.assertEqual(dec_version_link_field.obj_name, self.item1.dataElementConcept.name)
+        self.assertEqual(dec_version_link_field.identifier, self.item1.dataElementConcept.uuid)
 
     @tag('version')
     def test_version_display_component_permission(self):
@@ -2670,7 +2663,7 @@ class DataElementViewPage(LoggedInViewConceptPages, TestCase):
         cfield = fields['Data Element Concept']
 
         self.assertTrue(cfield.is_link)
-        self.assertEqual(cfield.id, self.item1.dataElementConcept.id)
+        self.assertEqual(cfield.identifier, self.item1.dataElementConcept.uuid)
         self.assertEqual(str(cfield), VersionLinkField.perm_message)
 
 
@@ -2678,7 +2671,7 @@ class DataElementDerivationViewPage(LoggedInViewConceptPages, TestCase):
     url_name = 'dataelementderivation'
     itemType = models.DataElementDerivation
 
-    def test_weak_editing_in_advanced_editor_dynamic(self):
+    def test_weak_editing_in_advanced_editor_dynamic(self, updating_field=None, default_fields={}):
         self.item1 = self.create_linked_ded()
         # TODO: fix this test
         # super().test_weak_editing_in_advanced_editor_dynamic()
@@ -2740,7 +2733,7 @@ class DataElementDerivationViewPage(LoggedInViewConceptPages, TestCase):
             reverse(url, args=[self.item1.pk]),
             postdata
         )
-        self.item1 = self.itemType.objects.get(pk=self.item1.pk)
+        self.item1.refresh_from_db()
         self.assertTrue(self.de2 not in getattr(self.item1, attr).all())
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Select a valid choice')

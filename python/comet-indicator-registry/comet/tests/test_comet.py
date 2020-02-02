@@ -31,7 +31,7 @@ class IndicatorViewPage(LoggedInViewConceptPages, TestCase):
     itemType = models.Indicator
 
     @tag('perms')
-    def test_component_permsission_checks(self):
+    def test_component_permission_checks(self):
         viewable = MDR.DataElement.objects.create(
             name='viewable data element', definition='Viewable', submitter=self.editor
         )

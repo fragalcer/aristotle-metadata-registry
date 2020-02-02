@@ -1,7 +1,6 @@
-from django.urls import path, re_path, include
+from django.urls import path, re_path, include, reverse_lazy
 from django.views.generic import TemplateView
 from django.views.generic.base import RedirectView
-from django.urls import reverse_lazy
 
 from haystack.views import search_view_factory
 
@@ -61,7 +60,6 @@ urlpatterns = [
     path('workgroups/all/', views.workgroups.ListWorkgroup.as_view(), name='workgroup_list'),
     path('workgroup/<int:wgid>/discussions/', views.workgroups.WorkgroupDiscussionView.as_view(),
          name='workgroup_discussions'),
-
     path('discussions/', views.discussions.All.as_view(), name='discussions'),
     path('discussions/new/', views.discussions.New.as_view(), name='discussionsNew'),
     path('discussions/workgroup/<int:wgid>/', views.discussions.Workgroup.as_view(), name='discussionsWorkgroup'),

@@ -1,12 +1,11 @@
-from django.test import TestCase, tag
-
 from aristotle_mdr import models
 from aristotle_mdr import utils
-from aristotle_mdr.utils.versions import VersionField, VersionGroupField, VersionLinkField
+from aristotle_mdr.utils.versions import VersionField, VersionLinkField
 from aristotle_mdr.contrib.reviews.models import ReviewRequest
 
 from django.contrib.auth import get_user_model
 from django.urls import reverse
+from django.test import TestCase, tag
 
 
 class UtilsTests(TestCase):
@@ -116,7 +115,7 @@ class UtilsTests(TestCase):
     def test_version_field_link(self):
         field = VersionLinkField(
             fname='Linking field',
-            id=self.oc1.concept.id,
+            identifier=self.oc1.concept.id,
             obj=self.oc1.concept
         )
 
@@ -124,30 +123,30 @@ class UtilsTests(TestCase):
         self.assertFalse(field.is_group)
         self.assertFalse(field.is_html)
 
-        self.assertEqual(field.id, self.oc1.id)
+        self.assertEqual(field.identifier, self.oc1.id)
         self.assertEqual(field.obj_name, self.oc1.name)
 
     @tag('version')
     def test_version_field_link_to_none(self):
         field = VersionLinkField(
             fname='Linking field',
-            id=None,
+            identifier=None,
             obj=None
         )
 
         self.assertEqual(str(field), 'None')
-        self.assertEqual(field.id, None)
+        self.assertEqual(field.identifier, None)
 
     @tag('version')
     def test_version_field_link_to_item_no_perm(self):
         field = VersionLinkField(
             fname='Linking field',
-            id=2,
+            identifier=2,
             obj=None
         )
 
         self.assertEqual(str(field), VersionLinkField.perm_message)
-        self.assertEqual(field.id, 2)
+        self.assertEqual(field.identifier, 2)
 
     def test_get_concept_models(self):
         cm = utils.utils.get_concept_models()

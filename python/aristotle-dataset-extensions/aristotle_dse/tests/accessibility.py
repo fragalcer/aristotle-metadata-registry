@@ -9,9 +9,8 @@ from django.urls import reverse
 import aristotle_dse.models as models
 from aristotle_mdr.tests.accessibility import TestWebPageAccessibilityBase
 
-
 TMP_STATICPATH = tempfile.mkdtemp(suffix='static')
-STATICPATH = TMP_STATICPATH+'/static'
+STATICPATH = TMP_STATICPATH + '/static'
 if not os.path.exists(STATICPATH):
     os.makedirs(STATICPATH)
 
@@ -19,11 +18,10 @@ if not os.path.exists(STATICPATH):
 class DSSTestWebPageAccessibilityBase(TestWebPageAccessibilityBase):
 
     @classmethod
-    @override_settings(STATIC_ROOT = STATICPATH)
-    def setUpClass(self):
-        super(DSSTestWebPageAccessibilityBase, self).setUpClass()
-        self.dss = models.DataSetSpecification.objects.create(
-            name="Test Spec 1",)
+    @override_settings(STATIC_ROOT=STATICPATH)
+    def setUpClass(cls):
+        super(DSSTestWebPageAccessibilityBase, cls).setUpClass()
+        cls.dss = models.DataSetSpecification.objects.create(name="Test Spec 1")
 
 
 class TestStaticPageAccessibility(DSSTestWebPageAccessibilityBase, TestCase):
@@ -31,11 +29,11 @@ class TestStaticPageAccessibility(DSSTestWebPageAccessibilityBase, TestCase):
         from aristotle_dse.urls import urlpatterns
         pages = [
             reverse("aristotle_dse:%s" % u.name) for u in urlpatterns
-            if hasattr(u, 'name') and u.name is not None
-            and re.compile(u.pattern._regex).groups == 0  # Only get static pages without matching
+            if hasattr(u, 'name') and u.name is not None and re.compile(u.pattern._regex).groups == 0  # Only get static pages without matching
         ]
 
         self.pages_tester(pages)
+
 
 class TestMetadataItemPageAccessibility(DSSTestWebPageAccessibilityBase, TestCase):
     def test_metadata_object_pages(self):
@@ -56,7 +54,7 @@ class TestMetadataActionPageAccessibility(DSSTestWebPageAccessibilityBase, TestC
         items = [
             self.dss,
         ]
-        
+
         pages = [
             url
             for item in items
@@ -75,4 +73,4 @@ class TestMetadataActionPageAccessibility(DSSTestWebPageAccessibilityBase, TestC
         ]
         # We skip those pages that don't exist (like object class 'child metadata' pages)
 
-        self.pages_tester(pages, media_types = [[], ['(min-width: 600px)']])
+        self.pages_tester(pages, media_types=[[], ['(min-width: 600px)']])

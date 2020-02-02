@@ -8,12 +8,11 @@ from __future__ import absolute_import, unicode_literals
 import json
 
 from django.core.serializers.base import DeserializationError
-from django.core.serializers.python import (
-    Deserializer as PythonDeserializer, Serializer as PythonSerializer,
-)
+from django.core.serializers.python import Serializer as PythonSerializer
 
 from django.core.serializers.json import DjangoJSONEncoder
-from aristotle_mdr_api.serializers.base import Serializer as Safe, Deserializer as DeSafe
+from aristotle_mdr_api.v3.serializers.base import Serializer as Safe, Deserializer as DeSafe
+
 
 class Serializer(Safe):
     """

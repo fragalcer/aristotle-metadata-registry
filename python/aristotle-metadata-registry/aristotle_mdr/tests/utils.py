@@ -681,16 +681,14 @@ class FormsetTestUtils:
         else:
             return formset_class(formset_data, initial=initial)
 
-    def get_formset_postdata(self, datalist: List[Dict], prefix: str='form', initialforms: int=0):
+    def get_formset_postdata(self, datalist: List[Dict], prefix: str = 'form', initialforms: int = 0):
         """
         Get the POST data for a formset
-
         Arguments:
-            datalist: List of form dictionaries to be posted
-
+            :param datalist: List of form dictionaries to be posted
         Keyword Arguments:
-            prefix: Formsets prefix
-            initialforms: number of forms initial rendered
+            :param initialforms: number of forms initial rendered
+            :param prefix: Formsets prefix
         """
 
         postdata = {}

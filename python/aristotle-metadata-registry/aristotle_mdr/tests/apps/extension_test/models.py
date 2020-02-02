@@ -30,7 +30,6 @@ class Questionnaire(aristotle_mdr.models.concept):
     questions = models.ManyToManyField(
         Question,
         related_name="questionnaires",
-        null=True,
         blank=True
     )
     respondent_classes = models.ManyToManyField(

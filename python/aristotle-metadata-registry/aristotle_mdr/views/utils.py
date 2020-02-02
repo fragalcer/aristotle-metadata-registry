@@ -415,8 +415,7 @@ class RoleChangeView(GroupMemberMixin, LoginRequiredMixin, ObjectLevelPermission
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs.update({'user': self.request.user})
-        initial = {'roles': []}
-        initial['roles'] = self.get_object().list_roles_for_user(self.user_to_change)
+        initial = {'roles': self.get_object().list_roles_for_user(self.user_to_change)}
 
         kwargs.update({'initial': initial})
         return kwargs

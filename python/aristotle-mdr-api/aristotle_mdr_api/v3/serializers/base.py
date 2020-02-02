@@ -20,12 +20,13 @@ from aristotle_mdr.contrib.slots.models import Slot
 
 import uuid
 import datetime
+import warnings
 from reversion import revisions as reversion
 
 import logging
+
 logger = logging.getLogger(__name__)
 logger.debug("Logging started for " + __name__)
-
 
 excluded_fields = [
     "workgroup",
@@ -97,23 +98,22 @@ class Serializer(PySerializer):
         # if 'aristotle_mdr.contrib.links' in settings.INSTALLED_APPS:
         #     from aristotle_mdr.contrib.links import models as link_models
         #     obj_links = link_models.Link.objects.filter(linkend__concept=obj).all().distinct()
-
+        #
         #     data['links'] = [
-                #     [{
-                #         'relation': {
-                #             link.relation.uuid,
-                #         },
-                #         'members': [{
-                #             'concept': linkend.concept.uuid,
-                #             'role': linkend.role.name,
-                #             }]
-                #         }
-                #     }
-                #         for linkend in link.linkend_set.all()
-                #     ]
-                #     for link in obj_links
-                # ]
-
+        #             [{
+        #                 'relation': {
+        #                     link.relation.uuid,
+        #                 },
+        #                 'members': [{
+        #                     'concept': linkend.concept.uuid,
+        #                     'role': linkend.role.name,
+        #                     }]
+        #                 }
+        #             }
+        #                 for linkend in link.linkend_set.all()
+        #             ]
+        #             for link in obj_links
+        #         ]
 
         data['statuses'] = [
             {
@@ -192,8 +192,9 @@ class Serializer(PySerializer):
         self.selected_fields = options.pop("fields", None)
         self.use_natural_keys = options.pop("use_natural_keys", False)
         if self.use_natural_keys:
+            from django.utils.deprecation import RemovedInDjango30Warning
             warnings.warn("``use_natural_keys`` is deprecated; use ``use_natural_foreign_keys`` instead.",
-                RemovedInDjango19Warning)
+                          RemovedInDjango30Warning)
         self.use_natural_foreign_keys = options.pop('use_natural_foreign_keys', False) or self.use_natural_keys
         self.use_natural_primary_keys = options.pop('use_natural_primary_keys', False)
 
@@ -203,8 +204,8 @@ class Serializer(PySerializer):
             self.start_object(obj)
             # Use the concrete parent class' _meta instead of the object's _meta
             # This is to avoid local_fields problems for proxy models. Refs #17717.
-            concrete_model = obj #._meta.concrete_model
-            for field in obj._meta.fields: # concrete_model._meta.local_fields:
+            concrete_model = obj  # ._meta.concrete_model
+            for field in obj._meta.fields:  # concrete_model._meta.local_fields:
                 if field.name.startswith('_') or field.name in excluded_fields:
                     # Skip cached / protected fields
                     continue
@@ -221,9 +222,9 @@ class Serializer(PySerializer):
                     if self.selected_fields is None or field.attname in self.selected_fields:
                         self.handle_m2m_field(obj, field)
 
-            if hasattr(obj, 'serialize_weak_entities'): # and field.name in dict(obj.serialize_weak_entities).keys():
+            if hasattr(obj, 'serialize_weak_entities'):  # and field.name in dict(obj.serialize_weak_entities).keys():
 
-                for f,field in getattr(obj, 'serialize_weak_entities'):
+                for f, field in getattr(obj, 'serialize_weak_entities'):
                     weak_field = field
                     foreign_model = getattr(obj.__class__, weak_field).rel.related_model
                     parent_field = getattr(obj.__class__, weak_field).rel.remote_field.name
@@ -232,11 +233,11 @@ class Serializer(PySerializer):
                         ser = {}
                         for subfield in related._meta.fields:
                             if subfield.name in exclude_fields(foreign_model, ['id', parent_field]):
-                                v = getattr(related,subfield.name)
+                                v = getattr(related, subfield.name)
                                 if issubclass(type(v), MDR._concept):
-                                    ser[subfield.name] = getattr(related,subfield.name).uuid
+                                    ser[subfield.name] = getattr(related, subfield.name).uuid
                                 else:
-                                    ser[subfield.name] = getattr(related,subfield.name)
+                                    ser[subfield.name] = getattr(related, subfield.name)
                         weak_serial.append(ser)
                     self._current[f] = weak_serial
             superseded_by = obj.superseded_by_items.first()
@@ -251,6 +252,7 @@ class Serializer(PySerializer):
                 self.first = False
         self.end_serialization()
         return self.getvalue()
+
 
 # @transaction.atomic()
 def Deserializer(manifest, **options):
@@ -277,13 +279,13 @@ def Deserializer(manifest, **options):
         else:
             ra = RegistrationAuthority.objects.create(
                 # uuid=ra['uuid'],
-                name = ra['name'],
-                definition = ra['definition']
+                name=ra['name'],
+                definition=ra['definition']
             )
 
     from aristotle_mdr.models import Organization
     for org in manifest.get('organizations', []):
-        o,_ = Organization.objects.get_or_create(
+        o, _ = Organization.objects.get_or_create(
             name=org['name'],
             definition=org['definition'],
             uuid=org['uuid'],
@@ -293,10 +295,9 @@ def Deserializer(manifest, **options):
             from aristotle_mdr.contrib.identifiers.models import Namespace
             for namespace in org['namespaces']:
                 Namespace.objects.get_or_create(
-                    naming_authority = o,
-                    shorthand_prefix = namespace['shorthand_prefix']
+                    naming_authority=o,
+                    shorthand_prefix=namespace['shorthand_prefix']
                 )
-
 
     for d in manifest['metadata']:
         # Look up the model and starting build a dict of data for it.
@@ -304,7 +305,7 @@ def Deserializer(manifest, **options):
             from django.contrib.contenttypes.models import ContentType
 
             Model = ContentType.objects.get(
-                app_label=d["concept_type"]["app"],model=d["concept_type"]["model"]
+                app_label=d["concept_type"]["app"], model=d["concept_type"]["model"]
             ).model_class()
 
         except base.DeserializationError:
@@ -337,7 +338,7 @@ def Deserializer(manifest, **options):
                 )
 
             if field_name in dict(getattr(Model, 'serialize_weak_entities', {})).keys():
-                pass # Wait
+                pass  # Wait
             else:
                 field = Model._meta.get_field(field_name)
 
@@ -369,12 +370,12 @@ def Deserializer(manifest, **options):
                             default_manager = model._default_manager
                             field_name = field.remote_field.field_name
                             if issubclass(model, MDR._concept):
-                                value,c = model.objects.get_or_create(uuid=field_value, defaults={
+                                value, c = model.objects.get_or_create(uuid=field_value, defaults={
                                     'name': "no name",
                                     'definition': 'no definition'
                                 })
                                 data[field.attname] = value.pk
-                                #_meta.get_field(field_name).to_python(field_value)
+                                # _meta.get_field(field_name).to_python(field_value)
                             elif hasattr(model, 'uuid'):
                                 try:
                                     value = model.objects.get(uuid=field_value)
@@ -429,13 +430,13 @@ def Deserializer(manifest, **options):
                                 sub_model = sub_field.remote_field.model
                                 if issubclass(sub_model, MDR._concept):
                                     # We have to hope this becomes consistent
-                                    sub_obj,c = sub_model.objects.get_or_create(uuid=sub_value, defaults={
+                                    sub_obj, c = sub_model.objects.get_or_create(uuid=sub_value, defaults={
                                         'name': "no name",
                                         'definition': 'no definition'
                                     })
                                     weak_entity[sub_field_name] = sub_obj
 
-                        weak_entity.update({other_side:obj})
+                        weak_entity.update({other_side: obj})
                         RelModel.objects.update_or_create(**weak_entity)
 
             if 'aristotle_mdr.contrib.slots' in settings.INSTALLED_APPS:
@@ -465,7 +466,7 @@ def Deserializer(manifest, **options):
                     except Exception as e:
                         logger.warning(e)
                         raise
-                        #TODO: Better error logging
+                        # TODO: Better error logging
 
             for status in d.get("statuses", []):
                 ra, created = MDR.RegistrationAuthority.objects.get_or_create(
@@ -473,17 +474,16 @@ def Deserializer(manifest, **options):
                     defaults={'name': 'Unknown Registration Authority'}
                 )
                 if created:
-                    pass # TODO: Log something useful
+                    pass  # TODO: Log something useful
                 state = {
-                        "changeDetails": status.get("change_details",""),
-                        "until_date": status.get("until_date", None),
-                        "registrationAuthority": ra,
-                        "state": int(status["state"]),
-                        "registrationDate": datetime.datetime.strptime(status["registration_date"], '%Y-%m-%d'),
-                        "concept": obj
-                    }
+                    "changeDetails": status.get("change_details", ""),
+                    "until_date": status.get("until_date", None),
+                    "registrationAuthority": ra,
+                    "state": int(status["state"]),
+                    "registrationDate": datetime.datetime.strptime(status["registration_date"], '%Y-%m-%d'),
+                    "concept": obj
+                }
                 st, c = MDR.Status.objects.get_or_create(**state)
-
 
             if "links" in d.keys() and 'aristotle_mdr.contrib.links' in settings.INSTALLED_APPS:
                 from aristotle_mdr.contrib.links import models as link_models
@@ -508,19 +508,19 @@ def Deserializer(manifest, **options):
                             concept=concept
                         )
 
-
             yield base.DeserializedObject(obj, m2m_data)
 
-def build_instance(Model, data, db):
+
+def build_instance(model, data, db):
     """
     Build a model instance.
     If the model instance doesn't have a primary key and the model supports
     natural keys, try to retrieve it from the database.
     """
-    obj = Model(**data)
-    if (obj.pk is None and hasattr(Model, 'uuid')):
+    obj = model(**data)
+    if obj.pk is None and hasattr(model, 'uuid'):
         try:
-            obj.pk = Model._default_manager.db_manager(db).get(uuid=obj.uuid).pk
-        except Model.DoesNotExist:
+            obj.pk = model._default_manager.db_manager(db).get(uuid=obj.uuid).pk
+        except model.DoesNotExist:
             pass
     return obj

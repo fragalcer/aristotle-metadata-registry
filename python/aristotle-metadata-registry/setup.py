@@ -126,6 +126,10 @@ setup(
         'django-bulk-update',
         'django-mptt',
 
+        # Nested `write` serializer for the API (and also used for contrib serializers).
+        'drf-writable-nested',
+        'django-mptt',
+
         # Date parsing
         # Should be replaced with .fromisoformat when using python 3.7
         'python-dateutil',
