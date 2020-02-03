@@ -1,4 +1,5 @@
 from rest_framework import status
+from rest_framework.views import APIView
 from rest_framework.generics import RetrieveAPIView, ListCreateAPIView, RetrieveUpdateAPIView
 from rest_framework.reverse import reverse
 from django.template.defaultfilters import slugify
@@ -17,14 +18,14 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class GetMetadataTypeFromUuidAndRedirect(RetrieveAPIView):
+class GetMetadataTypeFromUuidAndRedirect(APIView):
     """
     The purpose of this API Endpoint is to retrieve the item type from a uuid parameter and redirect to a
     generic metadata serialiser API Endpoint handler.
     """
     permission_classes = (UnAuthenticatedUserCanView,)
 
-    def dispatch(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         item_uuid = kwargs.get("item_uuid")
         item = get_object_or_404(_concept, uuid=item_uuid)
 
