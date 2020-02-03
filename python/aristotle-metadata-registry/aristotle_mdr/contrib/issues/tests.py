@@ -90,7 +90,7 @@ class IssueTests(AristotleTestUtils, TestCase):
 
         self.assertFalse(response.context['own_issue'])
 
-    def test_openclose_perm_editor(self):
+    def test_editor_user_can_accept_proposed_changes(self):
         issue = self.create_test_issue(self.viewer)
         self.login_editor()
 
@@ -101,7 +101,7 @@ class IssueTests(AristotleTestUtils, TestCase):
         )
         self.assertTrue(response.context['can_open_close'])
 
-    def test_openclose_perm_outsider(self):
+    def test_regular_user_cannot_accept_proposed_changes(self):
         issue = self.create_test_issue()
         self.make_item_public(self.item, self.ra)
         self.login_regular_user()
@@ -145,6 +145,23 @@ class IssueTests(AristotleTestUtils, TestCase):
         self.assertEqual(fields[0]['html'], False)
         self.assertEqual(fields[1]['name'], 'definition')
         self.assertEqual(fields[1]['html'], True)
+
+    def test_reversion_object_is_created_when_issue_is_accepted_and_closed(self):
+
+        test_issue = models.Issue.objects.create(
+            name="Test Issue with proposal field and value.",
+            description='Just a test.',
+            item=self.item,
+            submitter=self.editor,
+            proposal_field="name",
+            proposal_value="My new Issue Name",
+        )
+        test_issue.apply(self.editor)
+        from reversion.models import Revision
+        reversion_object = Revision.objects.last()
+        self.assertEqual(len(Revision.objects.all()), 1)  # There is one revision object.
+        self.assertEqual(reversion_object.comment, "Changed name. This change was proposed in issue #{}".format(test_issue.pk))
+        self.assertEqual(self.item.name, "My new Issue Name")
 
 
 class LabelTests(BaseStewardOrgsTestCase, AristotleTestUtils, TestCase):

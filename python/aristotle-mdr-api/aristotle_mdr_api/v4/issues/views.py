@@ -1,3 +1,4 @@
+import reversion
 from rest_framework import generics
 from rest_framework import status
 from rest_framework.views import APIView
@@ -9,6 +10,9 @@ from aristotle_mdr.contrib.issues.models import Issue, IssueComment
 from . import serializers
 from aristotle_mdr_api.v4.permissions import AuthCanViewEdit
 from aristotle_mdr import perms
+
+import logging
+logger = logging.getLogger(__name__)
 
 
 class IssueView(generics.RetrieveUpdateAPIView):
@@ -129,7 +133,7 @@ class IssueApproveView(IssueAPIView):
             raise PermissionDenied
 
         # Make changes
-        obj.apply()
+        obj.apply(request.user)
         issue_serializer.save()
 
         return Response(status=status.HTTP_200_OK)

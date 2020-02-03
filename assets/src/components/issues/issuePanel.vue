@@ -2,7 +2,9 @@
   <div class="issuePanel">
       <!-- Colapsable panel -->
       <collapse-panel :title="title" v-if="!hidePanel">
-        <alert v-if="itemChanged" type="warning">{{ changedMessage }}</alert>
+        <alert v-if="itemChanged" type="warning">
+            {{ changedMessage }}
+        </alert>
         <slot />
         <button v-if="canApprove" class="btn btn-success" @click="openConfirmDialog">
             Accept Changes & Close

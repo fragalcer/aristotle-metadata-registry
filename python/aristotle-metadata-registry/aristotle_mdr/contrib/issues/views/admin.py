@@ -14,14 +14,14 @@ class IssueLabelBase:
 
 
 class IssueLabelList(PermissionRequiredMixin, IssueLabelBase, ListView):
-    template_name='aristotle_mdr/issues/admin/labels_list.html'
+    template_name = 'aristotle_mdr/issues/admin/labels_list.html'
     permission_required = "aristotle_mdr.can_alter_any_issue_labels"
     redirect_unauthenticated_users = True
     raise_exception = True
 
 
 class IssueLabelCreate(PermissionRequiredMixin, UserFormViewMixin, IssueLabelBase, CreateView):
-    template_name='aristotle_mdr/issues/admin/labels_create.html'
+    template_name = 'aristotle_mdr/issues/admin/labels_create.html'
     permission_required = "aristotle_mdr.can_alter_any_issue_labels"
     form_class = IssueLabelEditForm
     redirect_unauthenticated_users = True
@@ -29,7 +29,7 @@ class IssueLabelCreate(PermissionRequiredMixin, UserFormViewMixin, IssueLabelBas
 
 
 class IssueLabelUpdate(ObjectLevelPermissionRequiredMixin, UserFormViewMixin, IssueLabelBase, UpdateView):
-    template_name='aristotle_mdr/issues/admin/labels_update.html'
+    template_name = 'aristotle_mdr/issues/admin/labels_update.html'
     permission_required = "aristotle_mdr.user_can_edit_issue_label"
     form_class = IssueLabelEditForm
     redirect_unauthenticated_users = True
@@ -37,7 +37,7 @@ class IssueLabelUpdate(ObjectLevelPermissionRequiredMixin, UserFormViewMixin, Is
 
 
 class IssueLabelDelete(ObjectLevelPermissionRequiredMixin, UserFormViewMixin, IssueLabelBase, DeleteView):
-    template_name='aristotle_mdr/issues/admin/labels_delete.html'
+    template_name = 'aristotle_mdr/issues/admin/labels_delete.html'
     permission_required = "aristotle_mdr.user_can_edit_issue_label"
     redirect_unauthenticated_users = True
     raise_exception = True

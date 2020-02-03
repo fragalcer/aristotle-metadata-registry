@@ -1,15 +1,13 @@
+import json
+import difflib
 from django.http import Http404
 from django.db.models import Q
 from django.views.generic import TemplateView
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
-
 from aristotle_mdr.views.utils import SimpleItemGet
 from aristotle_mdr.contrib.issues.models import Issue, IssueLabel
 from aristotle_mdr import perms
-
-import json
-import difflib
 
 
 class IssueBase(LoginRequiredMixin, SimpleItemGet):
@@ -54,8 +52,7 @@ class IssueBase(LoginRequiredMixin, SimpleItemGet):
 
 
 class IssueList(IssueBase, TemplateView):
-
-    template_name='aristotle_mdr/issues/list.html'
+    template_name = 'aristotle_mdr/issues/list.html'
 
     def get_issues(self):
         open_issues = self.item.issues.filter(isopen=True).order_by('created').prefetch_related('labels')
@@ -81,8 +78,7 @@ class IssueList(IssueBase, TemplateView):
 
 
 class IssueDisplay(IssueBase, TemplateView):
-
-    template_name='aristotle_mdr/issues/display.html'
+    template_name = 'aristotle_mdr/issues/display.html'
 
     def get_issue(self):
         try:
