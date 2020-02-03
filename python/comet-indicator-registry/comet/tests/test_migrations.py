@@ -149,7 +149,7 @@ class ThroughTableTestCaseBase(MigrationsTestCase, TestCase):
         self.assertEqual(self.i.dimensions.through.objects.all().count(), 2)
 
 
-class TestIndicatorFrameworkDimensionsThroughAndUUIDForeignKeyLink(ThroughtTableTestCaseBase):
+class TestIndicatorFrameworkDimensionsThroughAndUUIDForeignKeyLink(ThroughTableTestCaseBase):
     # At this point, the data is in the old through table:
     migrate_from = '0024_create_indicator_dimension_through'
     # We need to check that the data has been transferred to the new through table and foreign key used the uuid field:
@@ -177,7 +177,7 @@ class TestIndicatorFrameworkDimensionsThroughAndUUIDForeignKeyLink(ThroughtTable
         self.assertEqual(self.i.dimensions.all().count(), 2)
 
 
-class TestIndicatorFrameworkDimensionsThroughAndUUIDForeignKeyLinkReverse(ThroughtTableTestCaseBase):
+class TestIndicatorFrameworkDimensionsThroughAndUUIDForeignKeyLinkReverse(ThroughTableTestCaseBase):
     # At this point, the data is in the new through table:
     migrate_from = '0025_copy_and_paste_data_through'
     # We need to check that the data has been transferred back to the old through table and foreign key used id.
