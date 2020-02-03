@@ -36,5 +36,5 @@ class UserFinePerms(BasePermission):
 
 AuthCanViewEdit = (IsAuthenticated & TokenOrAllowedPerm & UserCanViewEdit)  # type: ignore
 AuthFinePerms = (IsAuthenticated & TokenOrAllowedPerm & UserFinePerms)  # type: ignore
-UnAuthenticatedUserCanView = (TokenOrAllowedPerm & UserCanViewEdit)  # type: ignore
+CanViewEdit = (TokenOrAllowedPerm & UserCanViewEdit)  # type: ignore
 SuperOnly = (IsSuperuser & TokenOrAllowedPerm)  # type: ignore

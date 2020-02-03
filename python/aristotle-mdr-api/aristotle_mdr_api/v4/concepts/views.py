@@ -2,7 +2,7 @@ from rest_framework import generics
 from rest_framework import status
 from rest_framework.response import Response
 
-from aristotle_mdr_api.v4.permissions import AuthCanViewEdit, UnAuthenticatedUserCanView
+from aristotle_mdr_api.v4.permissions import AuthCanViewEdit, CanViewEdit
 from aristotle_mdr_api.v4.concepts import serializers
 from aristotle_mdr.models import _concept, concept, aristotleComponent, SupersedeRelationship
 from aristotle_mdr.views.versions import VersionsMixin
@@ -32,7 +32,7 @@ logger = logging.getLogger(__name__)
 
 
 class ConceptView(generics.RetrieveAPIView):
-    permission_classes = (UnAuthenticatedUserCanView,)
+    permission_classes = (CanViewEdit,)
     permission_key = 'metadata'
 
     serializer_class = serializers.ConceptSerializer
@@ -41,11 +41,11 @@ class ConceptView(generics.RetrieveAPIView):
 
 class SupersedesGraphicalConceptView(ObjectAPIView):
     """Retrieve a Graphical Representation of the Supersedes Relationships"""
-    permission_classes = (UnAuthenticatedUserCanView,)
+    permission_classes = (CanViewEdit,)
     permission_key = 'metadata'
     max_graph_depth = 50
 
-    def get(self, request, pk, format=None):
+    def get(self):
         item = self.get_object()
 
         seen_items_ids = set()
@@ -99,10 +99,10 @@ class SupersedesGraphicalConceptView(ObjectAPIView):
 
 class GeneralGraphicalConceptView(ObjectAPIView):
     """Retrieve a graphical representation of the general relationships"""
-    permission_classes = (UnAuthenticatedUserCanView,)
+    permission_classes = (CanViewEdit,)
     permission_key = 'metadata'
 
-    def get(self, request, pk, format=None):
+    def get(self):
         relational_attr = self.get_object()
 
         seen_items_ids = set()
@@ -185,9 +185,9 @@ class GeneralGraphicalConceptView(ObjectAPIView):
 
 class ConceptLinksView(ObjectAPIView):
     """Retrieve a graphical representation of the links relations"""
-    permission_classes = (UnAuthenticatedUserCanView,)
+    permission_classes = (CanViewEdit,)
 
-    def get(self, request, *args, **kwargs):
+    def get(self):
         concept = self.get_object()
         links = get_links_for_concept(concept)
 
@@ -224,7 +224,7 @@ class ConceptLinksView(ObjectAPIView):
 class ListVersionsView(ObjectAPIView, VersionsMixin):
     """ List the versions of an item  """
 
-    def get(self, request, *args, **kwargs):
+    def get(self):
         """
         Return the list of associated versions
         """
@@ -244,7 +244,7 @@ class ListVersionsView(ObjectAPIView, VersionsMixin):
 class ListVersionsPermissionsView(ObjectAPIView, VersionsMixin):
     """List the version permissions of an item."""
 
-    def get(self, request, *args, **kwargs):
+    def get(self):
         metadata_item = self.get_object()
         versions = self.get_concept_versions_for_user(metadata_item, self.request.user)
         versions.order_by("-revision__date_created")
@@ -317,7 +317,7 @@ class UpdateVersionPermissionsView(generics.ListAPIView, VersionsMixin):
 class GetVersionsPermissionsView(ObjectAPIView, VersionsMixin):
     """ Gets the visibility permissions of a version """
 
-    def get(self, request, *args, **kwargs):
+    def get(self, **kwargs):
         version_pk = kwargs.get('vpk', None)
 
         metadata_item = self.get_object()

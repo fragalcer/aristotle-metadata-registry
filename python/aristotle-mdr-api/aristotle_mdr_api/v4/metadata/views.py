@@ -10,7 +10,7 @@ from django.utils.text import get_text_list
 from aristotle_mdr.contrib.serializers.concept_serializer import ConceptSerializerFactory
 from aristotle_mdr.models import _concept
 from aristotle_mdr_api.v3.views.utils import ConceptResultsPagination
-from aristotle_mdr_api.v4.permissions import UnAuthenticatedUserCanView
+from aristotle_mdr_api.v4.permissions import CanViewEdit
 from aristotle_mdr.utils import get_concept_models
 
 
@@ -23,7 +23,7 @@ class GetMetadataTypeFromUuidAndRedirect(APIView):
     The purpose of this API Endpoint is to retrieve the item type from a uuid parameter and redirect to a
     generic metadata serialiser API Endpoint handler.
     """
-    permission_classes = (UnAuthenticatedUserCanView,)
+    permission_classes = (CanViewEdit,)
 
     def get(self, request, *args, **kwargs):
         item_uuid = kwargs.get("item_uuid")
@@ -46,7 +46,7 @@ class GenericMetadataSerialiserAPIView(RetrieveAPIView):
 
     lookup_field = 'uuid'
     lookup_url_kwarg = 'item_uuid'
-    permission_classes = (UnAuthenticatedUserCanView,)
+    permission_classes = (CanViewEdit,)
 
     def dispatch(self, request, *args, **kwargs):
 
@@ -83,10 +83,10 @@ class ListCreateMetadataAPIView(ListCreateAPIView):
     lookup_field = 'uuid'
     lookup_url_kwarg = 'item_uuid'
     pagination_class = ConceptResultsPagination
-    permission_classes = (UnAuthenticatedUserCanView,)
+    permission_classes = (CanViewEdit,)
 
 
 class RetrieveUpdateMetadataAPIView(RetrieveUpdateAPIView):
     lookup_field = 'uuid'
     lookup_url_kwarg = 'item_uuid'
-    permission_classes = (UnAuthenticatedUserCanView,)
+    permission_classes = (CanViewEdit,)
