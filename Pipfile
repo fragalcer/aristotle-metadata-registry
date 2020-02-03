@@ -15,10 +15,8 @@ psycopg2 = "*"
 redis = ">2.10,<3.0"
 celery = "==4.2.2"
 kombu = "~=4.3.0"
-# Pinning it because it tries to import packaging
-drf-yasg = "==1.16.0"
-# Pinning this until drf-yasg updates
-djangorestframework = "<3.10"
+drf-yasg = "*"
+djangorestframework = "*"
 django-filter = "~=2.2.0"
 pypandoc = {editable = true,git = "https://github.com/harrywhite4/pypandoc",ref = "master"}
 aristotle-metadata-registry = {path = "./python/aristotle-metadata-registry",editable = true}
