@@ -988,12 +988,15 @@ class _concept(baseAristotleObject):
     def can_view(self, user):
         return _concept.objects.filter(pk=self.pk).visible(user).exists()
 
-    def check_is_public(self, when=timezone.now()):
+    def check_is_public(self, when=None):
         """
         A concept is public if any registration authority
         has advanced it to a public state in that RA or if a publication record has been created for that object.
         """
         # Check for public statuses
+        if when is None:
+            when = timezone.now()
+
         statuses = self.statuses.all()
         statuses = self.current_statuses(qs=statuses, when=when)
         pub_state = True in [
@@ -1020,11 +1023,14 @@ class _concept(baseAristotleObject):
     is_public.boolean = True  # type: ignore
     is_public.short_description = 'Public'  # type: ignore
 
-    def check_is_locked(self, when=timezone.now()):
+    def check_is_locked(self, when=None):
         """
         A concept is locked if any registration authority
         has advanced it to a locked state in that RA.
         """
+        if when is None:
+            when = timezone.now()
+
         statuses = self.statuses.all()
         statuses = self.current_statuses(qs=statuses, when=when)
         return True in [
@@ -1043,7 +1049,10 @@ class _concept(baseAristotleObject):
         self.save()
         concept_visibility_updated.send(sender=self.__class__, concept=self)
 
-    def current_statuses(self, qs=None, when=timezone.now()):
+    def current_statuses(self, qs=None, when=None):
+        if when is None:
+            when = timezone.now()
+
         if qs is None:
             qs = self.statuses.all()
 

@@ -31,19 +31,19 @@ class DataCatalog(aristotle.models.concept):
     issued = models.DateField(
         blank=True, null=True,
         help_text=_('Date of formal issuance (e.g., publication) of the catalog.'),
-        )
+    )
     dct_modified = models.DateTimeField(
         blank=True, null=True,
         help_text=_('Most recent date on which the catalog was changed, updated or modified.'),
-        )
+    )
     homepage = models.URLField(
         blank=True, null=True,
         help_text=_('The dataset specification to which this data source conforms'),
-        )
+    )
     spatial = models.TextField(
         blank=True, null=True,
         help_text=_('The geographical area covered by the catalog.'),
-        )
+    )
     license = models.TextField(
         blank=True, null=True,
         help_text=_(
@@ -51,7 +51,7 @@ class DataCatalog(aristotle.models.concept):
             'Even if the license of the catalog applies to all of its datasets and distributions, '
             'it should be replicated on each distribution.'
         ),
-        )
+    )
 
 
 class Dataset(aristotle.models.concept):
@@ -69,39 +69,39 @@ class Dataset(aristotle.models.concept):
     issued = models.DateField(
         blank=True, null=True,
         help_text=_('Date of formal issuance (e.g., publication) of the catalog.'),
-        )
+    )
     frequency = models.TextField(
         blank=True, null=True,
         help_text=_('The frequency at which dataset is published.'),
-        )
+    )
     spatial = models.TextField(
         blank=True, null=True,
         help_text=_('Spatial coverage of the dataset.'),
-        )
+    )
     temporal = models.TextField(
         blank=True, null=True,
         help_text=_('The temporal period that the dataset covers.'),
-        )
+    )
     catalog = models.ForeignKey(
         DataCatalog,
         blank=True, null=True,
         on_delete=models.SET_NULL,
         help_text=_('An entity responsible for making the dataset available.'),
-        )
+    )
     landing_page = models.URLField(
         blank=True, null=True,
         help_text=_('A Web page that can be navigated to in a Web browser to gain access to the dataset, its distributions and/or additional information'),
-        )
+    )
     dct_modified = models.DateTimeField(
         blank=True, null=True,
         verbose_name="Modification date",
         help_text=_('Most recent date on which the dataset was changed, updated or modified.'),
-        )
+    )
     # TODO: we want to remove this field ASAP, it's not on the standard
     contact_point = models.TextField(
         blank=True, null=True,
         help_text=_('The temporal period that the dataset covers.'),
-        )
+    )
 
     @property
     def relational_attributes(self):
@@ -123,48 +123,48 @@ class Distribution(aristotle.models.concept):
     issued = models.DateField(
         blank=True, null=True,
         help_text=_('Date of formal issuance (e.g., publication) of the catalog.'),
-        )
+    )
     dct_modified = models.DateTimeField(
         blank=True, null=True,
         verbose_name="Modification date",
         help_text=_('Most recent date on which the catalog was changed, updated or modified.'),
-        )
+    )
     dataset = models.ForeignKey(
         Dataset,
         blank=True, null=True,
         on_delete=models.SET_NULL,
         help_text=_('Connects a distribution to its available datasets'),
-        )
+    )
     license = models.TextField(
         blank=True, null=True,
         help_text=_('This links to the license document under which the distribution is made available.'),
-        )
+    )
     rights = models.TextField(
         blank=True, null=True,
         help_text=_('Information about rights held in and over the distribution.'),
-        )
+    )
     access_URL = models.URLField(
         blank=True, null=True,
         help_text=_('A landing page, feed, SPARQL endpoint or other type of resource that gives access to the distribution of the dataset.'),
-        )
+    )
     download_URL = models.URLField(
         blank=True, null=True,
         help_text=_('A file that contains the distribution of the dataset in a given format.'),
-        )
+    )
     byte_size = models.TextField(  # Why text? Because CKAN returns ??? Maybe we can clean in the future
         blank=True, null=True,
         help_text=_('The size in bytes can be approximated when the precise size is not known.'),
-        )
+    )
     media_type = models.CharField(
         blank=True, null=True,
         max_length=512,
         help_text=_('The media type of the distribution as defined by IANA.'),
-        )
+    )
     format_type = models.CharField(  # renamed from format as python will complain
         blank=True, null=True,
         max_length=512,
         help_text=_('The file format of the distribution.'),
-        )
+    )
 
 
 class DistributionDataElementPath(aristotle.models.aristotleComponent):
@@ -178,23 +178,23 @@ class DistributionDataElementPath(aristotle.models.aristotleComponent):
         blank=True, null=True,
         on_delete=models.CASCADE,
         help_text=_('A relation to the DCAT Distribution Record.'),
-        )
+    )
     data_element = ConceptForeignKey(
         aristotle.models.DataElement,
         blank=True, null=True,
         help_text=_('An entity responsible for making the dataset available.'),
         verbose_name='Data Element',
         on_delete=models.SET_NULL,
-        )
+    )
     logical_path = models.CharField(
         max_length=256,
         help_text=_("A text expression that specifies how to identify which series of data in the distribution maps to this data element")
-        )
+    )
     order = models.PositiveSmallIntegerField(
         "Position",
         null=True, blank=True,
         help_text=_("Column position within a dataset.")
-        )
+    )
     specialisation_classes = ConceptManyToManyField(
         aristotle.models.ObjectClass,
         help_text=_(""),
@@ -227,25 +227,25 @@ class DataSetSpecification(aristotle.models.concept):
         null=True,
         help_text=_("A Statistical Unit is the Object Class that is recorded against each entry described by this specification"),
         verbose_name='Statistical Unit'
-        )
+    )
     collection_method = aristotle.models.RichTextField(
         blank=True,
         help_text=_('')
-        )
+    )
 
     def addDataElement(self, data_element, **kwargs):
         DSSDEInclusion.objects.get_or_create(
             data_element=data_element,
             dss=self,
             defaults=kwargs
-            )
+        )
 
     def addCluster(self, child, **kwargs):
         DSSClusterInclusion.objects.get_or_create(
             child=child,
             dss=self,
             defaults=kwargs
-            )
+        )
 
     @property
     def clusters(self):
@@ -412,29 +412,29 @@ class DSSInclusion(aristotle.models.aristotleComponent):
         default=1,
         verbose_name=_("Maximum Occurrences"),
         help_text=_("The maximum number of times a item can be included in a dataset")
-        )
+    )
     inclusion = models.CharField(
         "Inclusion",
         choices=CARDINALITY,
         default=CARDINALITY.conditional,
         max_length=20,
         help_text=_("Specifies if a field is required, optional or conditional within a dataset based on this specification.")
-        )
+    )
     specific_information = RichTextField(
         blank=True,
         help_text=_("Any additional information on the inclusion of a data element or cluster in a dataset.")
-        )
+    )
     conditional_inclusion = RichTextField(
         "Conditional Inclusion",
         blank=True,
         help_text=_("If an item is present conditionally, this field defines the conditions under which an item will appear.")
-        )
+    )
     order = models.PositiveSmallIntegerField(
         "Position",
         null=True,
         blank=True,
         help_text=_("If a dataset is ordered, this indicates which position this item is in a dataset.")
-        )
+    )
 
 
 class DSSGrouping(aristotle.models.aristotleComponent):

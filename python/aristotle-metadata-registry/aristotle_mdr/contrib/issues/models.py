@@ -1,3 +1,4 @@
+import reversion
 from django.db import models
 from django.conf import settings
 from django.db.models.signals import post_save
@@ -75,18 +76,20 @@ class Issue(TimeStampedModel):
     def can_alter_open(self, user):
         return self.can_edit(user) or self.item.can_edit(user)
 
-    def apply(self):
-        """Apply proposed changes to an item"""
+    def apply(self, user):
+        """Apply proposed changes to an item and create a reversion object."""
         if self.proposal_field and self.proposal_value:
-            item = self.item
-            setattr(item, self.proposal_field, self.proposal_value)
-            return item.save()
-        return None
+            with reversion.revisions.create_revision():
+                item = self.item.item
+                setattr(item, str(self.proposal_field), self.proposal_value)
+                reversion.set_user(user)
+                reversion.set_comment("Changed {}. This change was proposed in issue #{}".format(self.proposal_field, self.pk))
+                item.save()
 
-    def close(self):
-        """Closes an issue, applying changes to item aswell"""
+    def close(self, user):
+        """Closes an issue, applying changes to item as well."""
         self.isopen = False
-        self.apply()
+        self.apply(user)
         return self.save()
 
     def get_absolute_url(self):
