@@ -3,6 +3,7 @@ Serializer for concept and all attached subfields
 """
 import reversion
 import json as JSON
+from typing import Tuple
 from rest_framework import serializers
 from drf_writable_nested import WritableNestedModelSerializer
 from django.core.serializers.base import Serializer as BaseDjangoSerializer
@@ -32,7 +33,6 @@ from aristotle_mdr.contrib.serializers.concept_spcific_field_subserializers impo
     RelationRoleSerializer,
 )
 from aristotle_mdr.required_settings import ARISTOTLE_SETTINGS
-from typing import Tuple
 from aristotle_mdr.utils.utils import cloud_enabled
 import logging
 logger = logging.getLogger(__name__)
