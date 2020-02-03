@@ -45,7 +45,7 @@ class SupersedesGraphicalConceptView(ObjectAPIView):
     permission_key = 'metadata'
     max_graph_depth = 50
 
-    def get(self):
+    def get(self, request, *args, **kwargs):
         item = self.get_object()
 
         seen_items_ids = set()
@@ -102,7 +102,7 @@ class GeneralGraphicalConceptView(ObjectAPIView):
     permission_classes = (CanViewEdit,)
     permission_key = 'metadata'
 
-    def get(self):
+    def get(self, request, *args, **kwargs):
         relational_attr = self.get_object()
 
         seen_items_ids = set()
@@ -187,7 +187,7 @@ class ConceptLinksView(ObjectAPIView):
     """Retrieve a graphical representation of the links relations"""
     permission_classes = (CanViewEdit,)
 
-    def get(self):
+    def get(self, request, *args, **kwargs):
         concept = self.get_object()
         links = get_links_for_concept(concept)
 
@@ -224,7 +224,7 @@ class ConceptLinksView(ObjectAPIView):
 class ListVersionsView(ObjectAPIView, VersionsMixin):
     """ List the versions of an item  """
 
-    def get(self):
+    def get(self, request, *args, **kwargs):
         """
         Return the list of associated versions
         """
@@ -244,7 +244,7 @@ class ListVersionsView(ObjectAPIView, VersionsMixin):
 class ListVersionsPermissionsView(ObjectAPIView, VersionsMixin):
     """List the version permissions of an item."""
 
-    def get(self):
+    def get(self, request, *args, **kwargs):
         metadata_item = self.get_object()
         versions = self.get_concept_versions_for_user(metadata_item, self.request.user)
         versions.order_by("-revision__date_created")
@@ -317,7 +317,7 @@ class UpdateVersionPermissionsView(generics.ListAPIView, VersionsMixin):
 class GetVersionsPermissionsView(ObjectAPIView, VersionsMixin):
     """ Gets the visibility permissions of a version """
 
-    def get(self, **kwargs):
+    def get(self, request, *args, **kwargs):
         version_pk = kwargs.get('vpk', None)
 
         metadata_item = self.get_object()
