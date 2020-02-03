@@ -152,7 +152,7 @@ class ConceptSerializerFactory:
                             'workgroup', 'submitter')
 
         concept_fields = self._get_concept_fields(concept_class)
-        concept_subserialized_relation_fields = get_concept_subserialized_relation_fields(concept_class)
+        concept_subserialized_relation_fields = get_concept_subserialized_relation_fields(concept_class, self.whitelisted_fields)
 
         included_fields = concept_fields + concept_subserialized_relation_fields + universal_fields
 
