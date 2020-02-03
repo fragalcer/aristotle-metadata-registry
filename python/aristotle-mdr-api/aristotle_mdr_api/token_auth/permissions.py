@@ -49,7 +49,7 @@ class BaseTokenPermissions(BasePermission):
 
 class IsSuperuser(BasePermission):
     """
-    Allows access to only to superusers.
+    Allows access only to superusers.
     """
 
     def has_permission(self, request, view):

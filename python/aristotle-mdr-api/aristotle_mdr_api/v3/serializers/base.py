@@ -95,26 +95,6 @@ class Serializer(PySerializer):
                 for slot in allowed_slots
             ]
 
-        # if 'aristotle_mdr.contrib.links' in settings.INSTALLED_APPS:
-        #     from aristotle_mdr.contrib.links import models as link_models
-        #     obj_links = link_models.Link.objects.filter(linkend__concept=obj).all().distinct()
-        #
-        #     data['links'] = [
-        #             [{
-        #                 'relation': {
-        #                     link.relation.uuid,
-        #                 },
-        #                 'members': [{
-        #                     'concept': linkend.concept.uuid,
-        #                     'role': linkend.role.name,
-        #                     }]
-        #                 }
-        #             }
-        #                 for linkend in link.linkend_set.all()
-        #             ]
-        #             for link in obj_links
-        #         ]
-
         data['statuses'] = [
             {
                 "change_details": status.changeDetails,

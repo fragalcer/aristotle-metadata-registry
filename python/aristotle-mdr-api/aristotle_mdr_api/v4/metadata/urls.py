@@ -1,11 +1,12 @@
 from django.urls import path
 from . import views
+from typing import List
 from aristotle_mdr.utils import get_concept_models
 from aristotle_mdr_api.v4.metadata.utils import create_model_api_class_dynamically
 from aristotle_mdr_api.v4.metadata.views import ListCreateMetadataAPIView, RetrieveUpdateMetadataAPIView
 
 
-def create_metadata_urls_dynamically():
+def create_metadata_urls_dynamically() -> List[path]:
     """
     This function generates a list of valid Django URLs each of them containing a custom View class.
     The main purpose of this function is to generate serializers for the Swagger API endpoints, and
@@ -19,17 +20,9 @@ def create_metadata_urls_dynamically():
     for model in get_concept_models():
         model_name = model.__name__.lower()
         list_of_urls.extend([
-            path(model_name,
-                 create_model_api_class_dynamically(
-                     model,
-                     (ListCreateMetadataAPIView,)
-                 ).as_view(),
+            path(model_name, create_model_api_class_dynamically(model, (ListCreateMetadataAPIView,)).as_view(),
                  name='list_or_create_metadata_endpoint_' + model_name),
-            path(model_name + '/<uuid:item_uuid>',
-                 create_model_api_class_dynamically(
-                     model,
-                     (RetrieveUpdateMetadataAPIView,)
-                 ).as_view(),
+            path(model_name + '/<uuid:item_uuid>', create_model_api_class_dynamically(model, (RetrieveUpdateMetadataAPIView,)).as_view(),
                  name='retrieve_update_metadata_endpoint_' + model_name),
         ])
     return list_of_urls

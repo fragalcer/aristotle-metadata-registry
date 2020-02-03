@@ -107,7 +107,7 @@ class TestSixToEightMigration(MigrationsTestCase, TestCase):
         self.assertEqual(indicatorset_obj.indicator_set_type_id, ind_set_type.pk)
 
 
-class ThroughtTableTestCaseBase(MigrationsTestCase, TestCase):
+class ThroughTableTestCaseBase(MigrationsTestCase, TestCase):
 
     def setUpBeforeMigration(self, apps):
         Framework = apps.get_model('comet', 'Framework')

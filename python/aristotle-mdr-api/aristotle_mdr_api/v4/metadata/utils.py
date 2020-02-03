@@ -1,11 +1,12 @@
 from aristotle_mdr.contrib.serializers.concept_serializer import ConceptSerializerFactory
+from typing import Type
 
 
-def concat_elems_and_remove_commas_from_iter(iterable):
-    return ",".join([elem.__class__.__name__ for elem in iterable]).replace(',', '')
+def concat_elems_and_remove_commas_from_iter(iterable) -> str:
+    return ",".join([type(elem).__name__ for elem in iterable]).replace(',', '')
 
 
-def create_model_api_class_dynamically(model, base_model_classes, class_attrs=None):
+def create_model_api_class_dynamically(model, base_model_classes, class_attrs=None) -> Type:
     """
     The purpose of this function is to create a Rest Framework View class dynamically,
     and provide a serializer to it.

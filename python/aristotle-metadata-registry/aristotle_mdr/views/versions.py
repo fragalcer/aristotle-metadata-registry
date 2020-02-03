@@ -320,28 +320,28 @@ class ConceptVersionView(VersionsMixin, TemplateView):
         for field_name, field in field_data.values():
 
             if self.is_concept_fk(field_name):  # If foreign key to concept
-                self.ids_or_uuids_appender(field)
+                self.append_id_or_uuid(field)
 
             if self.is_concept_multiple(field_name) and type(field) == list:  # If reverse fk or many to many of concept
                 for inner_field in field:
-                    self.ids_or_uuids_appender(inner_field)
+                    self.append_id_or_uuid(inner_field)
 
             if type(field) == list:
                 for sub_field_data in field:
                     if type(sub_field_data) == dict:
                         for sub_field_name, sub_field in sub_field_data.values():
                             if self.is_concept_fk(sub_field_name):
-                                self.ids_or_uuids_appender(sub_field)
+                                self.append_id_or_uuid(sub_field)
                             elif self.is_concept_multiple(sub_field_name) and type(sub_field) == list:
                                 for inner_sub_field in sub_field:
-                                    self.ids_or_uuids_appender(inner_sub_field)
+                                    self.append_id_or_uuid(inner_sub_field)
 
         return {
             **MDR._concept.objects.filter(id__in=self.ids).visible(self.request.user).in_bulk(),
             **MDR._concept.objects.filter(uuid__in=self.uuids).visible(self.request.user).in_bulk(field_name='uuid'),
         }
 
-    def ids_or_uuids_appender(self, field):
+    def append_id_or_uuid(self, field):
         """
         The purpose of this function is to append an identifier field value (UUID or id) to a list depending on the
         field type.

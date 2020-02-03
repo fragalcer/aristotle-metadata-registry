@@ -1,4 +1,5 @@
-from rest_framework import generics, status
+from rest_framework import status
+from rest_framework.generics import RetrieveAPIView, ListCreateAPIView, RetrieveUpdateAPIView
 from rest_framework.reverse import reverse
 from django.template.defaultfilters import slugify
 from django.http.response import HttpResponseRedirect, JsonResponse
@@ -16,7 +17,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class GetMetadataTypeFromUuidAndRedirect(generics.RetrieveAPIView):
+class GetMetadataTypeFromUuidAndRedirect(RetrieveAPIView):
     """
     The purpose of this API Endpoint is to retrieve the item type from a uuid parameter and redirect to a
     generic metadata serialiser API Endpoint handler.
@@ -37,7 +38,7 @@ class GetMetadataTypeFromUuidAndRedirect(generics.RetrieveAPIView):
         )
 
 
-class GenericMetadataSerialiserAPIView(generics.RetrieveAPIView):
+class GenericMetadataSerialiserAPIView(RetrieveAPIView):
     """
     The purpose of this API Endpoint is to retrieve a serialized representation of a _concept metadata child instance.
     """
@@ -77,14 +78,14 @@ class GenericMetadataSerialiserAPIView(generics.RetrieveAPIView):
         return serializer_class(instance)
 
 
-class ListCreateMetadataAPIView(generics.ListCreateAPIView):
+class ListCreateMetadataAPIView(ListCreateAPIView):
     lookup_field = 'uuid'
     lookup_url_kwarg = 'item_uuid'
     pagination_class = ConceptResultsPagination
     permission_classes = (UnAuthenticatedUserCanView,)
 
 
-class RetrieveUpdateMetadataAPIView(generics.RetrieveUpdateAPIView):
+class RetrieveUpdateMetadataAPIView(RetrieveUpdateAPIView):
     lookup_field = 'uuid'
     lookup_url_kwarg = 'item_uuid'
     permission_classes = (UnAuthenticatedUserCanView,)

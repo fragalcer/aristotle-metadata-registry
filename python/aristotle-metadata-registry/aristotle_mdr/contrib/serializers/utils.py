@@ -1,10 +1,11 @@
 """A collection of util functions to help """
+from typing import Tuple
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from rest_framework import serializers
 from django.utils.translation import ugettext as _
 from django.utils.text import get_text_list
-from aristotle_mdr.models import aristotleComponent
+from aristotle_mdr.models import aristotleComponent, _concept
 
 
 class UUIDRelatedField(serializers.RelatedField):
@@ -169,8 +170,7 @@ def get_relation_fields(model_class):
     """
     related_fields = []
     for field in model_class._meta.get_fields():
-        if not field.name.startswith('_'):
-            # Don't serialize internal fields
+        if not field.name.startswith('_'):  # Don't serialize internal fields
             if field.is_relation:
                 # Check if the model class is the parent of the item, we don't want to serialize up the chain
                 field_model = field.related_model
@@ -194,9 +194,34 @@ def get_relation_fields(model_class):
     return related_fields
 
 
-def get_relation_field_names(model_class, whitelisted_fields=None):
+def get_concept_subserialized_relation_fields(model_class, whitelisted_fields=None) -> Tuple:
+    """
+    Helper function to get related (Foreign key) fields which have a subserializer, and
+    fields that have been added to the class whitelist of allowed fields.
+    :param model_class: Model to get the subserialized fields from.
+    :param whitelisted_fields:
+    :return: Tuple of fields.
+    """
     fields = get_relation_fields(model_class)
     if whitelisted_fields:
         return tuple([get_field_name(field) for field in fields if get_field_name(field) in whitelisted_fields])
     else:
         return tuple([get_field_name(field) for field in fields])
+
+
+def get_concept_foreign_keys(model_class) -> Tuple:
+    """
+    The purpose of this function is to get the _concept subclassed related fields (`_concept` Foreign Keys) from a
+    model.
+    :param model_class: Model to get the Foreign Key fields from.
+    :return: Tuple of Foreign Key fields.
+    """
+    related_fields = []
+
+    for field in model_class._meta.get_fields():
+        if not field.name.startswith('_'):  # Don't serialize internal fields.
+            if field.is_relation and field.many_to_one:
+                if issubclass(field.related_model, _concept):  # If the related model is a subclass of _concept.
+                    related_fields.append(get_field_name(field))
+
+    return tuple([field for field in related_fields])
