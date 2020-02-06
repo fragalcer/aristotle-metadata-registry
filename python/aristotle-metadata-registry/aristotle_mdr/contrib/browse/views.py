@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.views.generic import ListView, TemplateView
 from django.db.models.functions import Substr, Upper
 
-from aristotle_mdr.utils import fetch_metadata_apps
+from aristotle_mdr.utils import fetch_metadata_apps, cloud_enabled
 from aristotle_mdr.models import _concept
 from aristotle_mdr.views.views import get_app_config_list
 
@@ -26,6 +26,11 @@ def add_urls_to_config_list(config_list):
 class BrowseStartView(TemplateView):
     """A starting view for Browse that serves as a central jumping off point for the other views"""
     template_name = 'aristotle_mdr_browse/main.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['aristotle_cloud_is_active'] = cloud_enabled()
+        return context
 
 
 class BrowseAppsView(TemplateView):

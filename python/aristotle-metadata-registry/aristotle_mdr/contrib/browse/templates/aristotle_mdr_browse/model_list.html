@@ -2,7 +2,7 @@
 {% load aristotle_tags aristotle_help util_tags %}
 
 {% block title %}Browsing metadata types under
-{% firstof app.create_page_name app.verbose_name %}
+    {% firstof app.create_page_name app.verbose_name %}
 {% endblock %}
 
 {% block breadcumbs %}

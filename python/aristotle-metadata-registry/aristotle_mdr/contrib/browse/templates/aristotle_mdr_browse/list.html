@@ -11,10 +11,10 @@
 
     <p>
         <em>{{ model.get_verbose_name }} - </em>
-        {% help_doc model 'brief' %} 
+        {% help_doc model 'brief' %}
         - <a href="{% url 'aristotle_help:concept_help' app.label model_name %}">Read more about {{ model.get_verbose_name_plural }}</a>
     </p>
 
-{% include "aristotle_mdr/helpers/bulk_action_paginated_list.html" with page=page_obj js_select_all=True skip_can_view=True %}
+    {% include "aristotle_mdr/helpers/bulk_action_paginated_list.html" with page=page_obj js_select_all=True skip_can_view=True %}
 
 {% endblock %}

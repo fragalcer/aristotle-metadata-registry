@@ -4,98 +4,119 @@
 {% block title %}Browse{% endblock %}
 
 {% block content %}
-<ul class="breadcrumb">
-    <li><a href="{% url 'aristotle_mdr:home' %}">Home</a></li>
-    <li class="active">Main browser</li>
-</ul>
-<h1>Browse</h1>
-<hr>
-<div class="panel-group">
-    <div class="panel panel-default">
-        <div class="panel-body">
-            <div class="row">
-                <div class="col-md-1">
-                    <a href="{% url 'browse_apps' %}"><i class="fa fa-file fa-5x no-link-decoration"></i></a></h3>
-                </div>
-                <div class="col-md-11">
-                    <b>Metadata</b>
-                    <p>
-                        Metadata is information about how data are defined, structured and represented.
-                        It makes data files meaningful by describing the information captured in data, and
-                        how it is measured and represented.
-                    </p>
+    <ul class="breadcrumb">
+        <li><a href="{% url 'aristotle_mdr:home' %}">Home</a></li>
+        <li class="active">Main browser</li>
+    </ul>
+    <h1>Browse</h1>
+    <hr>
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-1">
+                        <a href="{% url 'browse_apps' %}"><i class="fa fa-file fa-5x no-link-decoration"></i></a>
+                    </div>
+                    <div class="col-md-11">
+                        <b>Metadata</b>
+                        <p>
+                            Metadata is information about how data are defined, structured and represented.
+                            It makes data files meaningful by describing the information captured in data, and
+                            how it is measured and represented.
+                        </p>
+                    </div>
                 </div>
             </div>
+            <div class="panel-footer">
+                <a href="{% url 'browse_apps' %}">Browse</a>
+            </div>
         </div>
-        <div class="panel-footer">
-            <a href="{% url 'browse_apps' %}">Browse</a>
-        </div>
-    </div>
 
-    <div class="panel panel-default">
-        <div class="panel-body">
-            <div class="row">
-                <div class="col-md-1">
-                    <a href="{% url 'aristotle:all_registration_authorities' %}"><i
-                            class="fa fa-university fa-5x no-link-decoration"></i></a></h3>
-                </div>
-                <div class="col-md-11">
-                    <b>Registration Authorities</b>
-                    <p>
-                        Registration authorities are groups of people that have some authority to state registration
-                        status levels
-                        for metadata. These may be committees or agencies with particular governance arrangements or
-                        business
-                        with specific domain knowledge.
-                    </p>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-1">
+                        <a href="{% url 'aristotle:all_registration_authorities' %}"><i
+                                class="fa fa-university fa-5x no-link-decoration"></i></a>
+                    </div>
+                    <div class="col-md-11">
+                        <b>Registration Authorities</b>
+                        <p>
+                            Registration authorities are groups of people that have some authority to state registration
+                            status levels
+                            for metadata. These may be committees or agencies with particular governance arrangements or
+                            business
+                            with specific domain knowledge.
+                        </p>
+                    </div>
                 </div>
             </div>
+            <div class="panel-footer">
+                <a href="{% url 'aristotle:all_registration_authorities' %}">Browse</a>
+            </div>
         </div>
-        <div class="panel-footer">
-            <a href="{% url 'aristotle:all_registration_authorities' %}">Browse</a>
-        </div>
-    </div>
 
-    <div class="panel panel-default">
-        <div class="panel-body">
-            <div class="row">
-                <div class="col-md-1">
-                    <a href="{% url 'aristotle_mdr:stewards:group:browse' %}"><i
-                            class="fa fa-sitemap fa-5x no-link-decoration"></i></a></h3>
-                </div>
-                <div class="col-md-11">
-                    <b>Stewardship Organisations</b>
-                    <p>
-                        Stewardship Organisations are groups responsible for maintaining the accuracy and currency of content within the registry, including metadata, files and collections.
-They have an administrative role acting as a self-contained business unit with their own permissions, Registration processes and workflows.
-Each Stewardship Organisation should have a scope of responsibility that defines the domain of information it manages to aid discovery of metadata.
-                    </p>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-1">
+                        <a href="{% url 'aristotle_mdr:stewards:group:browse' %}"><i
+                                class="fa fa-sitemap fa-5x no-link-decoration"></i></a>
+                    </div>
+                    <div class="col-md-11">
+                        <b>Stewardship Organisations</b>
+                        <p>
+                            Stewardship Organisations are groups responsible for maintaining the accuracy and currency of content within the registry, including metadata, files and collections.
+                            They have an administrative role acting as a self-contained business unit with their own permissions, Registration processes and workflows.
+                            Each Stewardship Organisation should have a scope of responsibility that defines the domain of information it manages to aid discovery of metadata.
+                        </p>
+                    </div>
                 </div>
             </div>
+            <div class="panel-footer">
+                <a href="{% url 'aristotle_mdr:stewards:group:browse' %}">Browse</a>
+            </div>
         </div>
-        <div class="panel-footer">
-            <a href="{% url 'aristotle_mdr:stewards:group:browse' %}">Browse</a>
-        </div>
-    </div>
 
-    <div class="panel panel-default">
-        <div class="panel-body">
-            <div class="row">
-                <div class="col-md-1">
-                    <a href="{% url 'aristotle_help:help_base' %}"><i
-                            class="fa fa-question-circle fa-5x no-link-decoration"></i></a></h3>
-                </div>
-                <div class="col-md-11">
-                    <b>Help</b>
-                    <p>
-                                 Browse all the registry help pages.
-                    </p>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-1">
+                        <a href="{% url 'aristotle_help:help_base' %}"><i
+                                class="fa fa-question-circle fa-5x no-link-decoration"></i></a>
+                    </div>
+                    <div class="col-md-11">
+                        <b>Help</b>
+                        <p>
+                            Browse all the registry help pages.
+                        </p>
+                    </div>
                 </div>
             </div>
+            <div class="panel-footer">
+                <a href="{% url 'aristotle_help:help_base' %}">Browse</a>
+            </div>
         </div>
-        <div class="panel-footer">
-            <a href="{% url 'aristotle_help:help_base' %}">Browse</a>
-        </div>
+        {% if aristotle_cloud_is_active %}
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-1">
+                            <a href="{% url 'aristotle_cloud:cloud_page_management:list' %}"><i
+                                    class="fa fa-desktop fa-5x no-link-decoration"></i></a>
+                        </div>
+                        <div class="col-md-11">
+                            <b>Pages</b>
+                            <p>
+                                Browse pages.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <a href="{% url 'aristotle_cloud:cloud_page_management:list' %}">Browse</a>
+                </div>
+            </div>
+        {% endif %}
     </div>
-</div>
 {% endblock %}
